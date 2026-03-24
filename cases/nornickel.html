@@ -285,6 +285,224 @@
 
 
           <!-- ============================================================
+               DIVIDEND FORMULA SIMULATOR
+               ============================================================ -->
+          <h2 id="div-formula" class="reveal">Симулятор дивидендной формулы</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Измените EBITDA и долговую нагрузку — увидите дивиденды по формуле соглашения.</p>
+
+          <div class="card-static reveal" style="padding: var(--space-6); margin: var(--space-6) 0;">
+
+            <!-- Formula toggle -->
+            <div style="display: flex; gap: var(--space-4); align-items: center; margin-bottom: var(--space-5); flex-wrap: wrap;">
+              <span style="font-size: var(--text-sm); color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Формула:</span>
+              <label style="display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--text-sm); color: var(--text-primary);">
+                <input type="radio" name="div-formula-mode" value="ebitda" checked
+                       style="accent-color: var(--acc);">
+                EBITDA (2012-2023)
+              </label>
+              <label style="display: inline-flex; align-items: center; gap: var(--space-2); cursor: pointer; font-size: var(--text-sm); color: var(--text-primary);">
+                <input type="radio" name="div-formula-mode" value="fcf"
+                       style="accent-color: var(--acc);">
+                FCF (после 2023)
+              </label>
+            </div>
+
+            <!-- Sliders -->
+            <div id="slider-ebitda"></div>
+            <div id="slider-netdebt"></div>
+            <div id="slider-capex"></div>
+
+            <!-- Gauge: Net Debt/EBITDA -->
+            <div style="margin: var(--space-5) 0 var(--space-4);">
+              <div style="font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-2); font-weight: 500;">Net Debt / EBITDA</div>
+              <div id="div-gauge" style="position: relative; height: 24px; border-radius: 12px; overflow: hidden; background: var(--surface-2);">
+                <!-- 3 colored zones -->
+                <div style="position: absolute; inset: 0; display: flex;">
+                  <div style="flex: 1.0; background: rgba(52, 211, 153, 0.35);"></div>
+                  <div style="flex: 0.8; background: rgba(251, 191, 36, 0.35);"></div>
+                  <div style="flex: 1.2; background: rgba(251, 113, 133, 0.35);"></div>
+                </div>
+                <!-- Zone labels -->
+                <div style="position: absolute; inset: 0; display: flex; align-items: center; font-size: 10px; color: var(--text-muted); pointer-events: none;">
+                  <span style="flex: 1.0; text-align: center;">0 – 1,0x</span>
+                  <span style="flex: 0.8; text-align: center;">1,0 – 1,8x</span>
+                  <span style="flex: 1.2; text-align: center;">&gt; 1,8x</span>
+                </div>
+                <!-- Marker -->
+                <div id="div-gauge-marker" style="position: absolute; top: 0; width: 4px; height: 100%; background: var(--text-primary); border-radius: 2px; transition: left 0.25s ease; box-shadow: 0 0 6px rgba(255,255,255,0.4);"></div>
+              </div>
+              <div id="div-gauge-label" style="margin-top: var(--space-2); font-size: var(--text-sm); color: var(--text-secondary); font-style: italic;"></div>
+            </div>
+
+            <!-- Results grid -->
+            <div id="div-sim-results" style="margin-top: var(--space-4);"></div>
+
+            <!-- Comparison: old vs new formula -->
+            <div id="div-comparison" style="margin-top: var(--space-5); display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);"></div>
+
+          </div>
+
+          <!-- Simulator script -->
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            var TOTAL_SHARES = 153900000;
+            var sliders = {};
+            var mode = 'ebitda';
+
+            var capexWrap;
+
+            function init() {
+              sliders.ebitda = CFTools.createSlider('slider-ebitda', {
+                label: 'EBITDA',
+                min: 3, max: 15, step: 0.5,
+                value: 7.0, unit: '\u0024 \u043C\u043B\u0440\u0434',
+                onChange: recalculate
+              });
+
+              sliders.netdebt = CFTools.createSlider('slider-netdebt', {
+                label: 'Net Debt',
+                min: 0, max: 20, step: 0.5,
+                value: 8.0, unit: '\u0024 \u043C\u043B\u0440\u0434',
+                onChange: recalculate
+              });
+
+              sliders.capex = CFTools.createSlider('slider-capex', {
+                label: 'CAPEX',
+                min: 1, max: 5, step: 0.5,
+                value: 3.0, unit: '\u0024 \u043C\u043B\u0440\u0434',
+                onChange: recalculate
+              });
+
+              capexWrap = document.getElementById('slider-capex');
+
+              var radios = document.querySelectorAll('input[name="div-formula-mode"]');
+              for (var i = 0; i < radios.length; i++) {
+                radios[i].addEventListener('change', function () {
+                  mode = this.value;
+                  toggleCapex();
+                  recalculate();
+                });
+              }
+
+              toggleCapex();
+              recalculate();
+            }
+
+            function toggleCapex() {
+              if (capexWrap) {
+                capexWrap.style.display = mode === 'fcf' ? '' : 'none';
+              }
+            }
+
+            function calcEbitdaMode(ebitda, netDebt) {
+              var ratio = ebitda > 0 ? netDebt / ebitda : 99;
+              var pct = ratio <= 1.8 ? 0.60 : 0.30;
+              var div = pct * ebitda;
+              div = Math.max(div, 1.0);
+              return { div: div, ratio: ratio, pct: pct, base: ebitda, baseLabel: 'EBITDA' };
+            }
+
+            function calcFcfMode(ebitda, netDebt, capex) {
+              var fcf = ebitda - capex;
+              var ratio = ebitda > 0 ? netDebt / ebitda : 99;
+              var pct;
+              if (ratio <= 1.0) {
+                pct = 0.75;
+              } else if (ratio <= 1.5) {
+                pct = 0.60;
+              } else {
+                pct = 0.50;
+              }
+              var div = Math.max(pct * fcf, 0);
+              return { div: div, ratio: ratio, pct: pct, base: fcf, baseLabel: 'FCF' };
+            }
+
+            function recalculate() {
+              var ebitda = sliders.ebitda.getValue();
+              var netDebt = sliders.netdebt.getValue();
+              var capex = sliders.capex.getValue();
+
+              var res;
+              if (mode === 'ebitda') {
+                res = calcEbitdaMode(ebitda, netDebt);
+              } else {
+                res = calcFcfMode(ebitda, netDebt, capex);
+              }
+
+              var dps = res.div > 0 ? (res.div * 1e9) / TOTAL_SHARES : 0;
+
+              // Ratio color
+              var ratioColor;
+              if (res.ratio <= 1.0) {
+                ratioColor = '#34D399';
+              } else if (res.ratio <= 1.8) {
+                ratioColor = '#FBBF24';
+              } else {
+                ratioColor = '#FB7185';
+              }
+
+              // Result cards
+              CFTools.createResultCard('div-sim-results', [
+                { label: '\u0414\u0438\u0432\u0438\u0434\u0435\u043D\u0434\u044B', value: '\u0024' + CFTools.formatNumber(res.div, 2) + ' \u043C\u043B\u0440\u0434', highlight: true },
+                { label: 'Net Debt / EBITDA', value: CFTools.formatNumber(res.ratio, 2) + 'x' },
+                { label: 'Payout ratio (' + res.baseLabel + ')', value: CFTools.formatNumber(res.pct * 100, 0) + '%' },
+                { label: '\u0414\u0438\u0432\u0438\u0434\u0435\u043D\u0434 \u043D\u0430 \u0430\u043A\u0446\u0438\u044E', value: '\u0024' + CFTools.formatNumber(dps, 2) }
+              ]);
+
+              // Color the ratio value
+              var items = document.querySelectorAll('#div-sim-results .cft-result-item__value');
+              if (items.length >= 2) {
+                items[1].style.color = ratioColor;
+              }
+
+              // Gauge update
+              var maxRatio = 3.0;
+              var pctPos = Math.min(res.ratio / maxRatio, 1.0) * 100;
+              var marker = document.getElementById('div-gauge-marker');
+              if (marker) {
+                marker.style.left = 'calc(' + pctPos + '% - 2px)';
+              }
+
+              // Gauge label
+              var gaugeLabel = document.getElementById('div-gauge-label');
+              if (gaugeLabel) {
+                if (res.ratio <= 1.0) {
+                  gaugeLabel.textContent = '\u041D\u0438\u0437\u043A\u0430\u044F \u0434\u043E\u043B\u0433\u043E\u0432\u0430\u044F \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u2014 \u043C\u0430\u043A\u0441\u0438\u043C\u0430\u043B\u044C\u043D\u044B\u0435 \u0434\u0438\u0432\u0438\u0434\u0435\u043D\u0434\u044B';
+                  gaugeLabel.style.color = '#34D399';
+                } else if (res.ratio <= 1.8) {
+                  gaugeLabel.textContent = '\u0423\u043C\u0435\u0440\u0435\u043D\u043D\u0430\u044F \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u2014 \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u043D\u044B\u0435 \u0432\u044B\u043F\u043B\u0430\u0442\u044B';
+                  gaugeLabel.style.color = '#FBBF24';
+                } else {
+                  gaugeLabel.textContent = '\u0412\u044B\u0441\u043E\u043A\u0430\u044F \u043D\u0430\u0433\u0440\u0443\u0437\u043A\u0430 \u2014 \u0434\u0438\u0432\u0438\u0434\u0435\u043D\u0434\u044B \u0441\u043E\u043A\u0440\u0430\u0449\u0430\u044E\u0442\u0441\u044F \u0432\u0434\u0432\u043E\u0435';
+                  gaugeLabel.style.color = '#FB7185';
+                }
+              }
+
+              // Comparison: always show both formulas side by side
+              var old = calcEbitdaMode(ebitda, netDebt);
+              var fcf = calcFcfMode(ebitda, netDebt, capex);
+              var comp = document.getElementById('div-comparison');
+              if (comp) {
+                comp.innerHTML =
+                  '<div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-4);border-left:3px solid var(--acc);">' +
+                    '<div style="font-size:var(--text-xs);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:var(--space-2);">\u0421\u0442\u0430\u0440\u0430\u044F \u0444\u043E\u0440\u043C\u0443\u043B\u0430 (60% EBITDA)</div>' +
+                    '<div style="font-size:var(--text-xl);font-weight:700;color:var(--acc);">\u0024' + CFTools.formatNumber(old.div, 2) + ' \u043C\u043B\u0440\u0434</div>' +
+                    '<div style="font-size:var(--text-sm);color:var(--text-secondary);margin-top:var(--space-1);">Payout: ' + CFTools.formatNumber(old.pct * 100, 0) + '% EBITDA</div>' +
+                  '</div>' +
+                  '<div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:var(--space-4);border-left:3px solid var(--amber);">' +
+                    '<div style="font-size:var(--text-xs);color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:var(--space-2);">\u041D\u043E\u0432\u0430\u044F \u0444\u043E\u0440\u043C\u0443\u043B\u0430 (50-75% FCF)</div>' +
+                    '<div style="font-size:var(--text-xl);font-weight:700;color:var(--amber);">\u0024' + CFTools.formatNumber(fcf.div, 2) + ' \u043C\u043B\u0440\u0434</div>' +
+                    '<div style="font-size:var(--text-sm);color:var(--text-secondary);margin-top:var(--space-1);">Payout: ' + CFTools.formatNumber(fcf.pct * 100, 0) + '% FCF (EBITDA \u2212 CAPEX)</div>' +
+                  '</div>';
+              }
+            }
+
+            init();
+          });
+          </script>
+
+
+          <!-- ============================================================
                CONCLUSIONS
                ============================================================ -->
           <h2>Выводы</h2>
@@ -403,6 +621,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 

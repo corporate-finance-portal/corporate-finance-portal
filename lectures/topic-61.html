@@ -376,6 +376,255 @@
           </details>
 
           <!-- ============================================================
+               DCF SENSITIVITY TABLE
+               ============================================================ -->
+          <h2 id="dcf-sens" class="reveal">Таблица чувствительности DCF</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Задайте базовые параметры &#8212; увидите, как WACC и темп роста влияют на стоимость компании.</p>
+
+          <div class="box-info reveal" id="dcf-sens-tool" style="padding: var(--space-6);">
+            <!-- Inputs grid -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-4) var(--space-6);margin-bottom:var(--space-6);">
+              <div>
+                <label for="dcf-fcf" style="display:block;font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:.35rem;">FCF&#8321; (первый год), млн &#8381;</label>
+                <input id="dcf-fcf" type="range" min="50" max="500" step="10" value="100"
+                       style="width:100%;accent-color:var(--acc);" aria-label="Свободный денежный поток первого года">
+                <span id="dcf-fcf-val" style="font-weight:600;color:var(--acc);font-size:var(--text-sm);font-family:var(--ff-mono);">100</span>
+                <span style="font-size:var(--text-sm);color:var(--text-muted);"> млн &#8381;</span>
+              </div>
+              <div>
+                <label for="dcf-wacc" style="display:block;font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:.35rem;">WACC (базовый), %</label>
+                <input id="dcf-wacc" type="range" min="8" max="18" step="0.5" value="12"
+                       style="width:100%;accent-color:var(--acc);" aria-label="Средневзвешенная стоимость капитала">
+                <span id="dcf-wacc-val" style="font-weight:600;color:var(--acc);font-size:var(--text-sm);font-family:var(--ff-mono);">12,0</span>
+                <span style="font-size:var(--text-sm);color:var(--text-muted);">%</span>
+              </div>
+              <div>
+                <label for="dcf-g" style="display:block;font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:.35rem;">g (базовый рост), %</label>
+                <input id="dcf-g" type="range" min="0" max="6" step="0.5" value="3"
+                       style="width:100%;accent-color:var(--acc);" aria-label="Долгосрочный темп роста">
+                <span id="dcf-g-val" style="font-weight:600;color:var(--acc);font-size:var(--text-sm);font-family:var(--ff-mono);">3,0</span>
+                <span style="font-size:var(--text-sm);color:var(--text-muted);">%</span>
+              </div>
+              <div>
+                <span style="display:block;font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:.35rem;">Прогнозный период</span>
+                <label style="cursor:pointer;margin-right:var(--space-4);font-size:var(--text-sm);">
+                  <input type="radio" name="dcf-n" value="5" checked style="accent-color:var(--acc);"> 5 лет
+                </label>
+                <label style="cursor:pointer;font-size:var(--text-sm);">
+                  <input type="radio" name="dcf-n" value="10" style="accent-color:var(--acc);"> 10 лет
+                </label>
+              </div>
+            </div>
+
+            <!-- Base case summary -->
+            <div id="dcf-summary" style="margin-bottom:var(--space-6);"></div>
+
+            <!-- Sensitivity table -->
+            <div class="data-table-wrapper" style="overflow-x:auto;">
+              <table class="data-table" id="dcf-table" style="font-family:var(--ff-mono);font-size:var(--text-sm);white-space:nowrap;">
+                <thead id="dcf-thead"></thead>
+                <tbody id="dcf-tbody"></tbody>
+              </table>
+            </div>
+
+            <p style="font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-3);margin-bottom:0;">
+              TV = FCF&#8321; &times; (1+g)<sup>n</sup> &times; (1+g) / (WACC &minus; g). Если WACC &le; g, модель Гордона не применима (&#171;N/A&#187;).
+            </p>
+          </div>
+
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            'use strict';
+
+            /* ---- helpers ---- */
+            var fmt = (typeof CFTools !== 'undefined' && CFTools.formatNumber)
+              ? CFTools.formatNumber
+              : function (n, d) { return Number(n).toLocaleString('ru-RU', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+
+            function fmtInt(n)  { return fmt(n, 0); }
+            function fmtDec(n)  { return fmt(n, 1); }
+
+            /* ---- DOM refs ---- */
+            var elFcf    = document.getElementById('dcf-fcf');
+            var elWacc   = document.getElementById('dcf-wacc');
+            var elG      = document.getElementById('dcf-g');
+            var elFcfV   = document.getElementById('dcf-fcf-val');
+            var elWaccV  = document.getElementById('dcf-wacc-val');
+            var elGV     = document.getElementById('dcf-g-val');
+            var elSum    = document.getElementById('dcf-summary');
+            var elThead  = document.getElementById('dcf-thead');
+            var elTbody  = document.getElementById('dcf-tbody');
+
+            if (!elFcf || !elWacc || !elG) return;
+
+            function getN() {
+              var radios = document.querySelectorAll('input[name="dcf-n"]');
+              for (var i = 0; i < radios.length; i++) {
+                if (radios[i].checked) return parseInt(radios[i].value, 10);
+              }
+              return 5;
+            }
+
+            /* ---- range helper: generate values base +/- offset, step ---- */
+            function rangeArr(base, halfSpan, step) {
+              var arr = [];
+              var lo = base - halfSpan;
+              var hi = base + halfSpan;
+              for (var v = lo; v <= hi + 1e-9; v += step) {
+                arr.push(Math.round(v * 1000) / 1000);
+              }
+              return arr;
+            }
+
+            /* ---- DCF calc ---- */
+            function calcEV(fcf1, wacc, g, n) {
+              if (wacc <= g) return null; /* Gordon model invalid */
+              var pvFcf = 0;
+              for (var t = 1; t <= n; t++) {
+                pvFcf += fcf1 * Math.pow(1 + g, t - 1) / Math.pow(1 + wacc, t);
+              }
+              var tv = fcf1 * Math.pow(1 + g, n) * (1 + g) / (wacc - g);
+              var pvTv = tv / Math.pow(1 + wacc, n);
+              return { ev: pvFcf + pvTv, pvFcf: pvFcf, pvTv: pvTv, tv: tv };
+            }
+
+            /* ---- color interpolation ---- */
+            function cellColor(val, minVal, maxVal) {
+              if (val === null) return 'background:var(--surface-2);color:var(--text-muted);';
+              var t = (maxVal !== minVal) ? (val - minVal) / (maxVal - minVal) : 0.5;
+              /* red(220,50,50) -> yellow(220,180,60) -> green(50,180,80) */
+              var r, gc, b;
+              if (t < 0.5) {
+                var p = t * 2;
+                r  = Math.round(220 - p * 0);
+                gc = Math.round(50  + p * 130);
+                b  = Math.round(50  + p * 10);
+              } else {
+                var p2 = (t - 0.5) * 2;
+                r  = Math.round(220 - p2 * 170);
+                gc = Math.round(180);
+                b  = Math.round(60  + p2 * 20);
+              }
+              return 'background:rgba(' + r + ',' + gc + ',' + b + ',0.18);color:var(--text-primary);';
+            }
+
+            /* ---- render ---- */
+            function render() {
+              var fcf1     = parseFloat(elFcf.value);
+              var waccBase = parseFloat(elWacc.value) / 100;
+              var gBase    = parseFloat(elG.value) / 100;
+              var n        = getN();
+
+              elFcfV.textContent  = fmtInt(fcf1);
+              elWaccV.textContent = fmtDec(parseFloat(elWacc.value));
+              elGV.textContent    = fmtDec(parseFloat(elG.value));
+
+              /* WACC: base +/- 2pp in 0.5pp steps = 9 values */
+              var waccArr = rangeArr(waccBase, 0.02, 0.005);
+              /* g: base +/- 1.5pp in 0.5pp steps = 7 values */
+              var gArr = rangeArr(gBase, 0.015, 0.005);
+
+              /* Clamp: WACC >= 0.5%, g >= 0% */
+              waccArr = waccArr.filter(function (w) { return w >= 0.005; });
+              gArr    = gArr.filter(function (v) { return v >= 0; });
+
+              /* Compute all EVs and find min/max for coloring */
+              var grid = [];
+              var allVals = [];
+              for (var wi = 0; wi < waccArr.length; wi++) {
+                var row = [];
+                for (var gi = 0; gi < gArr.length; gi++) {
+                  var res = calcEV(fcf1, waccArr[wi], gArr[gi], n);
+                  var ev = res ? res.ev : null;
+                  row.push(ev);
+                  if (ev !== null) allVals.push(ev);
+                }
+                grid.push(row);
+              }
+              var minEV = allVals.length ? Math.min.apply(null, allVals) : 0;
+              var maxEV = allVals.length ? Math.max.apply(null, allVals) : 1;
+
+              /* Base case summary */
+              var base = calcEV(fcf1, waccBase, gBase, n);
+              if (base) {
+                var tvPct = base.pvTv / base.ev * 100;
+                elSum.innerHTML =
+                  '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-3);">' +
+                    '<div style="text-align:center;padding:var(--space-3);background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);">' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:.25rem;">EV (базовый)</div>' +
+                      '<div style="font-size:1.4rem;font-weight:700;color:var(--acc);font-family:var(--ff-mono);">' + fmtInt(base.ev) + '</div>' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);">млн &#8381;</div>' +
+                    '</div>' +
+                    '<div style="text-align:center;padding:var(--space-3);background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);">' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:.25rem;">PV(FCF)</div>' +
+                      '<div style="font-size:1.1rem;font-weight:600;color:var(--text-primary);font-family:var(--ff-mono);">' + fmtInt(base.pvFcf) + '</div>' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);">млн &#8381;</div>' +
+                    '</div>' +
+                    '<div style="text-align:center;padding:var(--space-3);background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);">' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:.25rem;">PV(TV)</div>' +
+                      '<div style="font-size:1.1rem;font-weight:600;color:var(--text-primary);font-family:var(--ff-mono);">' + fmtInt(base.pvTv) + '</div>' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);">млн &#8381;</div>' +
+                    '</div>' +
+                    '<div style="text-align:center;padding:var(--space-3);background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);">' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:.25rem;">TV / EV</div>' +
+                      '<div style="font-size:1.1rem;font-weight:600;color:var(--text-primary);font-family:var(--ff-mono);">' + fmtDec(tvPct) + '%</div>' +
+                      '<div style="font-size:var(--text-xs);color:var(--text-muted);">&nbsp;</div>' +
+                    '</div>' +
+                  '</div>';
+              } else {
+                elSum.innerHTML = '<p style="color:var(--danger);font-weight:600;">WACC &le; g: модель Гордона не применима для базового сценария.</p>';
+              }
+
+              /* Table header: g values */
+              var hdr = '<tr><th style="text-align:center;font-size:var(--text-xs);color:var(--text-muted);min-width:80px;">WACC \\ g</th>';
+              for (var gi2 = 0; gi2 < gArr.length; gi2++) {
+                var isBaseG = Math.abs(gArr[gi2] - gBase) < 1e-6;
+                hdr += '<th style="text-align:right;min-width:90px;font-size:var(--text-xs);' +
+                  (isBaseG ? 'color:var(--acc);font-weight:700;' : 'color:var(--text-secondary);') +
+                  '">' + fmtDec(gArr[gi2] * 100) + '%</th>';
+              }
+              hdr += '</tr>';
+              elThead.innerHTML = hdr;
+
+              /* Table body: WACC rows */
+              var body = '';
+              for (var wi2 = 0; wi2 < waccArr.length; wi2++) {
+                var isBaseW = Math.abs(waccArr[wi2] - waccBase) < 1e-6;
+                body += '<tr>';
+                body += '<td style="text-align:right;font-weight:600;font-size:var(--text-xs);' +
+                  (isBaseW ? 'color:var(--acc);' : 'color:var(--text-secondary);') +
+                  '">' + fmtDec(waccArr[wi2] * 100) + '%</td>';
+                for (var gi3 = 0; gi3 < gArr.length; gi3++) {
+                  var val = grid[wi2][gi3];
+                  var isBase = isBaseW && Math.abs(gArr[gi3] - gBase) < 1e-6;
+                  var style = cellColor(val, minEV, maxEV);
+                  if (isBase) {
+                    style += 'outline:2px solid var(--acc);outline-offset:-2px;font-weight:700;';
+                  }
+                  body += '<td style="text-align:right;padding:6px 10px;' + style + '">';
+                  body += val !== null ? fmtInt(val) : '<span title="WACC &le; g">N/A</span>';
+                  body += '</td>';
+                }
+                body += '</tr>';
+              }
+              elTbody.innerHTML = body;
+            }
+
+            /* ---- event wiring ---- */
+            elFcf.addEventListener('input', render);
+            elWacc.addEventListener('input', render);
+            elG.addEventListener('input', render);
+            var radios = document.querySelectorAll('input[name="dcf-n"]');
+            for (var i = 0; i < radios.length; i++) {
+              radios[i].addEventListener('change', render);
+            }
+
+            /* ---- initial render ---- */
+            render();
+          });
+          </script>
+
+          <!-- ============================================================
                КЛЮЧЕВЫЕ ПОНЯТИЯ
                ============================================================ -->
           <h2 id="glossary" class="reveal">Ключевые понятия</h2>
@@ -502,6 +751,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 </body>

@@ -311,6 +311,317 @@
           </details>
 
           <!-- ============================================================
+               SML INTERACTIVE VISUALIZER
+               ============================================================ -->
+          <h2 id="sml-viz" class="reveal">Визуализатор SML (линия рынка ценных бумаг)</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Измените параметры CAPM — увидите, как двигается линия SML и ожидаемая доходность актива.</p>
+
+          <div class="reveal" id="sml-tool">
+
+            <!-- Preset buttons -->
+            <div style="margin-bottom: var(--space-4); display: flex; gap: var(--space-2); flex-wrap: wrap;">
+              <button type="button" class="sml-preset-btn" data-rf="5" data-erm="12" data-beta="1.5" data-alpha="2">Акция роста</button>
+              <button type="button" class="sml-preset-btn" data-rf="5" data-erm="12" data-beta="0.5" data-alpha="0">Защитная акция</button>
+              <button type="button" class="sml-preset-btn" data-rf="5" data-erm="12" data-beta="1.0" data-alpha="-3">Переоценённая</button>
+            </div>
+
+            <!-- Sliders -->
+            <div id="sml-sliders" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2) var(--space-6);">
+              <div id="slider-sml-rf"></div>
+              <div id="slider-sml-erm"></div>
+              <div id="slider-sml-beta"></div>
+              <div id="slider-sml-alpha"></div>
+            </div>
+
+            <!-- Chart -->
+            <div style="margin-top: var(--space-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-4);">
+              <canvas id="sml-chart" class="chart"></canvas>
+            </div>
+
+            <!-- Results -->
+            <div id="sml-results" style="margin-top: var(--space-4);"></div>
+
+            <!-- Interpretation -->
+            <div id="sml-interpretation" style="margin-top: var(--space-3); padding: var(--space-4); border-radius: var(--radius); font-size: var(--text-sm);"></div>
+          </div>
+
+          <style>
+            /* SML Visualizer — scoped styles */
+            .sml-preset-btn {
+              padding: var(--space-2) var(--space-4);
+              border-radius: var(--radius-sm);
+              border: 1px solid var(--border);
+              background: var(--surface);
+              color: var(--text-secondary);
+              font-size: var(--text-sm);
+              font-weight: var(--fw-medium);
+              cursor: pointer;
+              transition: all var(--transition);
+            }
+            .sml-preset-btn:hover {
+              border-color: var(--acc);
+              color: var(--acc);
+            }
+            .sml-preset-btn.active {
+              background: var(--acc-subtle);
+              border-color: var(--acc);
+              color: var(--acc);
+              font-weight: var(--fw-semibold);
+            }
+            #sml-interpretation.undervalued {
+              background: rgba(52,211,153,0.1);
+              border: 1px solid rgba(52,211,153,0.3);
+              color: #34D399;
+            }
+            #sml-interpretation.fair {
+              background: var(--acc-subtle);
+              border: 1px solid var(--acc);
+              color: var(--acc);
+            }
+            #sml-interpretation.overvalued {
+              background: rgba(251,113,133,0.1);
+              border: 1px solid rgba(251,113,133,0.3);
+              color: #FB7185;
+            }
+            @media (max-width: 640px) {
+              #sml-sliders { grid-template-columns: 1fr !important; }
+            }
+          </style>
+
+          <script>
+          (function() {
+            'use strict';
+
+            /* ---- State ---- */
+            var sliders = {};
+            var smlChart = null;
+
+            /* ---- Slider setup (DOMContentLoaded) ---- */
+            document.addEventListener('DOMContentLoaded', function() {
+              if (typeof CFTools === 'undefined') return;
+
+              sliders.rf = CFTools.createSlider('slider-sml-rf', {
+                label: 'r_f (безрисковая ставка)',
+                min: 1, max: 15, step: 0.5,
+                value: 5, unit: '%',
+                onChange: updateAll
+              });
+              sliders.erm = CFTools.createSlider('slider-sml-erm', {
+                label: 'E(r_m) (доходность рынка)',
+                min: 5, max: 25, step: 0.5,
+                value: 12, unit: '%',
+                onChange: updateAll
+              });
+              sliders.beta = CFTools.createSlider('slider-sml-beta', {
+                label: '\u03B2 (бета актива)',
+                min: 0, max: 2.5, step: 0.1,
+                value: 1.2, unit: '',
+                onChange: updateAll
+              });
+              sliders.alpha = CFTools.createSlider('slider-sml-alpha', {
+                label: '\u03B1 (альфа актива)',
+                min: -5, max: 5, step: 0.5,
+                value: 0, unit: '%',
+                onChange: updateAll
+              });
+
+              /* Presets */
+              document.querySelectorAll('.sml-preset-btn').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                  document.querySelectorAll('.sml-preset-btn').forEach(function(b) { b.classList.remove('active'); });
+                  btn.classList.add('active');
+                  sliders.rf.setValue(parseFloat(btn.dataset.rf));
+                  sliders.erm.setValue(parseFloat(btn.dataset.erm));
+                  sliders.beta.setValue(parseFloat(btn.dataset.beta));
+                  sliders.alpha.setValue(parseFloat(btn.dataset.alpha));
+                  updateAll();
+                });
+              });
+
+              updateAll();
+            });
+
+            /* ---- Chart setup (chartjs:ready) ---- */
+            document.addEventListener('chartjs:ready', function() {
+              var canvas = document.getElementById('sml-chart');
+              if (!canvas) return;
+              var ctx = canvas.getContext('2d');
+
+              smlChart = new Chart(ctx, {
+                type: 'scatter',
+                data: {
+                  datasets: [
+                    {
+                      label: 'SML',
+                      data: [],
+                      borderColor: 'rgba(129, 140, 248, 1)',
+                      backgroundColor: 'rgba(129, 140, 248, 0.1)',
+                      borderWidth: 2,
+                      pointRadius: 0,
+                      showLine: true,
+                      fill: false,
+                      order: 2
+                    },
+                    {
+                      label: 'Актив',
+                      data: [],
+                      borderColor: 'rgba(129, 140, 248, 1)',
+                      backgroundColor: 'rgba(129, 140, 248, 1)',
+                      pointRadius: 8,
+                      pointHoverRadius: 10,
+                      pointStyle: 'circle',
+                      showLine: false,
+                      order: 0
+                    },
+                    {
+                      label: 'Проекция на SML',
+                      data: [],
+                      borderColor: 'rgba(148, 163, 184, 0.4)',
+                      borderWidth: 1,
+                      borderDash: [6, 4],
+                      pointRadius: 0,
+                      showLine: true,
+                      fill: false,
+                      order: 3
+                    },
+                    {
+                      label: 'Проекция на оси',
+                      data: [],
+                      borderColor: 'rgba(148, 163, 184, 0.3)',
+                      borderWidth: 1,
+                      borderDash: [4, 4],
+                      pointRadius: 0,
+                      showLine: true,
+                      fill: false,
+                      order: 4
+                    }
+                  ]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  aspectRatio: 1.8,
+                  plugins: {
+                    legend: {
+                      labels: {
+                        color: '#94A3B8',
+                        font: { size: 11 },
+                        filter: function(item) {
+                          return item.text === 'SML' || item.text === 'Актив';
+                        }
+                      }
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function(ctx) {
+                          return ctx.dataset.label + ': \u03B2=' + ctx.parsed.x.toFixed(2) + ', E(r)=' + ctx.parsed.y.toFixed(2) + '%';
+                        }
+                      }
+                    }
+                  },
+                  scales: {
+                    x: {
+                      min: 0,
+                      max: 2.5,
+                      title: { display: true, text: '\u03B2 (бета)', color: '#94A3B8', font: { size: 12 } },
+                      ticks: { color: '#94A3B8', stepSize: 0.5 },
+                      grid: { color: 'rgba(255,255,255,0.06)' }
+                    },
+                    y: {
+                      title: { display: true, text: 'E(r), %', color: '#94A3B8', font: { size: 12 } },
+                      ticks: { color: '#94A3B8' },
+                      grid: { color: 'rgba(255,255,255,0.06)' }
+                    }
+                  }
+                }
+              });
+
+              updateAll();
+            });
+
+            /* ---- Recalculate everything ---- */
+            function updateAll() {
+              if (!sliders.rf) return;
+
+              var rf    = sliders.rf.getValue();
+              var erm   = sliders.erm.getValue();
+              var beta  = sliders.beta.getValue();
+              var alpha = sliders.alpha.getValue();
+              var erp   = erm - rf;
+
+              var requiredReturn = rf + beta * erp;
+              var actualReturn   = requiredReturn + alpha;
+
+              /* Results card */
+              if (typeof CFTools !== 'undefined') {
+                CFTools.createResultCard('sml-results', [
+                  { label: 'E(r_i) по CAPM',          value: requiredReturn.toFixed(2) + '%', highlight: true },
+                  { label: 'Фактическая доходность',   value: actualReturn.toFixed(2) + '%' },
+                  { label: 'ERP (рыночная премия)',     value: erp.toFixed(2) + '%' },
+                  { label: 'Альфа Дженсена (\u03B1)',   value: (alpha >= 0 ? '+' : '') + alpha.toFixed(2) + '%' }
+                ]);
+              }
+
+              /* Interpretation */
+              var interpEl = document.getElementById('sml-interpretation');
+              if (interpEl) {
+                interpEl.className = '';
+                if (alpha > 0) {
+                  interpEl.className = 'undervalued';
+                  interpEl.innerHTML = '<strong>Актив НЕДООЦЕНЁН</strong> — доходность выше SML (\u03B1 = +' + alpha.toFixed(1) + '%). Рекомендация: купить.';
+                } else if (alpha < 0) {
+                  interpEl.className = 'overvalued';
+                  interpEl.innerHTML = '<strong>Актив ПЕРЕОЦЕНЁН</strong> — доходность ниже SML (\u03B1 = ' + alpha.toFixed(1) + '%). Рекомендация: продать.';
+                } else {
+                  interpEl.className = 'fair';
+                  interpEl.innerHTML = '<strong>Актив справедливо оценён</strong> — на линии SML (\u03B1 = 0).';
+                }
+              }
+
+              /* Update chart */
+              if (!smlChart) return;
+
+              /* SML line: from (0, rf) to (2.5, rf + 2.5 * erp) */
+              smlChart.data.datasets[0].data = [
+                { x: 0,   y: rf },
+                { x: 2.5, y: rf + 2.5 * erp }
+              ];
+
+              /* Asset point */
+              var pointColor = alpha > 0
+                ? 'rgba(52, 211, 153, 1)'
+                : alpha < 0
+                  ? 'rgba(251, 113, 133, 1)'
+                  : 'rgba(129, 140, 248, 1)';
+              smlChart.data.datasets[1].data = [{ x: beta, y: actualReturn }];
+              smlChart.data.datasets[1].backgroundColor = pointColor;
+              smlChart.data.datasets[1].borderColor = pointColor;
+
+              /* Dashed line: asset point to SML (vertical at same beta) */
+              smlChart.data.datasets[2].data = [
+                { x: beta, y: requiredReturn },
+                { x: beta, y: actualReturn }
+              ];
+
+              /* Dashed lines: projections to axes */
+              smlChart.data.datasets[3].data = [
+                { x: 0,    y: actualReturn },
+                { x: beta, y: actualReturn },
+                { x: beta, y: 0 }
+              ];
+
+              /* Auto-scale Y axis */
+              var yMax = Math.max(rf + 2.5 * erp, actualReturn, erm) + 3;
+              var yMin = Math.min(0, actualReturn - 2);
+              smlChart.options.scales.y.min = yMin;
+              smlChart.options.scales.y.max = yMax;
+
+              smlChart.update('none');
+            }
+          })();
+          </script>
+
+          <!-- ============================================================
                КЛЮЧЕВЫЕ ПОНЯТИЯ
                ============================================================ -->
           <h2 id="glossary" class="reveal">Ключевые понятия</h2>
@@ -434,6 +745,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 </body>

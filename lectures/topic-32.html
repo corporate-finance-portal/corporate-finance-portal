@@ -307,6 +307,283 @@
           </details>
 
           <!-- ============================================================
+               КАЛЬКУЛЯТОР ПОРТФЕЛЯ (2 АКТИВА)
+               ============================================================ -->
+          <h2 id="portfolio-calc" class="reveal">Калькулятор портфеля (2 актива)</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Измените веса, доходности и корреляцию — увидите эффект диверсификации.</p>
+
+          <div class="box-example reveal" id="portfolio-calculator" style="overflow: visible;">
+
+            <!-- Sliders -->
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 var(--space-6);">
+              <div>
+                <h4 style="margin:0 0 var(--space-3) 0; color: var(--acc); font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.05em;">Актив A</h4>
+                <div id="pc-sl-wA"></div>
+                <div id="pc-sl-erA"></div>
+                <div id="pc-sl-sigA"></div>
+              </div>
+              <div>
+                <h4 style="margin:0 0 var(--space-3) 0; color: var(--warning); font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.05em;">Актив B</h4>
+                <div id="pc-sl-wB-display" style="margin-bottom:1rem;">
+                  <div class="cft-slider__head" style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:.35rem;">
+                    <span class="cft-slider__label" style="font-size:.9rem;color:var(--text-secondary);">w_B (вес актива B)</span>
+                    <span class="cft-slider__value" id="pc-wB-val" style="font-weight:600;color:var(--warning);font-size:.95rem;">50 %</span>
+                  </div>
+                  <div style="height:6px;border-radius:3px;background:var(--surface-2);position:relative;">
+                    <div id="pc-wB-bar" style="height:100%;border-radius:3px;background:var(--warning);width:50%;transition:width .15s;"></div>
+                  </div>
+                </div>
+                <div id="pc-sl-erB"></div>
+                <div id="pc-sl-sigB"></div>
+              </div>
+            </div>
+
+            <!-- Correlation slider (full width) -->
+            <div style="margin-top: var(--space-2);">
+              <h4 style="margin:0 0 var(--space-3) 0; color: var(--text-secondary); font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.05em;">Корреляция</h4>
+              <div id="pc-sl-rho"></div>
+            </div>
+
+            <!-- Insight text -->
+            <div id="pc-insight" style="margin: var(--space-4) 0; padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); background: var(--surface-2); font-size: var(--text-sm); color: var(--text-secondary); border-left: 3px solid var(--acc); transition: all .2s;"></div>
+
+            <!-- Results -->
+            <div id="pc-results" style="margin-top: var(--space-4);"></div>
+
+            <!-- Risk-Return scatter plot (CSS-only) -->
+            <div style="margin-top: var(--space-6);">
+              <h4 style="margin:0 0 var(--space-3) 0; font-size: var(--text-sm); color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em;">Диаграмма риск-доходность</h4>
+              <div id="pc-scatter" style="
+                position: relative;
+                width: 100%;
+                height: 280px;
+                background: var(--surface-2);
+                border-radius: var(--radius-sm);
+                border: 1px solid var(--border);
+                overflow: hidden;
+              ">
+                <!-- Axis labels -->
+                <span style="position:absolute;bottom:4px;right:8px;font-size:.7rem;color:var(--text-muted);">&#963; (риск) &rarr;</span>
+                <span style="position:absolute;top:4px;left:8px;font-size:.7rem;color:var(--text-muted);">&uarr; E(r)</span>
+                <!-- Grid lines injected by JS -->
+                <div id="pc-grid" style="position:absolute;inset:0;"></div>
+                <!-- Points -->
+                <div id="pc-dot-A" style="
+                  position:absolute; width:14px; height:14px; border-radius:50%;
+                  background:var(--acc); border:2px solid var(--surface);
+                  box-shadow:0 0 8px var(--acc-glow); transform:translate(-50%,-50%);
+                  transition: left .3s, bottom .3s; z-index:3;
+                "></div>
+                <div id="pc-dot-B" style="
+                  position:absolute; width:14px; height:14px; border-radius:50%;
+                  background:var(--warning); border:2px solid var(--surface);
+                  box-shadow:0 0 8px rgba(251,191,36,0.3); transform:translate(-50%,-50%);
+                  transition: left .3s, bottom .3s; z-index:3;
+                "></div>
+                <div id="pc-dot-P" style="
+                  position:absolute; width:18px; height:18px; border-radius:50%;
+                  background:var(--success); border:2px solid var(--surface);
+                  box-shadow:0 0 10px var(--success-glow); transform:translate(-50%,-50%);
+                  transition: left .3s, bottom .3s; z-index:4;
+                "></div>
+                <!-- Labels for dots -->
+                <div id="pc-label-A" style="position:absolute;font-size:.7rem;font-weight:600;color:var(--acc);transform:translate(-50%,-100%);padding-bottom:2px;transition:left .3s, bottom .3s;z-index:5;white-space:nowrap;"></div>
+                <div id="pc-label-B" style="position:absolute;font-size:.7rem;font-weight:600;color:var(--warning);transform:translate(-50%,-100%);padding-bottom:2px;transition:left .3s, bottom .3s;z-index:5;white-space:nowrap;"></div>
+                <div id="pc-label-P" style="position:absolute;font-size:.7rem;font-weight:700;color:var(--success);transform:translate(-50%,-100%);padding-bottom:2px;transition:left .3s, bottom .3s;z-index:5;white-space:nowrap;"></div>
+              </div>
+              <!-- Legend -->
+              <div style="display:flex; gap:var(--space-5); margin-top:var(--space-2); font-size:.8rem; color:var(--text-secondary); flex-wrap:wrap;">
+                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--acc);margin-right:4px;vertical-align:middle;"></span>Актив A</span>
+                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--warning);margin-right:4px;vertical-align:middle;"></span>Актив B</span>
+                <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--success);margin-right:4px;vertical-align:middle;"></span>Портфель P</span>
+              </div>
+            </div>
+          </div>
+
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            if (typeof CFTools === 'undefined') return;
+
+            var fmt = CFTools.formatNumber;
+            var sliders = {};
+
+            function recalc() {
+              var wA  = sliders.wA.getValue() / 100;
+              var wB  = 1 - wA;
+              var erA = sliders.erA.getValue();
+              var erB = sliders.erB.getValue();
+              var sA  = sliders.sigA.getValue();
+              var sB  = sliders.sigB.getValue();
+              var rho = sliders.rho.getValue();
+
+              // Update wB display
+              document.getElementById('pc-wB-val').textContent = fmt(wB * 100, 0) + ' %';
+              document.getElementById('pc-wB-bar').style.width = (wB * 100) + '%';
+
+              // Portfolio return (%)
+              var erP = wA * erA + wB * erB;
+
+              // Portfolio risk (%)
+              var varP = wA * wA * sA * sA
+                       + wB * wB * sB * sB
+                       + 2 * wA * wB * rho * sA * sB;
+              var sigP = Math.sqrt(Math.max(varP, 0));
+
+              // Weighted average risk
+              var sigWAvg = wA * sA + wB * sB;
+
+              // Diversification benefit (pp)
+              var divBenefit = sigWAvg - sigP;
+
+              // Sharpe (simplified, no rf)
+              var sharpe = sigP > 0 ? erP / sigP : 0;
+
+              // Insight text
+              var insightEl = document.getElementById('pc-insight');
+              var insightText = '';
+              var insightColor = 'var(--text-secondary)';
+              if (rho <= -0.95) {
+                insightText = 'Идеальная обратная корреляция — можно полностью устранить риск!';
+                insightColor = 'var(--success)';
+              } else if (rho < 0) {
+                insightText = 'Отрицательная корреляция — сильный эффект диверсификации';
+                insightColor = 'var(--success)';
+              } else if (Math.abs(rho) < 0.05) {
+                insightText = 'Нулевая корреляция — умеренный эффект диверсификации';
+                insightColor = 'var(--acc)';
+              } else if (rho < 0.95) {
+                insightText = 'Положительная корреляция — ограниченный эффект диверсификации';
+                insightColor = 'var(--warning)';
+              } else {
+                insightText = 'Идеальная прямая корреляция — диверсификация не снижает риск';
+                insightColor = 'var(--error)';
+              }
+              insightEl.textContent = insightText;
+              insightEl.style.borderLeftColor = insightColor;
+
+              // Results card
+              CFTools.createResultCard('pc-results', [
+                { label: 'E(r_p) — доходность портфеля',      value: fmt(erP, 2) + '%', highlight: true },
+                { label: '\u03C3_p — риск портфеля',           value: fmt(sigP, 2) + '%', highlight: false },
+                { label: 'Эффект диверсификации',              value: fmt(divBenefit, 2) + ' п.п.', highlight: false },
+                { label: 'Sharpe (упрощ.)',                    value: fmt(sharpe, 3), highlight: false },
+                { label: 'w_A / w_B',                          value: fmt(wA * 100, 0) + '% / ' + fmt(wB * 100, 0) + '%', highlight: false }
+              ]);
+
+              // Color the diversification benefit green
+              var resItems = document.querySelectorAll('#pc-results .cft-result-item__value');
+              if (resItems.length >= 3) {
+                resItems[2].style.color = divBenefit > 0.01 ? 'var(--success)' : 'var(--text-muted)';
+                resItems[2].style.fontWeight = '700';
+              }
+
+              // --- Scatter plot ---
+              updateScatter(erA, sA, erB, sB, erP, sigP);
+            }
+
+            function updateScatter(erA, sA, erB, sB, erP, sigP) {
+              var pad = 30; // px padding inside the chart
+              var scatter = document.getElementById('pc-scatter');
+              var w = scatter.offsetWidth;
+              var h = scatter.offsetHeight;
+
+              // Compute axis ranges with some padding
+              var allSig = [sA, sB, sigP];
+              var allEr  = [erA, erB, erP];
+              var minSig = Math.max(0, Math.min.apply(null, allSig) - 3);
+              var maxSig = Math.max.apply(null, allSig) + 3;
+              var minEr  = Math.max(0, Math.min.apply(null, allEr) - 2);
+              var maxEr  = Math.max.apply(null, allEr) + 2;
+
+              // Avoid zero-range
+              if (maxSig - minSig < 1) { maxSig = minSig + 5; }
+              if (maxEr - minEr < 1) { maxEr = minEr + 5; }
+
+              function xPos(sig) { return pad + (sig - minSig) / (maxSig - minSig) * (w - 2 * pad); }
+              function yPos(er)  { return h - pad - (er - minEr) / (maxEr - minEr) * (h - 2 * pad); }
+
+              // Draw grid lines
+              var gridEl = document.getElementById('pc-grid');
+              var gridHtml = '';
+              var gridSteps = 4;
+              for (var i = 0; i <= gridSteps; i++) {
+                var xVal = minSig + (maxSig - minSig) * i / gridSteps;
+                var yVal = minEr + (maxEr - minEr) * i / gridSteps;
+                var xPx = xPos(xVal);
+                var yPx = yPos(yVal);
+                // Vertical line
+                gridHtml += '<div style="position:absolute;left:' + xPx + 'px;top:' + pad + 'px;width:1px;height:' + (h - 2 * pad) + 'px;background:var(--border);opacity:.4;"></div>';
+                // Horizontal line
+                gridHtml += '<div style="position:absolute;left:' + pad + 'px;top:' + yPx + 'px;width:' + (w - 2 * pad) + 'px;height:1px;background:var(--border);opacity:.4;"></div>';
+                // X label
+                gridHtml += '<span style="position:absolute;left:' + xPx + 'px;bottom:2px;transform:translateX(-50%);font-size:.6rem;color:var(--text-muted);">' + fmt(xVal, 0) + '</span>';
+                // Y label
+                gridHtml += '<span style="position:absolute;top:' + yPx + 'px;left:2px;transform:translateY(-50%);font-size:.6rem;color:var(--text-muted);">' + fmt(yVal, 0) + '</span>';
+              }
+              gridEl.innerHTML = gridHtml;
+
+              // Position dots
+              positionDot('pc-dot-A', 'pc-label-A', sA, erA, 'A (' + fmt(sA, 0) + '; ' + fmt(erA, 0) + ')');
+              positionDot('pc-dot-B', 'pc-label-B', sB, erB, 'B (' + fmt(sB, 0) + '; ' + fmt(erB, 0) + ')');
+              positionDot('pc-dot-P', 'pc-label-P', sigP, erP, 'P (' + fmt(sigP, 1) + '; ' + fmt(erP, 1) + ')');
+
+              function positionDot(dotId, labelId, sig, er, text) {
+                var x = xPos(sig);
+                var y = yPos(er);
+                var dot = document.getElementById(dotId);
+                var lbl = document.getElementById(labelId);
+                dot.style.left = x + 'px';
+                dot.style.top  = y + 'px';
+                lbl.style.left = x + 'px';
+                lbl.style.top  = (y - 10) + 'px';
+                lbl.textContent = text;
+              }
+            }
+
+            // Create sliders
+            sliders.wA = CFTools.createSlider('pc-sl-wA', {
+              label: 'w_A (вес актива A)', min: 0, max: 100, step: 5,
+              value: 50, unit: '%', onChange: recalc
+            });
+
+            sliders.erA = CFTools.createSlider('pc-sl-erA', {
+              label: 'E(r_A) — доходность A', min: 0, max: 30, step: 0.5,
+              value: 12, unit: '%', onChange: recalc
+            });
+
+            sliders.sigA = CFTools.createSlider('pc-sl-sigA', {
+              label: '\u03C3_A — риск A', min: 5, max: 40, step: 1,
+              value: 20, unit: '%', onChange: recalc
+            });
+
+            sliders.erB = CFTools.createSlider('pc-sl-erB', {
+              label: 'E(r_B) — доходность B', min: 0, max: 30, step: 0.5,
+              value: 8, unit: '%', onChange: recalc
+            });
+
+            sliders.sigB = CFTools.createSlider('pc-sl-sigB', {
+              label: '\u03C3_B — риск B', min: 5, max: 40, step: 1,
+              value: 15, unit: '%', onChange: recalc
+            });
+
+            sliders.rho = CFTools.createSlider('pc-sl-rho', {
+              label: '\u03C1_AB — корреляция', min: -1.0, max: 1.0, step: 0.1,
+              value: 0.3, unit: '', onChange: recalc
+            });
+
+            // Initial calculation
+            recalc();
+
+            // Recalculate on window resize (scatter repositioning)
+            var resizeTimer;
+            window.addEventListener('resize', function () {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(recalc, 100);
+            });
+          });
+          </script>
+
+          <!-- ============================================================
                КЛЮЧЕВЫЕ ПОНЯТИЯ
                ============================================================ -->
           <h2 id="glossary" class="reveal">Ключевые понятия</h2>
@@ -429,6 +706,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 </body>
