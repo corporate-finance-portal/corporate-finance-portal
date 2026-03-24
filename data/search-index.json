@@ -156,6 +156,34 @@
     "keywords": "Дюпон DuPont ROE декомпозиция маржа оборачиваемость рычаг"
   },
   {
+    "title": "Инвестиционная дуэль",
+    "url": "tools/investment-duel.html",
+    "type": "tool",
+    "section": "Интерактивные",
+    "keywords": "дуэль инвестиции проект NPV PI окупаемость мини-игра сравнение"
+  },
+  {
+    "title": "Визуализатор Модильяни–Миллера",
+    "url": "tools/mm-visualizer.html",
+    "type": "tool",
+    "section": "Интерактивные",
+    "keywords": "Модильяни Миллер MM структура капитала теорема trade-off WACC визуализация"
+  },
+  {
+    "title": "Калькулятор облигаций",
+    "url": "tools/bond-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "облигация YTM дюрация купон доходность цена Маколей модифицированная"
+  },
+  {
+    "title": "M&A Дашборд",
+    "url": "tools/ma-dashboard.html",
+    "type": "tool",
+    "section": "Интерактивные",
+    "keywords": "M&A слияние поглощение Disney Fox Роснефть ТНК-BP Магнит Дикси мультипликаторы"
+  },
+  {
     "title": "Все формулы курса",
     "url": "tools/formulas.html",
     "type": "tool",
