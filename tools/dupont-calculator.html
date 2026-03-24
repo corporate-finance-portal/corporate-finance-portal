@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор Дюпона — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор декомпозиции ROE по модели Дюпона: маржа, оборачиваемость, леверидж с визуализацией и пресетами российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- DuPont Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'DuPont.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+
+    .roe-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .roe-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .decomposition-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-3);
+      padding: var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      flex-wrap: wrap;
+    }
+    .decomp-item {
+      text-align: center;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      min-width: 100px;
+    }
+    .decomp-item .decomp-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-1);
+    }
+    .decomp-item .decomp-value {
+      font-size: var(--text-lg);
+      font-weight: var(--fw-bold);
+    }
+    .decomp-op {
+      font-size: var(--text-xl);
+      color: var(--text-muted);
+      font-weight: var(--fw-bold);
+    }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .driver-highlight {
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius);
+      font-size: var(--text-sm);
+      margin-top: var(--space-3);
+      background: var(--acc-subtle);
+      border: 1px solid var(--acc-glow);
+      color: var(--acc);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+      .inputs-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-dupont-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор Дюпона">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Анализ Дюпона</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Анализ <span class="text-gradient">Дюпона</span>
+            </h1>
+
+            <p class="subtitle">
+              Разложите ROE на&nbsp;три компонента &mdash; маржу, оборачиваемость и&nbsp;леверидж,
+              чтобы понять, за&nbsp;счёт чего компания генерирует рентабельность собственного капитала.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// DuPont Identity (3-factor)</span><br>
+            <span class="kw">ROE</span> = Margin &times; Turnover &times; Leverage<br><br>
+            <span class="cmt">// где:</span><br>
+            <span class="fn">Margin</span>&nbsp;&nbsp; = NI / Revenue<br>
+            <span class="fn">Turnover</span> = Revenue / Assets<br>
+            <span class="fn">Leverage</span> = Assets / Equity<br><br>
+            <span class="cmt">// Проверка:</span><br>
+            <span class="kw">ROE</span> = NI / Equity = <span class="fn">Margin</span> &times; <span class="fn">Turnover</span> &times; <span class="fn">Leverage</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты компаний</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="sber"
+                        data-ni="1500" data-rev="4500" data-assets="50000" data-equity="6000">
+                  Сбербанк
+                </button>
+                <button type="button" class="preset-btn" data-preset="lukoil"
+                        data-ni="600" data-rev="7500" data-assets="6000" data-equity="3500">
+                  Лукойл
+                </button>
+                <button type="button" class="preset-btn" data-preset="magnit"
+                        data-ni="45" data-rev="2500" data-assets="800" data-equity="200">
+                  Магнит
+                </button>
+              </div>
+            </div>
+
+            <div class="inputs-grid">
+              <!-- Net Income -->
+              <div class="calc-input-group">
+                <label for="inp-ni">Чистая прибыль (NI), млрд</label>
+                <input type="number" id="inp-ni" step="1" value="1500" placeholder="Net Income">
+              </div>
+
+              <!-- Revenue -->
+              <div class="calc-input-group">
+                <label for="inp-rev">Выручка (Revenue), млрд</label>
+                <input type="number" id="inp-rev" step="1" value="4500" placeholder="Revenue">
+              </div>
+
+              <!-- Total Assets -->
+              <div class="calc-input-group">
+                <label for="inp-assets">Совокупные активы, млрд</label>
+                <input type="number" id="inp-assets" step="1" value="50000" placeholder="Total Assets">
+              </div>
+
+              <!-- Equity -->
+              <div class="calc-input-group">
+                <label for="inp-equity">Собственный капитал, млрд</label>
+                <input type="number" id="inp-equity" step="1" value="6000" placeholder="Equity">
+              </div>
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать ROE
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите &laquo;Рассчитать&raquo;
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- ROE result (main) -->
+              <div class="calc-result-card primary">
+                <div class="card-label">ROE (рентабельность собственного капитала)</div>
+                <div class="card-value"><span class="roe-value-animated" id="roe-value">&mdash;</span></div>
+                <div class="card-formula" id="roe-formula"></div>
+              </div>
+
+              <!-- Visual decomposition -->
+              <div class="calc-result-card">
+                <div class="card-label">Декомпозиция Дюпона</div>
+                <div class="decomposition-visual" id="decomp-visual"></div>
+              </div>
+
+              <!-- Three components -->
+              <div class="results-grid">
+                <div class="calc-result-card" id="margin-card">
+                  <div class="card-label">Маржа чистой прибыли</div>
+                  <div class="card-value" id="margin-value">&mdash;</div>
+                  <div class="card-formula" id="margin-desc"></div>
+                </div>
+                <div class="calc-result-card" id="turnover-card">
+                  <div class="card-label">Оборачиваемость активов</div>
+                  <div class="card-value" id="turnover-value">&mdash;</div>
+                  <div class="card-formula" id="turnover-desc"></div>
+                </div>
+                <div class="calc-result-card" id="leverage-card">
+                  <div class="card-label">Финансовый леверидж</div>
+                  <div class="card-value" id="leverage-value">&mdash;</div>
+                  <div class="card-formula" id="leverage-desc"></div>
+                </div>
+              </div>
+
+              <!-- Key driver -->
+              <div id="driver-box" class="driver-highlight"></div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>Компоненты ROE</h4>
+                  <canvas class="chart" id="chart-components" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Вклад факторов (нормализованный)</h4>
+                  <canvas class="chart" id="chart-contribution" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>Анализ Дюпона</strong> (DuPont Analysis) &mdash; метод декомпозиции ROE на три
+             мультипликативных фактора, позволяющий понять источники рентабельности собственного капитала.</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            ROE = (NI / Rev) &times; (Rev / Assets) &times; (Assets / Equity)
+          </p>
+          <ul style="margin-top:var(--space-3);padding-left:var(--space-5);list-style:disc;color:var(--text-secondary);font-size:var(--text-sm);">
+            <li><strong>Маржа</strong> &mdash; эффективность управления затратами (сколько прибыли с рубля выручки)</li>
+            <li><strong>Оборачиваемость</strong> &mdash; эффективность использования активов (сколько выручки на рубль активов)</li>
+            <li><strong>Леверидж</strong> &mdash; степень использования заёмного финансирования (чем выше, тем больше долга)</li>
+            <li>Высокий ROE за счёт левериджа &mdash; сигнал повышенного финансового риска</li>
+          </ul>
+          <p style="margin-top:var(--space-3);">Подробнее: <a href="../lectures/topic-22.html">Лекция 2.2 &mdash; Анализ финансовых коэффициентов</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные пресетов актуальны на март 2026.</strong> Источники:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://e-disclosure.ru" target="_blank" rel="noopener">e-disclosure.ru</a> &mdash; финансовая отчётность по МСФО</li>
+            <li><a href="https://smart-lab.ru" target="_blank" rel="noopener">smart-lab.ru</a> &mdash; агрегированные данные, коэффициенты</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Связанные материалы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="altman-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Z-score Альтмана</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка вероятности банкротства</p>
+            </div>
+          </a>
+          <a href="wacc-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">WACC</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Средневзвешенная стоимость капитала</p>
+            </div>
+          </a>
+          <a href="gordon-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Модель Гордона</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка стоимости акций через дивиденды</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- DOM refs ---
+    var form = {
+      ni:     document.getElementById('inp-ni'),
+      rev:    document.getElementById('inp-rev'),
+      assets: document.getElementById('inp-assets'),
+      equity: document.getElementById('inp-equity')
+    };
+
+    var btnCalculate   = document.getElementById('btn-calculate');
+    var placeholder    = document.getElementById('results-placeholder');
+    var resultsContent = document.getElementById('results-content');
+
+    var componentsChart = null;
+    var contributionChart = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        form.ni.value     = btn.dataset.ni;
+        form.rev.value    = btn.dataset.rev;
+        form.assets.value = btn.dataset.assets;
+        form.equity.value = btn.dataset.equity;
+      });
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function calculate() {
+      var ni     = parseFloat(form.ni.value) || 0;
+      var rev    = parseFloat(form.rev.value) || 0;
+      var assets = parseFloat(form.assets.value) || 0;
+      var equity = parseFloat(form.equity.value) || 0;
+
+      if (rev === 0 || assets === 0 || equity === 0) {
+        alert('Выручка, активы и собственный капитал не могут быть равны 0.');
+        return;
+      }
+
+      // DuPont decomposition
+      var result = CFUtils.calcDuPont({
+        netIncome: ni, revenue: rev, assets: assets, equity: equity
+      });
+
+      var margin   = result.margin;
+      var turnover = result.turnover;
+      var leverage = result.leverage;
+      var roe      = result.roe;
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // ROE
+      var roeEl = document.getElementById('roe-value');
+      roeEl.classList.add('updating');
+      setTimeout(function () {
+        roeEl.textContent = (roe * 100).toFixed(2) + '%';
+        roeEl.classList.remove('updating');
+      }, 150);
+
+      document.getElementById('roe-formula').textContent =
+        (margin * 100).toFixed(2) + '% \u00D7 ' + turnover.toFixed(3) + ' \u00D7 ' + leverage.toFixed(2) +
+        ' = ' + (roe * 100).toFixed(2) + '%';
+
+      // Visual decomposition
+      document.getElementById('decomp-visual').innerHTML =
+        '<div class="decomp-item"><div class="decomp-label">Маржа</div><div class="decomp-value" style="color:#818CF8">' + (margin * 100).toFixed(1) + '%</div></div>' +
+        '<span class="decomp-op">\u00D7</span>' +
+        '<div class="decomp-item"><div class="decomp-label">Оборачиваемость</div><div class="decomp-value" style="color:#FB7185">' + turnover.toFixed(3) + '</div></div>' +
+        '<span class="decomp-op">\u00D7</span>' +
+        '<div class="decomp-item"><div class="decomp-label">Леверидж</div><div class="decomp-value" style="color:#FBBF24">' + leverage.toFixed(2) + 'x</div></div>' +
+        '<span class="decomp-op">=</span>' +
+        '<div class="decomp-item" style="border-color:var(--acc)"><div class="decomp-label">ROE</div><div class="decomp-value" style="color:var(--acc)">' + (roe * 100).toFixed(1) + '%</div></div>';
+
+      // Individual components
+      document.getElementById('margin-value').textContent = (margin * 100).toFixed(2) + '%';
+      document.getElementById('margin-desc').textContent = 'NI / Revenue = ' + ni + ' / ' + rev;
+
+      document.getElementById('turnover-value').textContent = turnover.toFixed(3);
+      document.getElementById('turnover-desc').textContent = 'Revenue / Assets = ' + rev + ' / ' + assets;
+
+      document.getElementById('leverage-value').textContent = leverage.toFixed(2) + 'x';
+      document.getElementById('leverage-desc').textContent = 'Assets / Equity = ' + assets + ' / ' + equity;
+
+      // Key driver identification
+      var driverBox = document.getElementById('driver-box');
+      var logMargin = Math.abs(Math.log(margin > 0 ? margin : 0.001));
+      var logTurnover = Math.abs(Math.log(turnover > 0 ? turnover : 0.001));
+      var logLeverage = Math.abs(Math.log(leverage > 0 ? leverage : 0.001));
+
+      if (leverage > 5) {
+        driverBox.innerHTML = '<strong>Ключевой драйвер: леверидж (' + leverage.toFixed(1) + 'x).</strong> Высокий ROE обеспечен в основном заёмным финансированием. Это сигнал повышенного финансового риска (типично для банков).';
+      } else if (margin > 0.15) {
+        driverBox.innerHTML = '<strong>Ключевой драйвер: маржинальность (' + (margin * 100).toFixed(1) + '%).</strong> Компания генерирует высокую прибыль на рубль выручки. Характерно для сырьевых и технологических компаний.';
+      } else if (turnover > 1.5) {
+        driverBox.innerHTML = '<strong>Ключевой драйвер: оборачиваемость (' + turnover.toFixed(2) + 'x).</strong> Компания эффективно использует активы для генерации выручки. Характерно для ритейла и FMCG.';
+      } else {
+        driverBox.innerHTML = '<strong>Сбалансированная модель.</strong> Все три компонента вносят сопоставимый вклад в ROE. Нет явного перекоса в сторону одного фактора.';
+      }
+
+      // Charts
+      renderCharts(margin, turnover, leverage, roe);
+    }
+
+    function renderCharts(margin, turnover, leverage, roe) {
+      whenChartReady(function () {
+        if (componentsChart) componentsChart.destroy();
+        if (contributionChart) contributionChart.destroy();
+
+        // Horizontal bar: 3 components
+        var barCanvas = document.getElementById('chart-components');
+        componentsChart = new Chart(barCanvas, {
+          type: 'bar',
+          data: {
+            labels: ['Маржа (%)', 'Оборачиваемость (x)', 'Леверидж (x)', 'ROE (%)'],
+            datasets: [{
+              data: [margin * 100, turnover, leverage, roe * 100],
+              backgroundColor: ['#818CF8', '#FB7185', '#FBBF24', '#34D399'],
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) {
+                    var i = ctx.dataIndex;
+                    if (i === 0 || i === 3) return ctx.parsed.x.toFixed(2) + '%';
+                    return ctx.parsed.x.toFixed(3);
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: { color: '#94A3B8' },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              y: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+
+        // Pie: normalized contribution (using log scale for fair comparison)
+        var lnM = Math.abs(Math.log(margin > 0 ? margin : 0.001));
+        var lnT = Math.abs(Math.log(turnover > 0 ? turnover : 0.001));
+        var lnL = Math.abs(Math.log(leverage > 0 ? leverage : 0.001));
+        var total = lnM + lnT + lnL;
+
+        var contCanvas = document.getElementById('chart-contribution');
+        contributionChart = new Chart(contCanvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['Маржа', 'Оборачиваемость', 'Леверидж'],
+            datasets: [{
+              data: [
+                ((lnM / total) * 100).toFixed(1),
+                ((lnT / total) * 100).toFixed(1),
+                ((lnL / total) * 100).toFixed(1)
+              ],
+              backgroundColor: ['#818CF8', '#FB7185', '#FBBF24'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 11 } } },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.label + ': ' + ctx.parsed + '%'; }
+                }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

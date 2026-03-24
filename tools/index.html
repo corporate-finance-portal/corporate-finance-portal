@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Финансовые инструменты — Корпоративные финансы</title>
+  <meta name="description" content="7 финансовых калькуляторов (WACC, NPV, IRR, CAPM, DCF, Гордон, Альтман, DuPont), 59 формул курса и Excel-практикумы.">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Финансовые инструменты — Корпоративные финансы">
+  <meta property="og:description" content="Калькуляторы WACC, NPV, CAPM, DCF, Гордона, Альтмана, DuPont. Справочник формул и Excel-практикумы.">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Финансовые инструменты",
+    "description": "7 калькуляторов, справочник формул и Excel-практикумы для курса корпоративных финансов.",
+    "isPartOf": {
+      "@type": "Course",
+      "name": "Корпоративные финансы",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "Московский университет «Синергия»"
+      }
+    },
+    "inLanguage": "ru"
+  }
+  </script>
+</head>
+<body data-depth="1" data-page="tools-index">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Tools Catalog Header
+         ============================================================ -->
+    <section class="hero" aria-label="Каталог инструментов">
+      <div class="container">
+
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+          <a href="../index.html" style="color: var(--text-muted); text-decoration: none;">Главная</a>
+          <span aria-hidden="true">/</span>
+          <span style="color: var(--acc);">Инструменты</span>
+        </nav>
+
+        <h1>
+          Финансовые <span class="highlight">инструменты</span>
+        </h1>
+
+        <p class="subtitle">
+          7 интерактивных калькуляторов, справочник из 59 формул курса
+          и 6 Excel-практикумов с пошаговыми инструкциями.
+        </p>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         CALCULATORS
+         ============================================================ -->
+    <section class="section reveal" aria-label="Калькуляторы">
+      <div class="container">
+
+        <div class="section-header" style="text-align: left; max-width: 100%;">
+          <span class="section-tag">Интерактивные</span>
+          <h2>Калькуляторы</h2>
+          <p style="text-align: left;">Введите параметры — получите мгновенный расчёт с визуализацией и разбивкой.</p>
+        </div>
+
+        <div class="card-grid">
+
+          <!-- WACC -->
+          <a href="wacc-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">WACC</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Средневзвешенная стоимость капитала. Рассчитайте WACC с учётом стоимости долга, собственного капитала и налогового щита.
+            </div>
+          </a>
+
+          <!-- NPV / IRR -->
+          <a href="npv-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">NPV / IRR</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Чистая приведённая стоимость и внутренняя норма доходности. Оценка эффективности инвестиционных проектов.
+            </div>
+          </a>
+
+          <!-- CAPM -->
+          <a href="capm-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">CAPM</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Модель оценки капитальных активов. Расчёт требуемой доходности с учётом безрисковой ставки и бета-коэффициента.
+            </div>
+          </a>
+
+          <!-- DCF -->
+          <a href="dcf-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">DCF</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Дисконтированные денежные потоки. Оценка стоимости компании на основе прогнозируемых FCF и терминальной стоимости.
+            </div>
+          </a>
+
+          <!-- Gordon -->
+          <a href="gordon-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">Модель Гордона</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Оценка акций через дивиденды. Модель постоянного роста для определения справедливой стоимости.
+            </div>
+          </a>
+
+          <!-- Altman Z-score -->
+          <a href="altman-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">Z-score Альтмана</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Прогнозирование банкротства. Мультифакторная модель оценки финансовой устойчивости компании.
+            </div>
+          </a>
+
+          <!-- DuPont -->
+          <a href="dupont-calculator.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">DuPont</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              Декомпозиция рентабельности. Трёхфакторный анализ ROE: маржинальность, оборачиваемость, леверидж.
+            </div>
+          </a>
+
+        </div><!-- /.card-grid -->
+
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         REFERENCE MATERIALS
+         ============================================================ -->
+    <section class="section-alt reveal" aria-label="Справочные материалы">
+      <div class="container">
+
+        <div class="section-header" style="text-align: left; max-width: 100%;">
+          <span class="section-tag">Справка</span>
+          <h2>Справочные материалы</h2>
+          <p style="text-align: left;">Все формулы курса в одном месте и практикумы для работы в Excel.</p>
+        </div>
+
+        <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));">
+
+          <!-- Formulas -->
+          <a href="formulas.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">Формулы</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              59 формул курса с мгновенным поиском. Все ключевые формулы корпоративных финансов: TVM, CAPM, WACC, NPV, IRR, DCF, DuPont, Альтман и другие.
+            </div>
+            <div class="card-footer">
+              <span class="tag" style="margin: 0;">59 формул</span>
+            </div>
+          </a>
+
+          <!-- Excel Labs -->
+          <a href="excel-labs.html" class="card" style="text-decoration: none;">
+            <div class="card-header">
+              <div class="card-title">Excel-практикумы</div>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </div>
+            <div class="card-body">
+              6 практикумов с пошаговыми инструкциями. Научитесь строить финансовые модели, рассчитывать WACC и NPV, проводить анализ в Excel.
+            </div>
+            <div class="card-footer">
+              <span class="tag" style="margin: 0;">6 практикумов</span>
+            </div>
+          </a>
+
+        </div><!-- /.card-grid -->
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

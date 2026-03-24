@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор CAPM — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор CAPM с визуализацией компонентов стоимости собственного капитала, анализом чувствительности к бета и пресетами российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- CAPM Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'CAPM.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+
+    .ke-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .ke-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .sensitivity-section {
+      margin-top: var(--space-8);
+    }
+    .sensitivity-slider {
+      width: 100%;
+      margin: var(--space-4) 0;
+      accent-color: var(--acc);
+    }
+    .sensitivity-chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+    }
+
+    .interpretation-box {
+      padding: var(--space-4);
+      border-radius: var(--radius);
+      font-size: var(--text-sm);
+      margin-top: var(--space-3);
+    }
+    .interpretation-box.low { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: #34D399; }
+    .interpretation-box.medium { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #FBBF24; }
+    .interpretation-box.high { background: rgba(251,113,133,0.1); border: 1px solid rgba(251,113,133,0.3); color: #FB7185; }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-capm-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор CAPM">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Калькулятор CAPM</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Калькулятор <span class="text-gradient">CAPM</span>
+            </h1>
+
+            <p class="subtitle">
+              Рассчитайте стоимость собственного капитала по&nbsp;модели CAPM
+              с&nbsp;визуализацией компонентов и&nbsp;анализом чувствительности к&nbsp;бета-коэффициенту.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Capital Asset Pricing Model</span><br>
+            <span class="kw">K<sub>e</sub></span> = R<sub>f</sub> + &beta; &times; ERP + CRP<br><br>
+            <span class="cmt">// где:</span><br>
+            <span class="fn">R<sub>f</sub></span>&nbsp; = безрисковая ставка<br>
+            <span class="fn">&beta;</span>&nbsp;&nbsp; = бета-коэффициент актива<br>
+            <span class="fn">ERP</span> = премия за рыночный риск<br>
+            <span class="fn">CRP</span> = страновая премия за риск<br><br>
+            <span class="cmt">// &beta; &gt; 1 &rarr; выше рынка</span><br>
+            <span class="cmt">// &beta; &lt; 1 &rarr; ниже рынка</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты компаний</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="lukoil"
+                        data-rf="14.6" data-beta="0.95" data-erp="6.0" data-crp="0">
+                  Лукойл
+                </button>
+                <button type="button" class="preset-btn" data-preset="sber"
+                        data-rf="14.6" data-beta="1.15" data-erp="6.0" data-crp="0">
+                  Сбербанк
+                </button>
+                <button type="button" class="preset-btn" data-preset="yandex"
+                        data-rf="14.6" data-beta="1.40" data-erp="6.0" data-crp="0">
+                  Яндекс
+                </button>
+              </div>
+            </div>
+
+            <!-- Rf -->
+            <div class="calc-input-group">
+              <label for="inp-rf">Безрисковая ставка (R<sub>f</sub>), %</label>
+              <input type="number" id="inp-rf" min="0" max="100" step="0.1" value="14.6" placeholder="напр. 14.6">
+              <span class="hint">Доходность ОФЗ 10 лет (март 2026)</span>
+            </div>
+
+            <!-- Beta -->
+            <div class="calc-input-group">
+              <label for="inp-beta">Бета-коэффициент (&beta;)</label>
+              <input type="number" id="inp-beta" min="-2" max="5" step="0.01" value="0.95" placeholder="напр. 0.95">
+              <span class="hint">&beta; = 1 &mdash; рыночный риск, &beta; &gt; 1 &mdash; выше рынка</span>
+            </div>
+
+            <!-- ERP -->
+            <div class="calc-input-group">
+              <label for="inp-erp">Рыночная премия за риск (ERP), %</label>
+              <input type="number" id="inp-erp" min="0" max="50" step="0.1" value="6.0" placeholder="напр. 6.0">
+              <span class="hint">Equity Risk Premium (Damodaran, 2026)</span>
+            </div>
+
+            <!-- CRP -->
+            <div class="calc-input-group">
+              <label for="inp-crp">Страновая премия за риск (CRP), %</label>
+              <input type="number" id="inp-crp" min="0" max="50" step="0.1" value="0" placeholder="0 если учтена в Rf">
+              <span class="hint">Дополнительная премия за страновой риск (опционально)</span>
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать K<sub>e</sub>
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите &laquo;Рассчитать&raquo;
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- Ke result (main) -->
+              <div class="calc-result-card primary">
+                <div class="card-label">K<sub>e</sub> (стоимость собственного капитала)</div>
+                <div class="card-value"><span class="ke-value-animated" id="ke-value">&mdash;</span></div>
+                <div class="card-formula" id="ke-formula"></div>
+              </div>
+
+              <!-- Components breakdown -->
+              <div class="calc-result-card">
+                <div class="card-label">Декомпозиция K<sub>e</sub></div>
+                <div class="card-formula" id="ke-components"></div>
+              </div>
+
+              <!-- Interpretation -->
+              <div class="calc-result-card">
+                <div class="card-label">Интерпретация</div>
+                <div id="interpretation-box" class="interpretation-box low"></div>
+              </div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>Компоненты K<sub>e</sub></h4>
+                  <canvas class="chart" id="chart-components" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Чувствительность K<sub>e</sub> к &beta;</h4>
+                  <canvas class="chart" id="chart-sensitivity" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>CAPM</strong> (Capital Asset Pricing Model) &mdash; модель оценки капитальных активов.
+             Определяет требуемую доходность собственного капитала как функцию систематического риска (&beta;).</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            K<sub>e</sub> = R<sub>f</sub> + &beta; &times; (R<sub>m</sub> - R<sub>f</sub>) + CRP
+          </p>
+          <ul style="margin-top:var(--space-3);padding-left:var(--space-5);list-style:disc;color:var(--text-secondary);font-size:var(--text-sm);">
+            <li><strong>&beta; = 0</strong> &mdash; безрисковый актив (доходность = R<sub>f</sub>)</li>
+            <li><strong>&beta; = 1</strong> &mdash; актив движется вместе с рынком</li>
+            <li><strong>&beta; &gt; 1</strong> &mdash; актив более волатилен, чем рынок (высокий риск)</li>
+            <li><strong>&beta; &lt; 1</strong> &mdash; актив менее волатилен (защитный актив)</li>
+          </ul>
+          <p style="margin-top:var(--space-3);">Подробнее: <a href="../lectures/topic-42.html">Лекция 4.2 &mdash; Стоимость капитала и WACC</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные актуальны на март 2026.</strong> Источники:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://moex.com" target="_blank" rel="noopener">moex.com</a> &mdash; доходность ОФЗ (безрисковая ставка)</li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran Online</a> &mdash; ERP, бета по отраслям, CRP</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Связанные материалы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="wacc-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">WACC</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Средневзвешенная стоимость капитала (использует CAPM)</p>
+            </div>
+          </a>
+          <a href="gordon-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Модель Гордона</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка стоимости акций через дивиденды</p>
+            </div>
+          </a>
+          <a href="dcf-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">DCF</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Дисконтированные денежные потоки</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- DOM refs ---
+    var form = {
+      rf:   document.getElementById('inp-rf'),
+      beta: document.getElementById('inp-beta'),
+      erp:  document.getElementById('inp-erp'),
+      crp:  document.getElementById('inp-crp')
+    };
+
+    var btnCalculate   = document.getElementById('btn-calculate');
+    var placeholder    = document.getElementById('results-placeholder');
+    var resultsContent = document.getElementById('results-content');
+
+    var componentsChart = null;
+    var sensitivityChart = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        form.rf.value   = btn.dataset.rf;
+        form.beta.value = btn.dataset.beta;
+        form.erp.value  = btn.dataset.erp;
+        form.crp.value  = btn.dataset.crp;
+      });
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function calculate() {
+      var rf   = parseFloat(form.rf.value) / 100;
+      var beta = parseFloat(form.beta.value);
+      var erp  = parseFloat(form.erp.value) / 100;
+      var crp  = parseFloat(form.crp.value) / 100 || 0;
+
+      if (isNaN(rf) || isNaN(beta) || isNaN(erp)) return;
+
+      var ke = CFUtils.calcCAPM({ rf: rf, beta: beta, erp: erp }) + crp;
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // Ke value
+      var keEl = document.getElementById('ke-value');
+      keEl.classList.add('updating');
+      setTimeout(function () {
+        keEl.textContent = (ke * 100).toFixed(2) + '%';
+        keEl.classList.remove('updating');
+      }, 150);
+
+      // Formula
+      var rfPct = (rf * 100).toFixed(1);
+      var erpPct = (erp * 100).toFixed(1);
+      var crpPct = (crp * 100).toFixed(1);
+      var betaRiskPremium = (beta * erp * 100).toFixed(2);
+
+      var formulaStr = rfPct + '% + ' + beta.toFixed(2) + ' \u00D7 ' + erpPct + '%';
+      if (crp > 0) formulaStr += ' + ' + crpPct + '%';
+      formulaStr += ' = ' + (ke * 100).toFixed(2) + '%';
+      document.getElementById('ke-formula').textContent = formulaStr;
+
+      // Components
+      var compStr = 'R\u2099 = ' + rfPct + '% | \u03B2 \u00D7 ERP = ' + betaRiskPremium + '%';
+      if (crp > 0) compStr += ' | CRP = ' + crpPct + '%';
+      document.getElementById('ke-components').textContent = compStr;
+
+      // Interpretation
+      var interpBox = document.getElementById('interpretation-box');
+      interpBox.className = 'interpretation-box';
+      if (ke < 0.15) {
+        interpBox.classList.add('low');
+        interpBox.innerHTML = '<strong>Низкая стоимость капитала.</strong> Компания воспринимается как защитный актив с умеренным риском. Инвесторы требуют относительно небольшую премию.';
+      } else if (ke < 0.25) {
+        interpBox.classList.add('medium');
+        interpBox.innerHTML = '<strong>Умеренная стоимость капитала.</strong> Типичный уровень для крупных компаний на развивающихся рынках. Баланс между риском и доходностью.';
+      } else {
+        interpBox.classList.add('high');
+        interpBox.innerHTML = '<strong>Высокая стоимость капитала.</strong> Инвесторы требуют значительную премию за риск. Характерно для волатильных отраслей или компаний роста.';
+      }
+
+      // Charts
+      renderCharts(rf, beta, erp, crp, ke);
+    }
+
+    function renderCharts(rf, beta, erp, crp, ke) {
+      whenChartReady(function () {
+        if (componentsChart) componentsChart.destroy();
+        if (sensitivityChart) sensitivityChart.destroy();
+
+        // Bar: components of Ke
+        var barLabels = ['R\u2099 (безрисковая)', '\u03B2 \u00D7 ERP'];
+        var barData = [rf * 100, beta * erp * 100];
+        var barColors = ['#818CF8', '#FB7185'];
+
+        if (crp > 0) {
+          barLabels.push('CRP (страновая)');
+          barData.push(crp * 100);
+          barColors.push('#FBBF24');
+        }
+
+        var barCanvas = document.getElementById('chart-components');
+        componentsChart = new Chart(barCanvas, {
+          type: 'bar',
+          data: {
+            labels: barLabels,
+            datasets: [{
+              data: barData,
+              backgroundColor: barColors,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.parsed.x.toFixed(2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              x: {
+                beginAtZero: true,
+                ticks: { color: '#94A3B8', callback: function (v) { return v + '%'; } },
+                grid: { color: 'rgba(148,163,184,0.1)' },
+                stacked: true
+              },
+              y: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+
+        // Line: Ke vs Beta sensitivity
+        var betas = [];
+        var keValues = [];
+        for (var b = 0; b <= 2.5; b += 0.1) {
+          betas.push(b.toFixed(1));
+          keValues.push((rf + b * erp + crp) * 100);
+        }
+
+        var sensCanvas = document.getElementById('chart-sensitivity');
+        sensitivityChart = new Chart(sensCanvas, {
+          type: 'line',
+          data: {
+            labels: betas,
+            datasets: [{
+              label: 'K\u2091, %',
+              data: keValues,
+              borderColor: '#818CF8',
+              backgroundColor: 'rgba(129,140,248,0.1)',
+              fill: true,
+              tension: 0.2,
+              pointRadius: 0,
+              pointHoverRadius: 5
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: function (items) { return '\u03B2 = ' + items[0].label; },
+                  label: function (ctx) { return 'K\u2091 = ' + ctx.parsed.y.toFixed(2) + '%'; }
+                }
+              },
+              annotation: {
+                annotations: {
+                  currentBeta: {
+                    type: 'line',
+                    xMin: beta.toFixed(1),
+                    xMax: beta.toFixed(1),
+                    borderColor: '#FB7185',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    label: {
+                      display: true,
+                      content: '\u03B2 = ' + beta.toFixed(2),
+                      position: 'start',
+                      color: '#FB7185',
+                      font: { size: 11 }
+                    }
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: { color: '#94A3B8', callback: function (v) { return v.toFixed(0) + '%'; } },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                title: { display: true, text: '\u03B2 (бета)', color: '#94A3B8' },
+                ticks: { color: '#94A3B8', maxTicksLimit: 10 },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

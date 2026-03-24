@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кейс: FTX — Крах криптоимперии ($32 млрд → $0) — Корпоративные финансы</title>
+  <meta name="description" content="Кейс FTX: крупнейшее мошенничество в истории криптоиндустрии. $9 млрд украденных средств, конфликт интересов, провал corporate governance.">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Кейс: FTX — Крах криптоимперии">
+  <meta property="og:description" content="Оценка $32 млрд обнулилась за 10 дней: конфликт интересов, мошенничество и провал корпоративного управления.">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="case-ftx-collapse">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Split Layout
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Кейс FTX">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div class="hero-content">
+            <nav aria-label="Хлебные крошки" style="margin-bottom: var(--space-4);">
+              <span style="font-family: var(--ff-mono); font-size: var(--text-xs); color: var(--text-muted);">
+                <a href="../cases/" style="color: var(--text-muted); text-decoration: none;">Кейсы</a>
+                <span aria-hidden="true" style="margin: 0 var(--space-2);">/</span>
+                <span style="color: var(--acc);">FTX</span>
+              </span>
+            </nav>
+
+            <span class="badge badge-coral" style="margin-bottom: var(--space-4); display: inline-flex;">Крипто / Мошенничество</span>
+
+            <h1 style="font-size: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);">
+              FTX — <span class="highlight">крах криптоимперии</span> ($32 млрд &rarr; $0)
+            </h1>
+
+            <p class="subtitle" style="max-width: 540px;">
+              Крупнейшее мошенничество в истории криптоиндустрии: $9 млрд украденных средств, конфликт интересов и провал корпоративного управления
+            </p>
+          </div>
+
+          <!-- Right: Key Metrics Card -->
+          <div>
+            <div class="card-static" style="padding: var(--space-6);">
+              <div style="font-family: var(--ff-mono); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: var(--space-5);">
+                Ключевые показатели
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5);">
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Пиковая оценка</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--acc);">$32 млрд</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Украдено</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--coral);">$9 млрд</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Компании</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--amber);">100+</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">До краха</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--coral);">10 дней</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         CASE DESCRIPTION
+         ============================================================ -->
+    <section class="section reveal" aria-label="Описание кейса">
+      <div class="container">
+        <div class="lecture-content">
+
+          <h2>Описание ситуации</h2>
+          <p>
+            FTX -- третья по объёмам криптовалютная биржа в мире, основанная Сэмом Бэнкманом-Фридом (SBF) в 2019 году. К январю 2022 года оценка компании достигла <strong>$32 млрд</strong> после раунда финансирования от Sequoia, SoftBank, Tiger Global и других топ-фондов. 2 ноября 2022 года CoinDesk опубликовал расследование о балансе Alameda Research -- аффилированной торговой фирме SBF. Через 10 дней FTX подала на банкротство.
+          </p>
+
+          <div class="box-info">
+            <strong>Цель кейса:</strong> проанализировать конфликт интересов (биржа + торговая фирма), провал корпоративного управления (corporate governance), механику мошенничества и уроки для risk management в финансовой индустрии.
+          </div>
+
+
+          <!-- ============================================================
+               TIMELINE
+               ============================================================ -->
+          <h2>Хронология краха</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Дата</th>
+                  <th>Событие</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Май 2019</td>
+                  <td>Основание FTX. Alameda Research (торговая фирма SBF) -- первый маркет-мейкер</td>
+                </tr>
+                <tr>
+                  <td>Янв 2022</td>
+                  <td>Раунд Series C: оценка $32 млрд. Инвесторы: Sequoia, SoftBank, Tiger Global</td>
+                </tr>
+                <tr>
+                  <td>2 ноя 2022</td>
+                  <td>CoinDesk публикует баланс Alameda: $14,6 млрд активов, из них $5,8 млрд в токене FTT</td>
+                </tr>
+                <tr>
+                  <td>6 ноя 2022</td>
+                  <td>Binance (CZ) объявляет о продаже FTT на $580 млн. Начинается банк-ран</td>
+                </tr>
+                <tr>
+                  <td>8 ноя 2022</td>
+                  <td>Binance объявляет о покупке FTX, но через 24 часа отказывается после due diligence</td>
+                </tr>
+                <tr>
+                  <td>11 ноя 2022</td>
+                  <td>FTX подаёт заявление о банкротстве (Chapter 11). SBF уходит с поста CEO</td>
+                </tr>
+                <tr>
+                  <td>Дек 2022</td>
+                  <td>SBF арестован на Багамах по запросу США</td>
+                </tr>
+                <tr>
+                  <td>Ноя 2023</td>
+                  <td>SBF признан виновным по 7 пунктам обвинения. Приговор: 25 лет</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <!-- ============================================================
+               ANALYSIS
+               ============================================================ -->
+          <h2>Анализ: механика мошенничества</h2>
+
+          <div class="box-example reveal">
+            <h4>1. Конфликт интересов: FTX + Alameda</h4>
+            <p>Центральная проблема -- совмещение биржи (FTX) и торговой фирмы (Alameda Research) под управлением одного человека:</p>
+            <ul style="list-style: disc; padding-left: var(--space-5); margin-top: var(--space-3);">
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;">Alameda имела секретный бэкдор для заимствования клиентских средств FTX без ограничений</li>
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;">Alameda получала льготные условия торговли и пропускала ликвидации</li>
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;">Токен FTT, созданный FTX, использовался как залог в Alameda -- циклическая зависимость</li>
+            </ul>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>2. Куда ушли $9 млрд</h4>
+            <p>Ликвидатор Джон Рэй III (ранее управлял банкротством Enron) назвал FTX "полным провалом корпоративного контроля". Средства были направлены на:</p>
+            <ul style="list-style: disc; padding-left: var(--space-5); margin-top: var(--space-3);">
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;"><strong>$3,2 млрд</strong> -- торговые убытки Alameda Research</li>
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;"><strong>$2,2 млрд</strong> -- венчурные инвестиции (включая стадионы, недвижимость, политические донаты)</li>
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;"><strong>$1,5 млрд</strong> -- обслуживание долга и процентные платежи</li>
+              <li style="margin-bottom: var(--space-2); color: var(--text-secondary); line-height: 1.7;"><strong>$2,1 млрд</strong> -- прочие расходы, займы сотрудникам, покупка недвижимости на Багамах</li>
+            </ul>
+          </div>
+
+          <div class="box-warning reveal">
+            <strong>Красные флаги:</strong> отсутствие CFO, отсутствие независимого совета директоров, аудитор -- малоизвестная фирма (Prager Metis), бухгалтерия велась в QuickBooks, отсутствие разделения клиентских и корпоративных средств.
+          </div>
+
+          <div class="box-example reveal">
+            <h4>3. Провал корпоративного управления</h4>
+            <div class="data-table-wrapper" style="margin-top: var(--space-4);">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Элемент governance</th>
+                    <th>Стандарт</th>
+                    <th>FTX</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Совет директоров</td>
+                    <td>Независимые директора, комитеты</td>
+                    <td style="color: var(--error);">Отсутствовал</td>
+                  </tr>
+                  <tr>
+                    <td>CFO / Финансовый контроль</td>
+                    <td>Профессиональный CFO, внутренний аудит</td>
+                    <td style="color: var(--error);">Не было CFO</td>
+                  </tr>
+                  <tr>
+                    <td>Аудитор</td>
+                    <td>Big 4 или крупная аудиторская фирма</td>
+                    <td style="color: var(--error);">Prager Metis (мелкая)</td>
+                  </tr>
+                  <tr>
+                    <td>Разделение средств</td>
+                    <td>Клиентские средства на отдельных счетах</td>
+                    <td style="color: var(--error);">Смешаны с корпоративными</td>
+                  </tr>
+                  <tr>
+                    <td>Risk management</td>
+                    <td>Лимиты, контроль, compliance</td>
+                    <td style="color: var(--error);">Бэкдор для Alameda</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <!-- ============================================================
+               CHARTS
+               ============================================================ -->
+          <h2>Визуализация</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin: var(--space-6) 0;" class="reveal">
+            <div class="card-static" style="padding: var(--space-5);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+                Куда ушли $9 млрд клиентских средств
+              </div>
+              <canvas id="funds-chart" class="chart" width="400" height="280"></canvas>
+            </div>
+            <div class="card-static" style="padding: var(--space-5);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+                Хронология оценки FTX ($млрд)
+              </div>
+              <canvas id="valuation-chart" class="chart" width="400" height="280"></canvas>
+            </div>
+          </div>
+
+
+          <!-- ============================================================
+               CONCLUSIONS
+               ============================================================ -->
+          <h2>Выводы</h2>
+
+          <div class="box-key reveal">
+            <ul style="list-style: disc; padding-left: var(--space-5);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                <strong>Конфликт интересов</strong> (биржа + торговая фирма) -- классический fraud-паттерн: тот, кто управляет чужими деньгами, не должен торговать ими для собственной выгоды.
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                <strong>Отсутствие governance</strong> -- главная причина масштаба мошенничества. Независимый совет директоров и Big 4 аудитор могли предотвратить катастрофу.
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                <strong>Циклические активы</strong> (токен FTT как залог) создают иллюзию стоимости: при банк-ране залог обесценивается одновременно с обязательствами.
+              </li>
+              <li style="color: var(--text-primary); line-height: 1.7;">
+                <strong>Due diligence</strong> инвесторов (Sequoia, SoftBank) был поверхностным: венчурные фонды вложили $1,8 млрд без проверки базовых элементов governance.
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- ============================================================
+               DISCUSSION QUESTIONS
+               ============================================================ -->
+          <h2>Вопросы для обсуждения</h2>
+
+          <div class="box-info reveal">
+            <ol style="list-style: decimal; padding-left: var(--space-5);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Сравните FTX с крахом Enron (2001). Какие общие паттерны мошенничества вы видите? Чем отличается механика?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Почему Sequoia и SoftBank не обнаружили проблемы при due diligence? Какие проверки должны были быть проведены?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Как регулирование крипторынка могло бы предотвратить крах FTX? Какие элементы банковского регулирования следует применить к криптобиржам?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Оцените роль токена FTT в создании иллюзии стоимости. Как это соотносится с концепцией циклических залогов (circular collateral)?
+              </li>
+              <li style="color: var(--text-secondary); line-height: 1.7;">
+                Можно ли считать CZ (Binance) "спусковым крючком" краха? Обсудите роль конкурентов как рыночного дисциплинарного механизма.
+              </li>
+            </ol>
+          </div>
+
+
+          <!-- ============================================================
+               RELATED CONTENT
+               ============================================================ -->
+          <h2>Связанные материалы</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin: var(--space-5) 0;" class="reveal">
+            <a href="svb-collapse.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Кейс</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">SVB — Банковский кризис 2023</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Duration mismatch и банк-ран</p>
+            </a>
+            <a href="disney-fox.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Кейс</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">Disney / 21st Century Fox</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Стратегическое M&A за $71,3 млрд</p>
+            </a>
+          </div>
+
+
+          <!-- ============================================================
+               DISCLAIMER
+               ============================================================ -->
+          <div class="box-warning reveal">
+            Данные основаны на материалах SEC, Министерства юстиции США, отчётах ликвидаторов FTX (John Ray III) и медиа-источниках (CoinDesk, Bloomberg, WSJ). Используются исключительно в учебных целях. Актуальны на март 2026.
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div><!-- /.container -->
+    </section>
+
+
+    <!-- ============================================================
+         CASE NAVIGATION: Prev / Next
+         ============================================================ -->
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="lecture-content">
+          <nav class="nav-lecture" aria-label="Навигация по кейсам">
+            <a href="svb-collapse.html" aria-label="Предыдущий кейс">
+              <span class="label">Предыдущий кейс</span>
+              <span class="title">SVB — Банковский кризис 2023</span>
+            </a>
+            <a href="disney-fox.html" aria-label="Следующий кейс">
+              <span class="label">Следующий кейс</span>
+              <span class="title">Disney / 21st Century Fox — M&A</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <!-- Page-specific: Charts -->
+  <script>
+    document.addEventListener('chartjs:ready', function () {
+      var chartDefaults = {
+        color: '#94A3B8',
+        borderColor: 'rgba(255,255,255,0.08)',
+        font: { family: "'Inter', system-ui, sans-serif" }
+      };
+
+      Chart.defaults.color = chartDefaults.color;
+      Chart.defaults.borderColor = chartDefaults.borderColor;
+
+      // ---- Where $9B Went (Doughnut) ----
+      var fundsCtx = document.getElementById('funds-chart');
+      if (fundsCtx) {
+        new Chart(fundsCtx.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: [
+              'Торговые убытки Alameda ($3,2 млрд)',
+              'Венчурные инвестиции ($2,2 млрд)',
+              'Обслуживание долга ($1,5 млрд)',
+              'Прочее ($2,1 млрд)'
+            ],
+            datasets: [{
+              data: [3.2, 2.2, 1.5, 2.1],
+              backgroundColor: [
+                'rgba(251, 113, 133, 0.7)',
+                'rgba(129, 140, 248, 0.7)',
+                'rgba(251, 191, 36, 0.7)',
+                'rgba(148, 163, 184, 0.5)'
+              ],
+              borderColor: ['#FB7185', '#818CF8', '#FBBF24', '#94A3B8'],
+              borderWidth: 2,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '55%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 12, usePointStyle: true, pointStyleWidth: 10, font: { size: 10 } }
+              }
+            }
+          }
+        });
+      }
+
+      // ---- Valuation Timeline ----
+      var valCtx = document.getElementById('valuation-chart');
+      if (valCtx) {
+        new Chart(valCtx.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Июль 2021', 'Окт 2021', 'Янв 2022', 'Ноя 2022', 'Банкротство'],
+            datasets: [{
+              label: 'Оценка ($млрд)',
+              data: [18, 25, 32, 8, 0],
+              backgroundColor: [
+                'rgba(129, 140, 248, 0.6)',
+                'rgba(129, 140, 248, 0.6)',
+                'rgba(52, 211, 153, 0.6)',
+                'rgba(251, 191, 36, 0.6)',
+                'rgba(251, 113, 133, 0.6)'
+              ],
+              borderColor: ['#818CF8', '#818CF8', '#34D399', '#FBBF24', '#FB7185'],
+              borderWidth: 1,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { callback: function (v) { return '$' + v + ' млрд'; } }
+              },
+              x: { grid: { display: false } }
+            }
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

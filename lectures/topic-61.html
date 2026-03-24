@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 6.1. Оценка стоимости компании — Корпоративные финансы</title>
+  <meta name="description" content="Оценка стоимости компании: DCF, FCFF/FCFE, терминальная стоимость, мультипликаторы P/E и EV/EBITDA, EVA, сравнительная оценка">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 6.1. Оценка стоимости компании">
+  <meta property="og:description" content="Метод DCF, свободные денежные потоки FCFF и FCFE, терминальная стоимость, мультипликаторы, EVA и MVA — теория и примеры расчётов">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-61">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 6</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 6.1</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Оценка стоимости<br>компании
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Три подхода к оценке бизнеса: доходный (DCF), сравнительный (мультипликаторы)
+              и затратный. Как рассчитать справедливую стоимость компании.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>6. Оценка бизнеса и финансовый анализ</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">ОПК-2, ОПК-4, ОПК-5</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 1.2 (TVM), Тема 2.2 (CAPM), Тема 4.2 (WACC)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Зачем оценивать стоимость ===== -->
+          <h2 id="s1" class="reveal">1. Зачем оценивать стоимость компании</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Оценка стоимости компании (Business Valuation)</strong> — определение справедливой рыночной стоимости бизнеса или его доли на основе финансовых данных и прогнозов.</p>
+          </div>
+
+          <p class="reveal">Ситуации, требующие оценки:</p>
+          <ul class="reveal">
+            <li><strong>M&amp;A</strong> — покупка/продажа бизнеса;</li>
+            <li><strong>IPO</strong> — определение цены размещения акций;</li>
+            <li><strong>Привлечение инвестиций</strong> — обоснование стоимости для инвесторов;</li>
+            <li><strong>Судебные споры</strong> — раздел имущества, банкротство;</li>
+            <li><strong>Управление стоимостью (VBM)</strong> — стратегические решения менеджмента.</li>
+          </ul>
+
+          <!-- ===== 2. Три подхода к оценке ===== -->
+          <h2 id="s2" class="reveal">2. Три подхода к оценке</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr><th>Подход</th><th>Суть</th><th>Когда применять</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Доходный</strong></td><td>Стоимость = PV будущих доходов</td><td>Действующий бизнес с прогнозируемыми потоками</td></tr>
+                <tr><td><strong>Сравнительный</strong></td><td>Стоимость по аналогии с похожими компаниями</td><td>Есть публичные аналоги или сделки</td></tr>
+                <tr><td><strong>Затратный</strong></td><td>Стоимость = рыночная стоимость активов - обязательства</td><td>Ликвидация, имущественные компании</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="box-info reveal">
+            <p style="margin-bottom:0;">В корпоративных финансах <strong>доходный подход (DCF)</strong> считается основным, сравнительный — проверочным.</p>
+          </div>
+
+          <!-- ===== 3. Метод DCF ===== -->
+          <h2 id="s3" class="reveal">3. Метод DCF (Discounted Cash Flow)</h2>
+
+          <p class="reveal">DCF — ключевой метод оценки. Стоимость компании равна приведённой стоимости всех будущих свободных денежных потоков.</p>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <div class="math-block" style="font-size: var(--text-xl);">$$V_0 = \sum_{t=1}^{n} \frac{FCF_t}{(1 + WACC)^t} + \frac{TV_n}{(1 + WACC)^n}$$</div>
+            <p>$V_0$ — Enterprise Value; $FCF_t$ — свободный поток в году $t$; $WACC$ — ставка дисконтирования; $TV_n$ — терминальная стоимость; $n$ — прогнозный период (5-10 лет).</p>
+          </div>
+
+          <h3 id="s3-1" class="reveal">3.1. Свободный денежный поток (FCF)</h3>
+
+          <div class="box-formula reveal">
+            <p><strong>FCFF (Free Cash Flow to Firm)</strong> — поток для всех поставщиков капитала:</p>
+            <div class="math-block">$$FCFF = EBIT \times (1 - T) + DA - CAPEX - \Delta NWC$$</div>
+            <p style="margin-bottom:0;">$EBIT$ — прибыль до процентов и налогов; $T$ — ставка налога; $DA$ — амортизация; $CAPEX$ — капитальные затраты; $\Delta NWC$ — изменение чистого оборотного капитала.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>FCFE (Free Cash Flow to Equity)</strong> — поток только для акционеров:</p>
+            <div class="math-block">$$FCFE = FCFF - \text{Проценты} \times (1 - T) + \Delta \text{Долг}$$</div>
+          </div>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th>Поток</th><th>Ставка дисконтирования</th><th>Результат</th></tr></thead>
+              <tbody>
+                <tr><td>FCFF</td><td>WACC</td><td>Enterprise Value (EV)</td></tr>
+                <tr><td>FCFE</td><td>$k_e$ (стоимость собственного капитала)</td><td>Equity Value</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s3-2" class="reveal">3.2. Терминальная стоимость (Terminal Value)</h3>
+
+          <p class="reveal">Терминальная стоимость отражает стоимость бизнеса после прогнозного периода. Обычно составляет <strong>60-80%</strong> от общей стоимости компании.</p>
+
+          <div class="box-formula reveal">
+            <p><strong>Метод 1 — модель Гордона (Gordon Growth Model):</strong></p>
+            <div class="math-block">$$TV_n = \frac{FCF_{n+1}}{WACC - g} = \frac{FCF_n \times (1 + g)}{WACC - g}$$</div>
+            <p style="margin-bottom:0;">$g$ — долгосрочный темп роста FCF (обычно 2-3%, не выше темпа роста ВВП).</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Метод 2 — мультипликатор выхода (Exit Multiple):</strong></p>
+            <div class="math-block">$$TV_n = EBITDA_n \times \text{EV/EBITDA}_{\text{отрасль}}$$</div>
+          </div>
+
+          <!-- ===== 4. Сравнительная оценка ===== -->
+          <h2 id="s4" class="reveal">4. Сравнительная оценка (мультипликаторы)</h2>
+
+          <p class="reveal">Метод сравнительной оценки определяет стоимость через соотношения цены и финансовых показателей компаний-аналогов.</p>
+
+          <h3 id="s4-1" class="reveal">4.1. Основные мультипликаторы</h3>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th>Мультипликатор</th><th>Формула</th><th>Применение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>P/E</strong></td><td>$\frac{\text{Цена акции}}{EPS}$</td><td>Прибыльные компании</td></tr>
+                <tr><td><strong>EV/EBITDA</strong></td><td>$\frac{EV}{EBITDA}$</td><td>Сравнение с разным долгом</td></tr>
+                <tr><td><strong>P/B</strong></td><td>$\frac{\text{Цена}}{BV \text{ на акцию}}$</td><td>Банки, капиталоёмкие отрасли</td></tr>
+                <tr><td><strong>P/S</strong></td><td>$\frac{\text{Цена}}{\text{Выручка на акцию}}$</td><td>Убыточные быстрорастущие компании</td></tr>
+                <tr><td><strong>EV/Sales</strong></td><td>$\frac{EV}{\text{Выручка}}$</td><td>Ранние стадии, стартапы</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s4-2" class="reveal">4.2. Enterprise Value (EV)</h3>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$EV = \text{Рыночная капитализация} + \text{Чистый долг}$$</div>
+            <div class="math-block">$$\text{Чистый долг} = \text{Долг} - \text{Денежные средства}$$</div>
+          </div>
+
+          <h3 id="s4-3" class="reveal">4.3. Алгоритм сравнительной оценки</h3>
+
+          <ol class="reveal">
+            <li>Выбрать компании-аналоги (отрасль, размер, география, темп роста);</li>
+            <li>Рассчитать мультипликаторы для каждого аналога;</li>
+            <li>Определить <strong>медианный</strong> мультипликатор (медиана устойчивее среднего);</li>
+            <li>Применить к показателям оцениваемой компании;</li>
+            <li>Получить <strong>диапазон</strong> оценки (не точку).</li>
+          </ol>
+
+          <!-- ===== 5. EVA ===== -->
+          <h2 id="s5" class="reveal">5. EVA (Economic Value Added)</h2>
+
+          <div class="box-key reveal">
+            <p><strong>EVA</strong> — экономическая добавленная стоимость, показывает создаёт ли компания стоимость сверх стоимости капитала.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$EVA = NOPAT - WACC \times IC$$</div>
+            <p>$NOPAT = EBIT \times (1 - T)$ — чистая операционная прибыль после налогов; $IC$ — инвестированный капитал (СК + долг); $WACC$ — средневзвешенная стоимость капитала.</p>
+          </div>
+
+          <div class="box-info reveal">
+            <p><strong>Интерпретация:</strong></p>
+            <ul>
+              <li>$EVA > 0$ — компания <strong>создаёт</strong> стоимость (доходность > стоимости капитала);</li>
+              <li>$EVA < 0$ — компания <strong>разрушает</strong> стоимость;</li>
+              <li>$EVA = 0$ — компания зарабатывает ровно столько, сколько требуют инвесторы.</li>
+            </ul>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>MVA (Market Value Added):</strong></p>
+            <div class="math-block">$$MVA = \text{Рыночная стоимость} - IC = \sum_{t=1}^{\infty} \frac{EVA_t}{(1+WACC)^t}$$</div>
+          </div>
+
+          <!-- ===== 6. Стоимость собственного капитала из DCF ===== -->
+          <h2 id="s6" class="reveal">6. От Enterprise Value к цене акции</h2>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$\text{Equity Value} = EV - \text{Чистый долг} - \text{Привилег. акции} - \text{Доля меньшинства}$$</div>
+            <div class="math-block">$$\text{Цена акции} = \frac{\text{Equity Value}}{\text{Количество акций в обращении}}$$</div>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. DCF-оценка компании «Альфа»</h3>
+
+            <p>Прогнозный период 5 лет, WACC = 12%.</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Год</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+                <tbody>
+                  <tr><td>EBIT, млн руб.</td><td class="number">500</td><td class="number">560</td><td class="number">620</td><td class="number">680</td><td class="number">730</td></tr>
+                  <tr><td>Налог (20%)</td><td class="number">100</td><td class="number">112</td><td class="number">124</td><td class="number">136</td><td class="number">146</td></tr>
+                  <tr><td>NOPAT</td><td class="number">400</td><td class="number">448</td><td class="number">496</td><td class="number">544</td><td class="number">584</td></tr>
+                  <tr><td>DA</td><td class="number">80</td><td class="number">85</td><td class="number">90</td><td class="number">95</td><td class="number">100</td></tr>
+                  <tr><td>CAPEX</td><td class="number">120</td><td class="number">130</td><td class="number">140</td><td class="number">145</td><td class="number">150</td></tr>
+                  <tr><td>$\Delta NWC$</td><td class="number">30</td><td class="number">25</td><td class="number">20</td><td class="number">15</td><td class="number">10</td></tr>
+                  <tr style="background: var(--acc-subtle); font-weight: 600;"><td><strong>FCFF</strong></td><td class="number"><strong>330</strong></td><td class="number"><strong>378</strong></td><td class="number"><strong>426</strong></td><td class="number"><strong>479</strong></td><td class="number"><strong>524</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Терминальная стоимость</strong> (модель Гордона, $g = 2\%$):</p>
+            <div class="math-block">$$TV_5 = \frac{524 \times 1{,}02}{0{,}12 - 0{,}02} = \frac{534{,}48}{0{,}10} = 5\,344{,}8 \text{ млн руб.}$$</div>
+
+            <p><strong>Приведённая стоимость:</strong></p>
+            <div class="math-block">$$PV(FCF) = \frac{330}{1{,}12} + \frac{378}{1{,}12^2} + \frac{426}{1{,}12^3} + \frac{479}{1{,}12^4} + \frac{524}{1{,}12^5} = 1\,500{,}9 \text{ млн}$$</div>
+            <div class="math-block">$$PV(TV) = \frac{5\,344{,}8}{1{,}12^5} = 3\,032{,}8 \text{ млн руб.}$$</div>
+            <div class="math-block">$$EV = 1\,500{,}9 + 3\,032{,}8 = 4\,533{,}7 \text{ млн руб.}$$</div>
+
+            <p>Чистый долг = 800 млн руб., акций 10 млн шт.:</p>
+            <div class="math-block">$$\text{Equity Value} = 4\,533{,}7 - 800 = 3\,733{,}7 \text{ млн руб.}$$</div>
+            <div class="math-block">$$\text{Цена акции} = \frac{3\,733{,}7}{10} = 373{,}4 \text{ руб.}$$</div>
+
+            <div class="box-warning" style="margin-top: var(--space-5);">
+              <p style="margin-bottom:0;"><strong>Обратите внимание:</strong> терминальная стоимость составляет $3\,032{,}8 / 4\,533{,}7 = 66{,}9\%$ от EV — типичное значение для DCF-модели.</p>
+            </div>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Сравнительная оценка</h3>
+
+            <p>Оцениваем компанию «Бета» (EBITDA = 200 млн руб., ЧП = 120 млн руб., 5 млн акций).</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Аналог</th><th>EV/EBITDA</th><th>P/E</th></tr></thead>
+                <tbody>
+                  <tr><td>Компания А</td><td class="number">6,5</td><td class="number">11,0</td></tr>
+                  <tr><td>Компания Б</td><td class="number">7,2</td><td class="number">12,5</td></tr>
+                  <tr><td>Компания В</td><td class="number">5,8</td><td class="number">10,2</td></tr>
+                  <tr><td>Компания Г</td><td class="number">6,9</td><td class="number">11,8</td></tr>
+                  <tr style="background: var(--acc-subtle); font-weight: 600;"><td><strong>Медиана</strong></td><td class="number"><strong>6,7</strong></td><td class="number"><strong>11,4</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>По EV/EBITDA:</p>
+            <div class="math-block">$$EV = 200 \times 6{,}7 = 1\,340 \text{ млн руб.}$$</div>
+
+            <p>По P/E:</p>
+            <div class="math-block">$$\text{Equity Value} = 120 \times 11{,}4 = 1\,368 \text{ млн руб.}$$</div>
+            <div class="math-block">$$\text{Цена акции} = 1\,368 / 5 = 273{,}6 \text{ руб.}$$</div>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. EVA</h3>
+
+            <p>Компания: $NOPAT = 450$ млн руб., $IC = 3\,000$ млн руб., $WACC = 12\%$.</p>
+
+            <div class="math-block">$$EVA = 450 - 0{,}12 \times 3\,000 = 450 - 360 = +90 \text{ млн руб.}$$</div>
+
+            <p style="margin-bottom:0;"><strong>Вывод:</strong> компания создаёт стоимость. Доходность на капитал $ROIC = 450/3\,000 = 15\% > WACC = 12\%$.</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. DCF-оценка</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>FCFF: год 1 = 200, год 2 = 230, год 3 = 260 млн руб. WACC = 14%, $g = 2\%$. Чистый долг = 300 млн руб.</p>
+              <p><strong>Найти: EV, Equity Value.</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$TV_3 = \frac{260 \times 1{,}02}{0{,}14 - 0{,}02} = \frac{265{,}2}{0{,}12} = 2\,210 \text{ млн руб.}$$</div>
+              <div class="math-block">$$PV(FCF) = \frac{200}{1{,}14} + \frac{230}{1{,}14^2} + \frac{260}{1{,}14^3} = 175{,}4 + 177{,}0 + 175{,}5 = 527{,}9$$</div>
+              <div class="math-block">$$PV(TV) = \frac{2\,210}{1{,}14^3} = 1\,491{,}7$$</div>
+              <div class="math-block">$$EV = 527{,}9 + 1\,491{,}7 = 2\,019{,}6 \text{ млн руб.}$$</div>
+              <div class="math-block">$$\text{Equity Value} = 2\,019{,}6 - 300 = \mathbf{1\,719{,}6} \text{ млн руб.}$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. Мультипликаторы</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>EBITDA = 500 млн руб., EPS = 45 руб. Медианы: EV/EBITDA = 7,5; P/E = 13. Чистый долг = 1 200 млн руб., акций = 20 млн.</p>
+              <p><strong>Найти: диапазон цены акции.</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <p>По EV/EBITDA:</p>
+              <div class="math-block">$$EV = 500 \times 7{,}5 = 3\,750; \quad Equity = 3\,750 - 1\,200 = 2\,550; \quad P = 2\,550/20 = 127{,}5 \text{ руб.}$$</div>
+              <p>По P/E:</p>
+              <div class="math-block">$$P = 45 \times 13 = 585 \text{ руб.}$$</div>
+              <p style="margin-bottom:0;">Диапазон: <strong>127,5-585 руб.</strong> Большой разброс указывает на необходимость проверить причины расхождения.</p>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. EVA</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>$EBIT = 800$ млн руб., $T = 20\%$, $IC = 5\,000$ млн руб., $WACC = 11\%$.</p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$NOPAT = 800 \times (1 - 0{,}20) = 640 \text{ млн руб.}$$</div>
+              <div class="math-block">$$EVA = 640 - 0{,}11 \times 5\,000 = 640 - 550 = +90 \text{ млн руб.}$$</div>
+              <div class="math-block">$$ROIC = 640 / 5\,000 = 12{,}8\% > 11\% = WACC$$</div>
+              <p style="margin-bottom:0;">Компания создаёт стоимость.</p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>DCF</strong></td><td>Метод дисконтированных денежных потоков (Discounted Cash Flow)</td></tr>
+                <tr><td><strong>FCFF</strong></td><td>Свободный поток для всех поставщиков капитала</td></tr>
+                <tr><td><strong>FCFE</strong></td><td>Свободный поток для акционеров</td></tr>
+                <tr><td><strong>Terminal Value</strong></td><td>Стоимость бизнеса после прогнозного периода</td></tr>
+                <tr><td><strong>Enterprise Value (EV)</strong></td><td>Стоимость всего бизнеса (капитализация + чистый долг)</td></tr>
+                <tr><td><strong>Equity Value</strong></td><td>Стоимость собственного капитала (для акционеров)</td></tr>
+                <tr><td><strong>P/E</strong></td><td>Цена / Прибыль на акцию</td></tr>
+                <tr><td><strong>EV/EBITDA</strong></td><td>Стоимость бизнеса / EBITDA</td></tr>
+                <tr><td><strong>P/B</strong></td><td>Цена / Балансовая стоимость на акцию</td></tr>
+                <tr><td><strong>EVA</strong></td><td>Экономическая добавленная стоимость ($NOPAT - WACC \times IC$)</td></tr>
+                <tr><td><strong>MVA</strong></td><td>Рыночная добавленная стоимость (рыночная стоимость - IC)</td></tr>
+                <tr><td><strong>NOPAT</strong></td><td>Чистая операционная прибыль после налогов</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Какой метод оценки считается основным в корпоративных финансах?',
+            options: [
+              'Затратный подход',
+              'Доходный подход (DCF)',
+              'Сравнительный подход (мультипликаторы)',
+              'Метод ликвидационной стоимости'
+            ],
+            correct: 1,
+            explanation: 'DCF считается основным методом, так как оценивает внутреннюю стоимость бизнеса на основе будущих денежных потоков. Сравнительный подход используется как проверочный.'
+          },
+          {
+            text: 'Терминальная стоимость обычно составляет от EV:',
+            options: [
+              '10\u201320%',
+              '30\u201340%',
+              '60\u201380%',
+              '90\u201395%'
+            ],
+            correct: 2,
+            explanation: 'Терминальная стоимость обычно составляет 60\u201380% от Enterprise Value, что делает выбор долгосрочного темпа роста (g) критически важным для точности оценки.'
+          },
+          {
+            text: 'Если EVA < 0, это означает, что компания:',
+            options: [
+              'Убыточна',
+              'Создаёт стоимость для акционеров',
+              'Разрушает стоимость (доходность < стоимости капитала)',
+              'Не платит дивиденды'
+            ],
+            correct: 2,
+            explanation: 'EVA < 0 означает, что ROIC < WACC \u2014 компания зарабатывает меньше, чем требуют инвесторы, и разрушает стоимость, даже если формально прибыльна.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-12.html">Тема 1.2. Временная стоимость денег</a> — основа дисконтирования FCF</li>
+              <li><a href="topic-22.html">Тема 2.2. Модель CAPM</a> — расчёт $k_e$ для WACC и FCFE</li>
+              <li><a href="topic-42.html">Тема 4.2. WACC</a> — ставка дисконтирования для DCF</li>
+              <li><a href="topic-71.html">Тема 7.1. Финансовый анализ</a> — данные для прогноза FCF</li>
+              <li><a href="topic-51.html">Тема 5.1. Дивидендная политика</a> — DDM как частный случай DCF</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture" aria-label="Навигация по лекциям">
+          <a href="topic-52.html"><span class="label">Назад</span><span class="title">Тема 5.2. Оборотный капитал</span></a>
+          <a href="topic-71.html"><span class="label">Следующая тема</span><span class="title">Тема 7.1. Финансовый анализ</span></a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

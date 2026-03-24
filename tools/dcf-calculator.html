@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор DCF — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор DCF с визуализацией терминальной стоимости, PV потоков и пресетами российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- DCF Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'DCF.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+
+    .ev-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .ev-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .cf-inputs-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: var(--space-3);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+      .cf-inputs-row { grid-template-columns: 1fr 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-dcf-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор DCF">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Калькулятор DCF</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Калькулятор <span class="text-gradient">DCF</span>
+            </h1>
+
+            <p class="subtitle">
+              Оцените стоимость компании методом дисконтированных денежных потоков
+              с&nbsp;терминальной стоимостью, визуализацией структуры EV и&nbsp;пресетами российских эмитентов.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Discounted Cash Flow Model</span><br>
+            <span class="kw">EV</span> = &sum; FCF<sub>t</sub> / (<span class="num">1</span> + WACC)<sup>t</sup> + TV / (<span class="num">1</span> + WACC)<sup>n</sup><br><br>
+            <span class="cmt">// Терминальная стоимость (Gordon Growth):</span><br>
+            <span class="fn">TV</span> = FCF<sub>n</sub> &times; (<span class="num">1</span> + g) / (WACC - g)<br><br>
+            <span class="cmt">// где:</span><br>
+            <span class="fn">FCF</span>&nbsp; = свободный денежный поток<br>
+            <span class="fn">WACC</span> = ставка дисконтирования<br>
+            <span class="fn">g</span>&nbsp;&nbsp;&nbsp; = долгосрочный темп роста
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты компаний</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="sber">Сбербанк</button>
+                <button type="button" class="preset-btn" data-preset="lukoil">Лукойл</button>
+                <button type="button" class="preset-btn" data-preset="yandex">Яндекс</button>
+              </div>
+            </div>
+
+            <!-- FCF year 1-5 -->
+            <div class="calc-input-group">
+              <label>Свободные денежные потоки (FCF), млрд руб.</label>
+            </div>
+            <div class="cf-inputs-row">
+              <div class="calc-input-group">
+                <label for="inp-cf1">Год 1</label>
+                <input type="number" id="inp-cf1" step="1" value="400" placeholder="FCF1">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf2">Год 2</label>
+                <input type="number" id="inp-cf2" step="1" value="440" placeholder="FCF2">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf3">Год 3</label>
+                <input type="number" id="inp-cf3" step="1" value="480" placeholder="FCF3">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf4">Год 4</label>
+                <input type="number" id="inp-cf4" step="1" value="520" placeholder="FCF4">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf5">Год 5</label>
+                <input type="number" id="inp-cf5" step="1" value="560" placeholder="FCF5">
+              </div>
+            </div>
+
+            <!-- Growth rate -->
+            <div class="calc-input-group">
+              <label for="inp-growth">Долгосрочный темп роста (g), %</label>
+              <input type="number" id="inp-growth" min="0" max="20" step="0.1" value="4" placeholder="напр. 4">
+              <span class="hint">Обычно 2-5%, не выше номинального ВВП</span>
+            </div>
+
+            <!-- WACC -->
+            <div class="calc-input-group">
+              <label for="inp-wacc">WACC, %</label>
+              <input type="number" id="inp-wacc" min="0" max="100" step="0.1" value="15" placeholder="напр. 15">
+              <span class="hint">Рассчитайте в <a href="wacc-calculator.html" style="color:var(--acc)">калькуляторе WACC</a></span>
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать DCF
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите &laquo;Рассчитать&raquo;
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- EV result (main) -->
+              <div class="calc-result-card primary">
+                <div class="card-label">Enterprise Value</div>
+                <div class="card-value"><span class="ev-value-animated" id="ev-value">&mdash;</span></div>
+                <div class="card-formula" id="ev-formula"></div>
+              </div>
+
+              <!-- Secondary metrics -->
+              <div class="results-grid">
+                <div class="calc-result-card">
+                  <div class="card-label">Терминальная стоимость (TV)</div>
+                  <div class="card-value" id="tv-value">&mdash;</div>
+                  <div class="card-formula" id="tv-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">Доля TV в EV</div>
+                  <div class="card-value" id="tv-share">&mdash;</div>
+                  <div class="card-formula" id="tv-share-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">PV операционных потоков</div>
+                  <div class="card-value" id="pv-ops">&mdash;</div>
+                  <div class="card-formula" id="pv-ops-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">Implied EV/FCF</div>
+                  <div class="card-value" id="ev-fcf">&mdash;</div>
+                  <div class="card-formula" id="ev-fcf-desc"></div>
+                </div>
+              </div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>PV каждого года + терминальная</h4>
+                  <canvas class="chart" id="chart-pv-bars" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Структура Enterprise Value</h4>
+                  <canvas class="chart" id="chart-ev-pie" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>DCF</strong> (Discounted Cash Flow) &mdash; модель дисконтированных денежных потоков.
+             Основной метод фундаментальной оценки стоимости компании. Стоимость определяется как
+             сумма приведённых будущих денежных потоков.</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            EV = &sum;<sub>t=1..n</sub> FCF<sub>t</sub> / (1 + WACC)<sup>t</sup> + TV / (1 + WACC)<sup>n</sup>
+          </p>
+          <ul style="margin-top:var(--space-3);padding-left:var(--space-5);list-style:disc;color:var(--text-secondary);font-size:var(--text-sm);">
+            <li><strong>TV</strong> обычно составляет 60-80% от EV &mdash; это норма для DCF</li>
+            <li>Результат чувствителен к выбору <strong>g</strong> и <strong>WACC</strong></li>
+            <li>Требование: <strong>WACC &gt; g</strong>, иначе модель не имеет смысла</li>
+          </ul>
+          <p style="margin-top:var(--space-3);">Подробнее: <a href="../lectures/topic-52.html">Лекция 5.2 &mdash; Оценка стоимости компании (DCF)</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные пресетов актуальны на март 2026.</strong> Для реальных расчётов используйте:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://e-disclosure.ru" target="_blank" rel="noopener">e-disclosure.ru</a> &mdash; финансовая отчётность (МСФО)</li>
+            <li><a href="https://smart-lab.ru" target="_blank" rel="noopener">smart-lab.ru</a> &mdash; FCF, мультипликаторы, прогнозы</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Связанные материалы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="wacc-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">WACC</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Рассчитать ставку дисконтирования для DCF</p>
+            </div>
+          </a>
+          <a href="npv-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">NPV / IRR</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка инвестиционных проектов</p>
+            </div>
+          </a>
+          <a href="gordon-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Модель Гордона</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка акций через дивиденды</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- Preset data ---
+    var presets = {
+      sber: {
+        cfs: [400, 440, 480, 520, 560],
+        growth: 4, wacc: 15
+      },
+      lukoil: {
+        cfs: [600, 580, 560, 540, 520],
+        growth: 3, wacc: 18
+      },
+      yandex: {
+        cfs: [50, 80, 120, 170, 230],
+        growth: 6, wacc: 20
+      }
+    };
+
+    // --- DOM refs ---
+    var cfInputs = [];
+    for (var i = 1; i <= 5; i++) {
+      cfInputs.push(document.getElementById('inp-cf' + i));
+    }
+    var inpGrowth = document.getElementById('inp-growth');
+    var inpWacc   = document.getElementById('inp-wacc');
+
+    var btnCalculate   = document.getElementById('btn-calculate');
+    var placeholder    = document.getElementById('results-placeholder');
+    var resultsContent = document.getElementById('results-content');
+
+    var pvBarChart = null;
+    var evPieChart = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        var p = presets[btn.dataset.preset];
+        if (!p) return;
+        for (var j = 0; j < 5; j++) {
+          cfInputs[j].value = p.cfs[j];
+        }
+        inpGrowth.value = p.growth;
+        inpWacc.value = p.wacc;
+      });
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function calculate() {
+      var wacc = parseFloat(inpWacc.value) / 100;
+      var g = parseFloat(inpGrowth.value) / 100;
+
+      if (isNaN(wacc) || isNaN(g) || wacc <= g) {
+        if (wacc <= g) {
+          alert('WACC должен быть больше темпа роста (g). Иначе модель не имеет смысла.');
+        }
+        return;
+      }
+
+      var cfs = [];
+      for (var j = 0; j < 5; j++) {
+        cfs.push(parseFloat(cfInputs[j].value) || 0);
+      }
+
+      // Terminal value (Gordon Growth)
+      var lastCF = cfs[cfs.length - 1];
+      var tv = lastCF * (1 + g) / (wacc - g);
+
+      // PV of each year
+      var pvCFs = [];
+      var pvOps = 0;
+      for (var t = 0; t < cfs.length; t++) {
+        var pv = cfs[t] / Math.pow(1 + wacc, t + 1);
+        pvCFs.push(pv);
+        pvOps += pv;
+      }
+
+      // PV of terminal value
+      var pvTV = tv / Math.pow(1 + wacc, cfs.length);
+
+      // Enterprise Value
+      var ev = pvOps + pvTV;
+      var tvShare = ev > 0 ? (pvTV / ev) * 100 : 0;
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // EV
+      var evEl = document.getElementById('ev-value');
+      evEl.classList.add('updating');
+      setTimeout(function () {
+        evEl.textContent = CFUtils.formatNumber(ev, 1) + ' млрд';
+        evEl.classList.remove('updating');
+      }, 150);
+
+      document.getElementById('ev-formula').textContent =
+        'PV(FCF) ' + CFUtils.formatNumber(pvOps, 1) + ' + PV(TV) ' + CFUtils.formatNumber(pvTV, 1) + ' = ' + CFUtils.formatNumber(ev, 1);
+
+      // Terminal value
+      document.getElementById('tv-value').textContent = CFUtils.formatNumber(tv, 1) + ' млрд';
+      document.getElementById('tv-desc').textContent =
+        lastCF + ' \u00D7 (1 + ' + (g * 100).toFixed(1) + '%) / (' + (wacc * 100).toFixed(1) + '% - ' + (g * 100).toFixed(1) + '%)';
+
+      // TV share
+      document.getElementById('tv-share').textContent = tvShare.toFixed(1) + '%';
+      var tvShareDesc = tvShare > 75 ? 'Высокая зависимость от TV \u2014 будьте осторожны' :
+                        tvShare > 60 ? 'Типичная доля TV для DCF модели' :
+                        'Низкая доля TV \u2014 операционные потоки доминируют';
+      document.getElementById('tv-share-desc').textContent = tvShareDesc;
+
+      // PV ops
+      document.getElementById('pv-ops').textContent = CFUtils.formatNumber(pvOps, 1) + ' млрд';
+      document.getElementById('pv-ops-desc').textContent = 'Сумма дисконтированных FCF за 5 лет';
+
+      // EV/FCF
+      var evFcf = cfs[0] > 0 ? ev / cfs[0] : 0;
+      document.getElementById('ev-fcf').textContent = evFcf.toFixed(1) + 'x';
+      document.getElementById('ev-fcf-desc').textContent = 'EV / FCF\u2081 = ' + CFUtils.formatNumber(ev, 1) + ' / ' + cfs[0];
+
+      // Charts
+      renderCharts(cfs, pvCFs, pvTV, pvOps);
+    }
+
+    function renderCharts(cfs, pvCFs, pvTV, pvOps) {
+      whenChartReady(function () {
+        if (pvBarChart) pvBarChart.destroy();
+        if (evPieChart) evPieChart.destroy();
+
+        // Stacked bar: PV of each year + terminal
+        var labels = ['Год 1', 'Год 2', 'Год 3', 'Год 4', 'Год 5', 'TV'];
+        var barData = pvCFs.slice();
+        barData.push(pvTV);
+
+        var barColors = pvCFs.map(function () { return '#818CF8'; });
+        barColors.push('#FBBF24');
+
+        var barCanvas = document.getElementById('chart-pv-bars');
+        pvBarChart = new Chart(barCanvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'PV, млрд руб.',
+              data: barData,
+              backgroundColor: barColors,
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'PV: ' + ctx.parsed.y.toFixed(1) + ' млрд'; }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { color: '#94A3B8' },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+
+        // Pie: terminal vs operating
+        var pieCanvas = document.getElementById('chart-ev-pie');
+        evPieChart = new Chart(pieCanvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['PV операционных потоков', 'PV терминальной стоимости'],
+            datasets: [{
+              data: [pvOps, pvTV],
+              backgroundColor: ['#818CF8', '#FBBF24'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 11 } } },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) {
+                    var total = ctx.dataset.data.reduce(function (a, b) { return a + b; }, 0);
+                    var pct = ((ctx.parsed / total) * 100).toFixed(1);
+                    return ctx.label + ': ' + ctx.parsed.toFixed(1) + ' млрд (' + pct + '%)';
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

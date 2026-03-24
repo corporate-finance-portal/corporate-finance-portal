@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кейс: Газпром — Дивидендная политика — Корпоративные финансы</title>
+  <meta name="description" content="Кейс ПАО «Газпром»: анализ дивидендной политики госкомпании, сравнение с Лукойлом, сигнальная теория и влияние налоговой нагрузки на дивиденды.">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Кейс: Газпром — Дивидендная политика">
+  <meta property="og:description" content="Анализ дивидендной политики ПАО «Газпром»: нестабильные выплаты, влияние государства и сравнение с Лукойлом.">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="case-gazprom">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Split Layout
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Кейс Газпром">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div class="hero-content">
+            <nav aria-label="Хлебные крошки" style="margin-bottom: var(--space-4);">
+              <span style="font-family: var(--ff-mono); font-size: var(--text-xs); color: var(--text-muted);">
+                <a href="../cases/" style="color: var(--text-muted); text-decoration: none;">Кейсы</a>
+                <span aria-hidden="true" style="margin: 0 var(--space-2);">/</span>
+                <span style="color: var(--acc);">Газпром</span>
+              </span>
+            </nav>
+
+            <span class="badge badge-coral" style="margin-bottom: var(--space-4); display: inline-flex;">Нефтегаз</span>
+
+            <h1 style="font-size: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);">
+              ПАО &laquo;Газпром&raquo; &mdash; <span class="highlight">Дивидендная</span> политика
+            </h1>
+
+            <p class="subtitle" style="max-width: 540px;">
+              Анализ дивидендных решений крупнейшей газовой госкомпании: нестабильные выплаты, влияние государства, сравнение с частным сектором
+            </p>
+          </div>
+
+          <!-- Right: Key Metrics Card -->
+          <div>
+            <div class="card-static" style="padding: var(--space-6);">
+              <div style="font-family: var(--ff-mono); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: var(--space-5);">
+                Ключевые показатели (2024)
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5);">
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Чистая прибыль</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--acc);">1,22 трлн</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">DPR (2024)</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--coral);">0%</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Дивиденд</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--amber);">0 руб.</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Гос. доля</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; color: var(--text-primary);">50,23%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         CASE DESCRIPTION
+         ============================================================ -->
+    <section class="section reveal" aria-label="Описание кейса">
+      <div class="container">
+        <div class="lecture-content">
+
+          <h2>Описание ситуации</h2>
+          <p>
+            ПАО &laquo;Газпром&raquo; &mdash; крупнейшая газовая компания мира с контрольным пакетом государства (<strong>50,23%</strong>). Дивидендная политика компании (утв. 2019 г.) предусматривает выплату не менее 50% скорректированной чистой прибыли по МСФО. Однако реальная практика выплат значительно отклоняется от декларируемой политики.
+          </p>
+
+          <div class="box-info">
+            <strong>Цель кейса:</strong> определить тип дивидендной политики, объяснить причины невыплат при наличии прибыли, сравнить с частной компанией (Лукойл), оценить сигнальный эффект и влияние налоговой нагрузки.
+          </div>
+
+
+          <!-- ============================================================
+               INPUT DATA: Dividends by Year
+               ============================================================ -->
+          <h2>Исходные данные</h2>
+
+          <h3>Дивиденды и прибыль по годам</h3>
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th style="text-align: right;">Дивиденд на акцию (руб.)</th>
+                  <th style="text-align: right;">Чистая прибыль (трлн руб.)</th>
+                  <th style="text-align: right;">DPR</th>
+                  <th>Примечание</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>2018</td>
+                  <td class="number">16,61</td>
+                  <td class="number">1,456</td>
+                  <td class="number">~27%</td>
+                  <td>Рост после пересмотра политики</td>
+                </tr>
+                <tr>
+                  <td>2019</td>
+                  <td class="number">15,24</td>
+                  <td class="number">1,203</td>
+                  <td class="number">~30%</td>
+                  <td>Снижение прибыли</td>
+                </tr>
+                <tr>
+                  <td>2020</td>
+                  <td class="number">12,55</td>
+                  <td class="number">0,162</td>
+                  <td class="number">~183%</td>
+                  <td>Пандемия, выплата выше прибыли</td>
+                </tr>
+                <tr>
+                  <td>2021</td>
+                  <td class="number" style="color: var(--error);"><strong>0,00</strong></td>
+                  <td class="number"><strong>2,160</strong></td>
+                  <td class="number" style="color: var(--error);"><strong>0%</strong></td>
+                  <td><strong>Рекордная прибыль, ГОСА отменил выплату</strong></td>
+                </tr>
+                <tr>
+                  <td>2022</td>
+                  <td class="number" style="color: var(--error);">0,00</td>
+                  <td class="number" style="color: var(--error);">&minus;0,629</td>
+                  <td class="number">&mdash;</td>
+                  <td>Чистый убыток</td>
+                </tr>
+                <tr>
+                  <td>2023</td>
+                  <td class="number" style="color: var(--error);"><strong>0,00</strong></td>
+                  <td class="number"><strong>0,724</strong></td>
+                  <td class="number" style="color: var(--error);"><strong>0%</strong></td>
+                  <td><strong>Прибыль есть, ГОСА отказал</strong></td>
+                </tr>
+                <tr>
+                  <td>2024</td>
+                  <td class="number" style="color: var(--error);"><strong>0,00</strong></td>
+                  <td class="number"><strong>1,219</strong></td>
+                  <td class="number" style="color: var(--error);"><strong>0%</strong></td>
+                  <td><strong>Прибыль 1,2 трлн, FCF &asymp; 0</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="box-warning reveal">
+            В ноябре 2022 г. внеочередной ГОСА одобрил промежуточные дивиденды <strong>51,03 руб./акцию</strong> за 1-е полугодие 2022 г. Это единственная выплата за последние 4 года.
+          </div>
+
+
+          <!-- ============================================================
+               STEP-BY-STEP SOLUTION
+               ============================================================ -->
+          <h2>Пошаговое решение</h2>
+
+          <div class="box-example reveal">
+            <h4>Шаг 1. Тип дивидендной политики</h4>
+            <p>
+              Дивидендная политика Газпрома &mdash; <strong>нестабильная (erratic)</strong>. Несмотря на формальную политику &laquo;не менее 50% чистой прибыли&raquo;, фактические выплаты крайне нерегулярны: от 183% прибыли (2020) до 0% при миллиардной прибыли (2021, 2023, 2024).
+            </p>
+            <p>
+              Это не соответствует ни <strong>стабильной</strong>, ни <strong>остаточной</strong>, ни <strong>компромиссной</strong> модели дивидендных выплат.
+            </p>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>Шаг 2. Причины невыплаты дивидендов</h4>
+            <div class="data-table-wrapper" style="margin-top: var(--space-4);">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Фактор</th>
+                    <th>Объяснение</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>Масштабная инвестпрограмма</strong></td>
+                    <td>&laquo;Сила Сибири-2&raquo;, газификация регионов: CAPEX &gt; 2 трлн руб./год</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FCF &asymp; 0</strong></td>
+                    <td>Вся прибыль реинвестируется; FCF = Операционный CF &minus; CAPEX &asymp; 0</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Долговая нагрузка</strong></td>
+                    <td>Чистый долг ~5 трлн руб.</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Государственное влияние</strong></td>
+                    <td>Государство (50,23%) направляет прибыль на стратегические проекты вместо дивидендов</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Потеря европейского рынка</strong></td>
+                    <td>Снижение экспортной выручки после 2022 г.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="box-key reveal">
+            <h4>Шаг 3. Сравнение Газпром vs Лукойл</h4>
+            <div class="data-table-wrapper" style="margin-top: var(--space-4);">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Критерий</th>
+                    <th>Газпром</th>
+                    <th>Лукойл</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Тип политики</td>
+                    <td>Нестабильная</td>
+                    <td>Стабильная, растущая</td>
+                  </tr>
+                  <tr>
+                    <td>Базовый показатель</td>
+                    <td>50% чистой прибыли (формально)</td>
+                    <td>100% скорректированного FCF</td>
+                  </tr>
+                  <tr>
+                    <td>Выплаты (2021&ndash;2024)</td>
+                    <td style="color: var(--error);">0 руб. (4 года из 4)</td>
+                    <td style="color: var(--success);">Рост каждый год</td>
+                  </tr>
+                  <tr>
+                    <td>Гос. участие</td>
+                    <td>50,23%</td>
+                    <td>0% (частная)</td>
+                  </tr>
+                  <tr>
+                    <td>Див. доходность (2024)</td>
+                    <td style="color: var(--error);">0%</td>
+                    <td style="color: var(--success);">~8&ndash;10%</td>
+                  </tr>
+                  <tr>
+                    <td>Привлекательность</td>
+                    <td><strong>Низкая</strong></td>
+                    <td><strong>Высокая</strong></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>Шаг 4. Сигнальная теория</h4>
+            <p>
+              Систематический отказ от выплат при наличии прибыли &mdash; <strong>сильный негативный сигнал</strong>:
+            </p>
+            <ul style="list-style: disc; padding-left: var(--space-5); margin-top: var(--space-3);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                Рынок интерпретирует это как <strong>приоритет менеджмента/государства</strong> над интересами миноритариев;
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                Противоречит теории &laquo;синицы в руке&raquo;: инвесторы не получают &laquo;синицу&raquo; (текущие дивиденды) и не уверены в &laquo;журавле&raquo; (будущий рост);
+              </li>
+              <li style="color: var(--text-primary); line-height: 1.7;">
+                Снижает инвестиционную привлекательность: <strong>дисконт акций Газпрома</strong> к аналогам.
+              </li>
+            </ul>
+          </div>
+
+          <div class="box-formula reveal">
+            <h4>Шаг 5. Влияние повышения налога на прибыль</h4>
+            <p>При прибыли до налогов 1,6 трлн руб. и DPR = 50%:</p>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$\text{Старый налог (20\%):} \quad ЧП = 1{,}6 \times 0{,}80 = 1{,}280 \text{ трлн руб.}$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$\text{Дивиденды} = 1{,}280 \times 50\% = 640 \text{ млрд руб.}$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$\text{Новый налог (25\%):} \quad ЧП = 1{,}6 \times 0{,}75 = 1{,}200 \text{ трлн руб.}$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$\text{Дивиденды} = 1{,}200 \times 50\% = 600 \text{ млрд руб.}$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$\Delta = 640 - 600 = \boxed{-40 \text{ млрд руб. } (-6{,}25\%)}$$
+            </div>
+            <p>
+              На акцию (23,67 млрд шт.): снижение &asymp; <strong>1,7 руб./акцию</strong>.
+            </p>
+          </div>
+
+
+          <!-- ============================================================
+               INTERACTIVE CHARTS
+               ============================================================ -->
+          <h2>Визуализация</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin: var(--space-6) 0;" class="reveal">
+            <div class="card-static" style="padding: var(--space-5);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+                Дивиденды на акцию по годам
+              </div>
+              <canvas id="dividend-chart" class="chart" width="400" height="280"></canvas>
+            </div>
+            <div class="card-static" style="padding: var(--space-5);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+                Структура собственности
+              </div>
+              <canvas id="ownership-chart" class="chart" width="400" height="280"></canvas>
+            </div>
+          </div>
+
+
+          <!-- ============================================================
+               CONCLUSIONS
+               ============================================================ -->
+          <h2>Выводы</h2>
+
+          <div class="box-key reveal">
+            <ul style="list-style: disc; padding-left: var(--space-5);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                Дивидендная политика Газпрома <strong>нестабильна</strong> и не соответствует декларируемой цели &laquo;не менее 50% чистой прибыли&raquo;. За 2021&ndash;2024 гг. дивиденды не выплачивались ни разу.
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                Основные причины: <strong>масштабная инвестпрограмма</strong> (CAPEX &gt; 2 трлн/год), нулевой FCF, долговая нагрузка и <strong>приоритет государственных интересов</strong> над интересами миноритариев.
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                В сравнении с частным Лукойлом (стабильные выплаты, див. доходность 8&ndash;10%), Газпром <strong>значительно проигрывает</strong> как дивидендная инвестиция.
+              </li>
+              <li style="color: var(--text-primary); line-height: 1.7;">
+                Повышение ставки налога на прибыль с 20% до 25% снижает потенциальные дивиденды на <strong>40 млрд руб.</strong> (&minus;6,25%), усиливая давление на выплаты.
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- ============================================================
+               DISCUSSION QUESTIONS
+               ============================================================ -->
+          <h2>Вопросы для обсуждения</h2>
+
+          <div class="box-info reveal">
+            <ol style="list-style: decimal; padding-left: var(--space-5);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Можно ли назвать дивидендную политику Газпрома &laquo;остаточной&raquo;? Чем она отличается от классической остаточной модели?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Почему при рекордной чистой прибыли 2,16 трлн руб. (2021) ГОСА проголосовал против дивидендов? Какую роль играет государство как мажоритарный акционер?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Сравните подходы к дивидендам: Газпром (50% чистой прибыли) vs Лукойл (100% скорректированного FCF). Какой показатель надёжнее как база для дивидендов?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Какой сигнал рынку посылает систематический отказ от дивидендов при наличии прибыли? Как это влияет на котировки акций?
+              </li>
+              <li style="color: var(--text-secondary); line-height: 1.7;">
+                Как повышение ставки налога на прибыль с 20% до 25% повлияет на дивидендную политику российских госкомпаний?
+              </li>
+            </ol>
+          </div>
+
+
+          <!-- ============================================================
+               RELATED CONTENT
+               ============================================================ -->
+          <h2>Связанные материалы</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin: var(--space-5) 0;" class="reveal">
+            <a href="../lectures/topic-51.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Лекция</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">Тема 5.1. Дивидендная политика</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Теории, типы и модели дивидендных выплат</p>
+            </a>
+            <a href="lukoil.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Кейс</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">ПАО &laquo;Лукойл&raquo; &mdash; WACC и NPV</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Расчёт стоимости капитала и оценка проекта</p>
+            </a>
+            <a href="sberbank.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Кейс</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">ПАО &laquo;Сбербанк&raquo; &mdash; Структура капитала и ROE</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">DuPont-анализ и банковский леверидж</p>
+            </a>
+            <a href="../tools/wacc-calculator.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Инструмент</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">Калькулятор WACC</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Рассчитайте WACC с визуализацией</p>
+            </a>
+          </div>
+
+
+          <!-- ============================================================
+               DATA DISCLAIMER
+               ============================================================ -->
+          <div class="box-warning reveal">
+            Данные условные, составлены на основе публичной отчётности ПАО &laquo;Газпром&raquo;. Используются исключительно в учебных целях. Актуальны на март 2026.
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div><!-- /.container -->
+    </section>
+
+
+    <!-- ============================================================
+         CASE NAVIGATION: Prev / Next
+         ============================================================ -->
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="lecture-content">
+          <nav class="nav-lecture" aria-label="Навигация по кейсам">
+            <a href="lukoil.html" aria-label="Предыдущий кейс">
+              <span class="label">Предыдущий кейс</span>
+              <span class="title">ПАО &laquo;Лукойл&raquo; &mdash; WACC и NPV</span>
+            </a>
+            <a href="sberbank.html" aria-label="Следующий кейс">
+              <span class="label">Следующий кейс</span>
+              <span class="title">ПАО &laquo;Сбербанк&raquo; &mdash; Структура капитала и ROE</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <!-- Page-specific: Charts -->
+  <script>
+    document.addEventListener('chartjs:ready', function () {
+      var chartDefaults = {
+        color: '#94A3B8',
+        borderColor: 'rgba(255,255,255,0.08)',
+        font: { family: "'Inter', system-ui, sans-serif" }
+      };
+
+      Chart.defaults.color = chartDefaults.color;
+      Chart.defaults.borderColor = chartDefaults.borderColor;
+
+      // ---- Dividend Bar Chart ----
+      var divCtx = document.getElementById('dividend-chart');
+      if (divCtx) {
+        new Chart(divCtx.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+            datasets: [
+              {
+                label: 'Дивиденд на акцию (руб.)',
+                data: [16.61, 15.24, 12.55, 0, 0, 0, 0],
+                backgroundColor: [
+                  'rgba(129, 140, 248, 0.6)',
+                  'rgba(129, 140, 248, 0.6)',
+                  'rgba(129, 140, 248, 0.6)',
+                  'rgba(251, 113, 133, 0.6)',
+                  'rgba(251, 113, 133, 0.6)',
+                  'rgba(251, 113, 133, 0.6)',
+                  'rgba(251, 113, 133, 0.6)'
+                ],
+                borderColor: [
+                  '#818CF8',
+                  '#818CF8',
+                  '#818CF8',
+                  '#FB7185',
+                  '#FB7185',
+                  '#FB7185',
+                  '#FB7185'
+                ],
+                borderWidth: 1,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { callback: function (v) { return v + ' руб.'; } }
+              },
+              x: {
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      }
+
+      // ---- Ownership Doughnut ----
+      var ownCtx = document.getElementById('ownership-chart');
+      if (ownCtx) {
+        new Chart(ownCtx.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Государство (50,23%)', 'ADR-держатели (16,2%)', 'Прочие акционеры (33,57%)'],
+            datasets: [{
+              data: [50.23, 16.2, 33.57],
+              backgroundColor: [
+                'rgba(129, 140, 248, 0.7)',
+                'rgba(251, 113, 133, 0.7)',
+                'rgba(251, 191, 36, 0.7)'
+              ],
+              borderColor: ['#818CF8', '#FB7185', '#FBBF24'],
+              borderWidth: 2,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '55%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } }
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

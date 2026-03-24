@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 3.1. Оценка инвестиционных проектов: NPV, IRR, PI, DPP — Корпоративные финансы</title>
+  <meta name="description" content="Методы оценки инвестиционных проектов: NPV, IRR, PI, DPP, MIRR. Денежные потоки, анализ чувствительности, конфликт критериев, примеры расчётов">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 3.1. Оценка инвестиционных проектов: NPV, IRR, PI, DPP">
+  <meta property="og:description" content="Методы оценки инвестиционных проектов: чистая приведённая стоимость, внутренняя норма доходности, индекс рентабельности, дисконтированный срок окупаемости">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-31">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 3</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 3.1</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Оценка инвестиционных<br>проектов: NPV, IRR, PI, DPP
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Как оценить целесообразность инвестиций с помощью ключевых критериев: чистая приведённая стоимость,
+              внутренняя норма доходности, индекс рентабельности и дисконтированный срок окупаемости.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>3. Инвестиционные решения</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">УК-2, ОПК-4</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 1.2 (Временная стоимость денег), Тема 2.1 (Риск и доходность)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Инвестиционный процесс корпорации ===== -->
+          <h2 id="s1" class="reveal">1. Инвестиционный процесс корпорации</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Инвестиционные решения (Capital Budgeting)</strong> — решения о вложении капитала в долгосрочные активы с целью получения будущих денежных потоков. Это одни из самых важных решений в корпоративных финансах.</p>
+          </div>
+
+          <p class="reveal">Инвестиционные решения критически важны, поскольку они:</p>
+          <ul class="reveal">
+            <li>определяют будущую стоимость компании;</li>
+            <li>связывают значительные ресурсы на длительный срок;</li>
+            <li>в большинстве случаев необратимы.</li>
+          </ul>
+
+          <p class="reveal">Инвестиции классифицируются по нескольким критериям:</p>
+          <ul class="reveal">
+            <li><strong>По характеру:</strong> реальные (в основные средства, НИОКР) и финансовые (в ценные бумаги);</li>
+            <li><strong>По взаимоотношению:</strong> независимые (принятие одного не влияет на другой) и взаимоисключающие (можно выбрать только один);</li>
+            <li><strong>По обязательности:</strong> обязательные (экология, безопасность) и дискреционные (расширение, модернизация).</li>
+          </ul>
+
+          <!-- ===== 2. Денежные потоки ===== -->
+          <h2 id="s2" class="reveal">2. Денежные потоки инвестиционного проекта</h2>
+
+          <p class="reveal">При оценке проекта используются <strong>приростные (инкрементальные) денежные потоки</strong> — разница между потоками компании с проектом и без него.</p>
+
+          <p class="reveal">Основные компоненты:</p>
+          <ul class="reveal">
+            <li><strong>Начальные инвестиции (IC)</strong> — первоначальные вложения (отрицательный поток в момент $t = 0$);</li>
+            <li><strong>Операционные потоки (CF)</strong> — чистые денежные поступления в каждом периоде;</li>
+            <li><strong>Терминальный поток</strong> — ликвидационная стоимость активов по окончании проекта.</li>
+          </ul>
+
+          <div class="box-warning reveal">
+            <p><strong>Правила формирования денежных потоков:</strong></p>
+            <ol style="margin-bottom: 0;">
+              <li>Учитывать только приростные потоки (не суммарные);</li>
+              <li>Учитывать альтернативные издержки (opportunity cost);</li>
+              <li>Не учитывать невозвратные затраты (sunk costs);</li>
+              <li>Учитывать побочные эффекты (каннибализация, синергия);</li>
+              <li>Учитывать изменения в оборотном капитале.</li>
+            </ol>
+          </div>
+
+          <!-- ===== 3. Методы оценки ===== -->
+          <h2 id="s3" class="reveal">3. Методы оценки инвестиционных проектов</h2>
+
+          <!-- 3.1 NPV -->
+          <h3 id="s3-1" class="reveal">3.1. Чистая приведённая стоимость — NPV (Net Present Value)</h3>
+
+          <p class="reveal"><strong>NPV</strong> — сумма дисконтированных денежных потоков проекта за вычетом первоначальных инвестиций:</p>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <div class="math-block" style="font-size: var(--text-xl);">$$NPV = \sum_{t=1}^{n} \frac{CF_t}{(1 + r)^t} - IC$$</div>
+            <p style="margin-bottom:0;">$CF_t$ — чистый денежный поток в году $t$, $r$ — ставка дисконтирования (обычно WACC), $IC$ — начальные инвестиции, $n$ — срок проекта.</p>
+          </div>
+
+          <div class="box-key reveal">
+            <p><strong>Правило принятия решения:</strong></p>
+            <ul style="margin-bottom:0;">
+              <li>$NPV > 0$ — проект создаёт стоимость — <strong>принять</strong></li>
+              <li>$NPV < 0$ — проект разрушает стоимость — <strong>отклонить</strong></li>
+              <li>$NPV = 0$ — проект безразличен</li>
+            </ul>
+          </div>
+
+          <p class="reveal"><strong>Достоинства NPV:</strong></p>
+          <ul class="reveal">
+            <li>Учитывает временну&#769;ю стоимость денег;</li>
+            <li>Показывает абсолютный прирост стоимости компании;</li>
+            <li>Обладает свойством аддитивности: $NPV_{\text{портфеля}} = \sum NPV_i$;</li>
+            <li>Является <strong>главным критерием</strong> при конфликте с другими показателями.</li>
+          </ul>
+
+          <!-- 3.2 IRR -->
+          <h3 id="s3-2" class="reveal">3.2. Внутренняя норма доходности — IRR (Internal Rate of Return)</h3>
+
+          <p class="reveal"><strong>IRR</strong> — ставка дисконтирования, при которой NPV проекта равен нулю. Это «доходность самого проекта».</p>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$\sum_{t=1}^{n} \frac{CF_t}{(1 + IRR)^t} = IC$$</div>
+            <p style="margin-bottom:0;">IRR показывает максимальную стоимость капитала, при которой проект остаётся безубыточным.</p>
+          </div>
+
+          <p class="reveal"><strong>Правило:</strong> $IRR > WACC$ — принять; $IRR < WACC$ — отклонить.</p>
+
+          <div class="box-formula reveal">
+            <p><strong>Метод линейной интерполяции:</strong></p>
+            <div class="math-block">$$IRR \approx r_1 + \frac{NPV_1}{NPV_1 - NPV_2} \times (r_2 - r_1)$$</div>
+            <p style="margin-bottom:0;">$r_1$ — ставка, при которой $NPV_1 > 0$; $r_2$ — ставка, при которой $NPV_2 < 0$.</p>
+          </div>
+
+          <div class="box-warning reveal">
+            <p><strong>Ограничения IRR:</strong></p>
+            <ul style="margin-bottom:0;">
+              <li>Может давать несколько значений при нестандартных потоках (смена знаков);</li>
+              <li>При взаимоисключающих проектах может конфликтовать с NPV (приоритет у NPV);</li>
+              <li>Не учитывает масштаб проекта.</li>
+            </ul>
+          </div>
+
+          <!-- 3.3 PI -->
+          <h3 id="s3-3" class="reveal">3.3. Индекс рентабельности — PI (Profitability Index)</h3>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$PI = \frac{\sum_{t=1}^{n} \frac{CF_t}{(1 + r)^t}}{IC} = \frac{PV_{\text{притоков}}}{IC}$$</div>
+            <p style="margin-bottom:0;"><strong>Правило:</strong> $PI > 1$ — принять; $PI < 1$ — отклонить.</p>
+          </div>
+
+          <p class="reveal">PI показывает, сколько рублей приведённой стоимости генерирует каждый рубль инвестиций. Это <strong>относительный</strong> показатель, особенно полезный при <strong>ранжировании проектов</strong> в условиях ограниченного бюджета (рационирование капитала).</p>
+
+          <!-- 3.4 DPP -->
+          <h3 id="s3-4" class="reveal">3.4. Дисконтированный срок окупаемости — DPP</h3>
+
+          <p class="reveal"><strong>DPP</strong> — период, за который кумулятивный дисконтированный денежный поток сравняется с начальными инвестициями.</p>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$DPP = t^* + \frac{IC - \sum_{t=1}^{t^*} \frac{CF_t}{(1+r)^t}}{\frac{CF_{t^*+1}}{(1+r)^{t^*+1}}}$$</div>
+            <p style="margin-bottom:0;">$t^*$ — последний год, в котором кумулятивный PV ещё меньше IC.</p>
+          </div>
+
+          <p class="reveal"><strong>Достоинства:</strong> учитывает временну&#769;ю стоимость денег (в отличие от простого PP). <strong>Недостатки:</strong> не учитывает потоки после окупаемости, не показывает величину создаваемой стоимости.</p>
+
+          <!-- 3.5 MIRR -->
+          <h3 id="s3-5" class="reveal">3.5. Модифицированная IRR — MIRR</h3>
+
+          <p class="reveal">MIRR устраняет проблему множественных IRR, предполагая реинвестирование промежуточных потоков по ставке WACC:</p>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$MIRR = \left(\frac{\sum_{t=1}^{n} CF_t^{+} \times (1+r)^{n-t}}{\sum_{t=0}^{n} \frac{|CF_t^{-}|}{(1+r)^t}}\right)^{1/n} - 1$$</div>
+          </div>
+
+          <!-- ===== 4. Конфликт NPV и IRR ===== -->
+          <h2 id="s4" class="reveal">4. Конфликт критериев NPV и IRR</h2>
+
+          <p class="reveal">При оценке <strong>взаимоисключающих</strong> проектов NPV и IRR могут давать противоположные ранжирования из-за:</p>
+          <ul class="reveal">
+            <li>различий в масштабе проектов;</li>
+            <li>различий во временно&#769;м распределении потоков;</li>
+            <li>различий в предположении о ставке реинвестирования.</li>
+          </ul>
+
+          <div class="box-key reveal">
+            <p style="margin-bottom:0;"><strong>Правило:</strong> при конфликте приоритет <strong>всегда</strong> у NPV, поскольку NPV непосредственно измеряет прирост стоимости компании.</p>
+          </div>
+
+          <!-- ===== 5. Анализ чувствительности ===== -->
+          <h2 id="s5" class="reveal">5. Анализ чувствительности</h2>
+
+          <p class="reveal">Анализ чувствительности показывает, как изменяется NPV при изменении одного из ключевых параметров (ставка дисконтирования, объём продаж, себестоимость). Это позволяет оценить <strong>устойчивость</strong> проекта и выявить критические переменные.</p>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. Полный расчёт NPV, PI, DPP</h3>
+
+            <p><strong>Условие:</strong> Компания рассматривает проект. IC = 8 000 000 руб., ставка = 12%, срок = 5 лет.</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Год</th><th>CF (руб.)</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td class="number">1 500 000</td></tr>
+                  <tr><td>2</td><td class="number">2 000 000</td></tr>
+                  <tr><td>3</td><td class="number">2 500 000</td></tr>
+                  <tr><td>4</td><td class="number">3 000 000</td></tr>
+                  <tr><td>5</td><td class="number">3 000 000</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Шаг 1.</strong> Дисконтируем потоки:</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Год</th><th>CF</th><th>$1/(1{,}12)^t$</th><th>PV</th><th>Кумулят. PV</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td class="number">1 500 000</td><td class="number">0,8929</td><td class="number">1 339 350</td><td class="number">1 339 350</td></tr>
+                  <tr><td>2</td><td class="number">2 000 000</td><td class="number">0,7972</td><td class="number">1 594 400</td><td class="number">2 933 750</td></tr>
+                  <tr><td>3</td><td class="number">2 500 000</td><td class="number">0,7118</td><td class="number">1 779 500</td><td class="number">4 713 250</td></tr>
+                  <tr><td>4</td><td class="number">3 000 000</td><td class="number">0,6355</td><td class="number">1 906 500</td><td class="number">6 619 750</td></tr>
+                  <tr><td>5</td><td class="number">3 000 000</td><td class="number">0,5674</td><td class="number">1 702 200</td><td class="number">8 321 950</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Шаг 2.</strong> NPV:</p>
+            <div class="math-block">$$NPV = 8\,321\,950 - 8\,000\,000 = +321\,950 \text{ руб.}$$</div>
+            <p>$NPV > 0$ — проект создаёт стоимость, рекомендован к принятию.</p>
+
+            <p><strong>Шаг 3.</strong> PI:</p>
+            <div class="math-block">$$PI = \frac{8\,321\,950}{8\,000\,000} = 1{,}040$$</div>
+            <p>На каждый вложенный рубль создаётся 4 коп. добавленной стоимости.</p>
+
+            <p><strong>Шаг 4.</strong> DPP:</p>
+            <div class="math-block">$$DPP = 4 + \frac{8\,000\,000 - 6\,619\,750}{1\,702\,200} = 4 + 0{,}81 = 4{,}81 \text{ года}$$</div>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Сравнение двух взаимоисключающих проектов</h3>
+
+            <p><strong>Условие:</strong> $r = 14\%$, IC у обоих = 5 000 000 руб.</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Год</th><th>Проект А</th><th>Проект Б</th></tr></thead>
+                <tbody>
+                  <tr><td>1</td><td class="number">800 000</td><td class="number">2 500 000</td></tr>
+                  <tr><td>2</td><td class="number">1 200 000</td><td class="number">2 500 000</td></tr>
+                  <tr><td>3</td><td class="number">1 800 000</td><td class="number">1 500 000</td></tr>
+                  <tr><td>4</td><td class="number">2 500 000</td><td class="number">800 000</td></tr>
+                  <tr><td>5</td><td class="number">3 000 000</td><td class="number">500 000</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Результаты расчёта:</strong></p>
+            <ul>
+              <li>$NPV_A = +878\,371$ руб., $PI_A = 1{,}176$</li>
+              <li>$NPV_Б = +862\,457$ руб., $PI_Б = 1{,}172$</li>
+            </ul>
+
+            <p style="margin-bottom:0;"><strong>Вывод:</strong> Проект А предпочтительнее — выше NPV и PI. Несмотря на то что денежные потоки проекта Б поступают раньше, суммарная приведённая стоимость проекта А выше.</p>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. Расчёт IRR методом интерполяции</h3>
+
+            <p><strong>Условие:</strong> IC = 4 000 000 руб. Потоки: CF&#8321; = 1 200 000; CF&#8322; = 1 500 000; CF&#8323; = 1 800 000; CF&#8324; = 1 600 000.</p>
+
+            <p>При $r_1 = 15\%$: $NPV_1 = +276\,028$ руб. При $r_2 = 20\%$: $NPV_2 = -145\,062$ руб.</p>
+
+            <div class="math-block">$$IRR \approx 15\% + \frac{276\,028}{276\,028 + 145\,062} \times (20\% - 15\%)$$</div>
+            <div class="math-block">$$IRR \approx 15\% + \frac{276\,028}{421\,090} \times 5\% \approx 15\% + 0{,}656 \times 5\% \approx 18{,}28\%$$</div>
+
+            <p style="margin-bottom:0;">Если WACC компании = 14%, проект принимается ($IRR = 18{,}28\% > 14\%$).</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Расчёт NPV и принятие решения</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Компания «АльфаИнвест» рассматривает проект: IC = 8 000 000 руб., WACC = 13%.</p>
+
+              <div class="data-table-wrapper" style="margin-bottom: var(--space-4);">
+                <table class="data-table">
+                  <thead><tr><th>Год</th><th>CF (руб.)</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td class="number">2 000 000</td></tr>
+                    <tr><td>2</td><td class="number">2 800 000</td></tr>
+                    <tr><td>3</td><td class="number">3 200 000</td></tr>
+                    <tr><td>4</td><td class="number">2 500 000</td></tr>
+                    <tr><td>5</td><td class="number">1 500 000</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p><strong>Рассчитайте NPV, IRR, PI, DPP. Проведите анализ чувствительности NPV при ставках 10%, 13%, 16%, 20%.</strong></p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+
+              <div class="data-table-wrapper" style="margin-bottom: var(--space-4);">
+                <table class="data-table">
+                  <thead><tr><th>Год</th><th>CF</th><th>$1/(1{,}13)^t$</th><th>PV</th></tr></thead>
+                  <tbody>
+                    <tr><td>1</td><td class="number">2 000 000</td><td class="number">0,8850</td><td class="number">1 769 912</td></tr>
+                    <tr><td>2</td><td class="number">2 800 000</td><td class="number">0,7831</td><td class="number">2 192 745</td></tr>
+                    <tr><td>3</td><td class="number">3 200 000</td><td class="number">0,6931</td><td class="number">2 217 843</td></tr>
+                    <tr><td>4</td><td class="number">2 500 000</td><td class="number">0,6133</td><td class="number">1 533 156</td></tr>
+                    <tr><td>5</td><td class="number">1 500 000</td><td class="number">0,5428</td><td class="number">814 263</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="math-block">$$NPV = 8\,527\,919 - 8\,000\,000 = +527\,919 \text{ руб.} \rightarrow \text{принять}$$</div>
+              <div class="math-block">$$IRR \approx 15{,}7\% \quad (IRR > WACC \rightarrow \text{принять})$$</div>
+              <div class="math-block">$$PI = 8\,527\,919 / 8\,000\,000 = 1{,}066 \rightarrow \text{принять}$$</div>
+              <div class="math-block">$$DPP = 4 + \frac{8\,000\,000 - 7\,713\,656}{814\,263} = 4{,}35 \text{ года}$$</div>
+
+              <p><strong>Анализ чувствительности:</strong></p>
+              <div class="data-table-wrapper">
+                <table class="data-table">
+                  <thead><tr><th>WACC</th><th>NPV</th></tr></thead>
+                  <tbody>
+                    <tr><td class="number">10%</td><td class="number">+1 175 354 руб.</td></tr>
+                    <tr><td class="number">13%</td><td class="number">+527 919 руб.</td></tr>
+                    <tr><td class="number">16%</td><td class="number">−50 004 руб.</td></tr>
+                    <tr><td class="number">20%</td><td class="number">−728 588 руб.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin-bottom:0;"><em>При ставке выше ~15,7% проект убыточен.</em></p>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. Выбор из трёх проектов при ограниченном бюджете</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Бюджет: 10 млн руб.</p>
+              <div class="data-table-wrapper" style="margin-bottom: var(--space-4);">
+                <table class="data-table">
+                  <thead><tr><th>Проект</th><th>IC (млн)</th><th>NPV (млн)</th><th>IRR</th><th>PI</th></tr></thead>
+                  <tbody>
+                    <tr><td>X</td><td class="number">10</td><td class="number">2,0</td><td class="number">22%</td><td class="number">1,20</td></tr>
+                    <tr><td>Y</td><td class="number">6</td><td class="number">1,5</td><td class="number">27%</td><td class="number">1,25</td></tr>
+                    <tr><td>Z</td><td class="number">4</td><td class="number">1,2</td><td class="number">31%</td><td class="number">1,30</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <ul>
+                <li>Вариант 1: Проект X — NPV = 2,0 млн</li>
+                <li>Вариант 2: Проекты Y + Z — NPV = 1,5 + 1,2 = 2,7 млн, IC = 6 + 4 = 10 млн</li>
+              </ul>
+              <p style="margin-bottom:0;"><strong>Вывод:</strong> комбинация Y + Z даёт больший совокупный NPV (2,7 > 2,0). При ограниченном бюджете ранжирование по PI даёт оптимальный портфель (Z → Y → X).</p>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Расчёт IRR и принятие решения</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>IC = 4 000 000 руб. Потоки: CF&#8321; = 1 200 000; CF&#8322; = 1 500 000; CF&#8323; = 1 800 000; CF&#8324; = 1 600 000. WACC = 14%.</p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <p>При $r_1 = 15\%$: $NPV_1 = +276\,028$. При $r_2 = 20\%$: $NPV_2 = -145\,062$.</p>
+              <div class="math-block">$$IRR \approx 15\% + \frac{276\,028}{421\,090} \times 5\% \approx 18{,}28\%$$</div>
+              <p style="margin-bottom:0;">$IRR = 18{,}28\% > WACC = 14\%$ — проект принимается.</p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>NPV (Net Present Value)</strong></td><td>Чистая приведённая стоимость — разница между суммой дисконтированных притоков и инвестициями</td></tr>
+                <tr><td><strong>IRR (Internal Rate of Return)</strong></td><td>Внутренняя норма доходности — ставка, при которой NPV = 0</td></tr>
+                <tr><td><strong>PI (Profitability Index)</strong></td><td>Индекс рентабельности — отношение PV притоков к инвестициям</td></tr>
+                <tr><td><strong>DPP (Discounted Payback Period)</strong></td><td>Дисконтированный срок окупаемости — с учётом временно&#769;й стоимости денег</td></tr>
+                <tr><td><strong>MIRR</strong></td><td>Модифицированная IRR с реинвестированием по WACC</td></tr>
+                <tr><td><strong>Инкрементальные потоки</strong></td><td>Приростные денежные потоки — разница «с проектом» и «без проекта»</td></tr>
+                <tr><td><strong>Ставка отсечения (Hurdle Rate)</strong></td><td>Минимальная приемлемая доходность проекта (обычно = WACC)</td></tr>
+                <tr><td><strong>Рационирование капитала</strong></td><td>Ограничение бюджета инвестиций; ранжирование проектов по PI</td></tr>
+                <tr><td><strong>Невозвратные затраты (Sunk Costs)</strong></td><td>Уже понесённые расходы, которые не влияют на решение о проекте</td></tr>
+                <tr><td><strong>Альтернативные издержки</strong></td><td>Упущенная выгода от наилучшего альтернативного использования ресурса</td></tr>
+                <tr><td><strong>Анализ чувствительности</strong></td><td>Оценка изменения NPV при изменении одного параметра</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Какой критерий имеет приоритет при конфликте NPV и IRR?',
+            options: [
+              'IRR, так как показывает доходность',
+              'NPV, так как измеряет прирост стоимости',
+              'PI, так как относительный показатель',
+              'DPP, так как учитывает сроки'
+            ],
+            correct: 1,
+            explanation: 'NPV непосредственно измеряет прирост стоимости компании. При конфликте с другими показателями приоритет всегда отдаётся NPV.'
+          },
+          {
+            text: 'Почему невозвратные затраты (sunk costs) не учитываются при оценке проекта?',
+            options: [
+              'Они слишком малы',
+              'Они уже понесены и не влияют на будущие потоки',
+              'Их сложно рассчитать',
+              'Их учитывает только IRR'
+            ],
+            correct: 1,
+            explanation: 'Невозвратные затраты — это уже понесённые расходы, которые нельзя вернуть. Они не зависят от решения о проекте и поэтому не влияют на инкрементальные денежные потоки.'
+          },
+          {
+            text: 'Когда PI особенно полезен?',
+            options: [
+              'При оценке одного проекта',
+              'При ранжировании проектов в условиях ограниченного бюджета',
+              'При расчёте IRR',
+              'При сравнении ставок дисконтирования'
+            ],
+            correct: 1,
+            explanation: 'PI — относительный показатель, показывающий отдачу на рубль инвестиций. При рационировании капитала ранжирование по PI позволяет выбрать оптимальный портфель проектов.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-12.html">Тема 1.2. Временная стоимость денег</a> — основа дисконтирования потоков</li>
+              <li><a href="topic-21.html">Тема 2.1. Риск и доходность</a> — обоснование ставки дисконтирования</li>
+              <li><a href="topic-32.html">Тема 3.2. Портфельный анализ</a> — принципы формирования портфеля проектов</li>
+              <li><a href="topic-42.html">Тема 4.2. WACC</a> — WACC как ставка дисконтирования в NPV</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture flex justify-between items-center gap-4" aria-label="Навигация по лекциям" style="max-width: 780px; margin: 0 auto;">
+          <a href="topic-22.html" class="btn btn-ghost">&larr; Тема 2.2</a>
+          <a href="index.html" class="btn btn-ghost">Все лекции</a>
+          <a href="topic-32.html" class="btn btn-ghost">Тема 3.2 &rarr;</a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

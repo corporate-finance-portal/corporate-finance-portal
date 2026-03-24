@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 1.2. Временная стоимость денег — Корпоративные финансы</title>
+  <meta name="description" content="Временная стоимость денег: дисконтирование, наращение, аннуитеты, перпетуитеты, формула Фишера, EAR, оценка облигаций">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 1.2. Временная стоимость денег. Дисконтирование и наращение">
+  <meta property="og:description" content="PV, FV, аннуитеты, перпетуитеты, формула Фишера, EAR, оценка облигаций — примеры расчётов с российскими данными">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-12">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 1</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 1.2</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Временная стоимость денег.<br>Дисконтирование и наращение
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Почему рубль сегодня дороже рубля завтра, как считать PV и FV,
+              что такое аннуитеты, перпетуитеты и формула Фишера.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>1. Основы корпоративных финансов</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">УК-1, ОПК-2</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 1.1 (Введение), Финансовая математика</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Концепция TVM ===== -->
+          <h2 id="s1" class="reveal">1. Концепция временно&#x301;й стоимости денег</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Временна&#x301;я стоимость денег (Time Value of Money, TVM)</strong> — фундаментальная концепция финансов: рубль сегодня стоит больше, чем рубль в будущем.</p>
+          </div>
+
+          <p class="reveal">Причины:</p>
+          <ol class="reveal">
+            <li><strong>Возможность инвестирования</strong> — сегодняшний рубль можно вложить и получить доход;</li>
+            <li><strong>Инфляция</strong> — покупательная способность денег снижается со временем;</li>
+            <li><strong>Риск</strong> — будущие поступления не гарантированы;</li>
+            <li><strong>Предпочтение ликвидности</strong> — люди предпочитают иметь деньги сейчас.</li>
+          </ol>
+
+          <p class="reveal">Концепция TVM лежит в основе всех финансовых расчётов: оценки проектов (NPV), оценки облигаций и акций, ипотечных расчётов, пенсионного планирования.</p>
+
+          <!-- ===== 2. Простые и сложные проценты ===== -->
+          <h2 id="s2" class="reveal">2. Простые и сложные проценты</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Простые проценты (Simple Interest)</strong> — начисляются только на первоначальную сумму:</p>
+            <div class="math-block">$$FV = PV \times (1 + r \times n)$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Сложные проценты (Compound Interest)</strong> — начисляются на сумму с учётом ранее начисленных процентов:</p>
+            <div class="math-block">$$FV = PV \times (1 + r)^n$$</div>
+          </div>
+
+          <div class="box-example reveal">
+            <p>При долгосрочном инвестировании разница огромна. 1 000 000 руб. под 10% на 20 лет:</p>
+            <ul>
+              <li>Простые: $1\,000\,000 \times (1 + 0{,}10 \times 20) = 3\,000\,000$ руб.</li>
+              <li>Сложные: $1\,000\,000 \times (1{,}10)^{20} = 6\,727\,500$ руб. (в 2,2 раза больше!)</li>
+            </ul>
+          </div>
+
+          <!-- ===== 3. Наращение и дисконтирование ===== -->
+          <h2 id="s3" class="reveal">3. Наращение и дисконтирование</h2>
+
+          <p class="reveal">Два базовых оператора финансовой математики:</p>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Наращение (Compounding)</strong> — определение будущей стоимости (FV) текущих денег:</p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$FV = PV \times (1 + r)^n$$</div>
+          </div>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Дисконтирование (Discounting)</strong> — определение текущей (приведённой) стоимости (PV) будущих денег:</p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$PV = \frac{FV}{(1 + r)^n}$$</div>
+          </div>
+
+          <p class="reveal">Множитель $(1 + r)^n$ называется <strong>коэффициентом наращения</strong>, а $\frac{1}{(1 + r)^n}$ — <strong>коэффициентом дисконтирования</strong>.</p>
+
+          <!-- ===== 4. Аннуитеты ===== -->
+          <h2 id="s4" class="reveal">4. Аннуитеты</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Аннуитет (Annuity)</strong> — серия равных платежей через равные промежутки времени.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Обычный (постнумерандо)</strong> — платежи в конце каждого периода:</p>
+            <div class="math-block">$$PV_{\text{ann}} = PMT \times \frac{1 - (1 + r)^{-n}}{r}$$</div>
+            <div class="math-block">$$FV_{\text{ann}} = PMT \times \frac{(1 + r)^n - 1}{r}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Авансовый (пренумерандо)</strong> — платежи в начале каждого периода:</p>
+            <div class="math-block">$$PV_{\text{due}} = PV_{\text{ann}} \times (1 + r)$$</div>
+          </div>
+
+          <p class="reveal">Примеры аннуитетов: ипотечные платежи, арендная плата, купоны по облигациям, пенсионные выплаты.</p>
+
+          <!-- ===== 5. Перпетуитет ===== -->
+          <h2 id="s5" class="reveal">5. Перпетуитет</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Перпетуитет (Perpetuity)</strong> — бессрочный аннуитет (бесконечная серия платежей):</p>
+            <div class="math-block">$$PV = \frac{PMT}{r}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Растущий перпетуитет</strong> (платежи растут с темпом $g$):</p>
+            <div class="math-block">$$PV = \frac{PMT}{r - g}, \quad r > g$$</div>
+            <p style="margin-bottom:0;">Растущий перпетуитет — основа модели Гордона для оценки акций.</p>
+          </div>
+
+          <!-- ===== 6. Номинальная и реальная ставки ===== -->
+          <h2 id="s6" class="reveal">6. Номинальная и реальная ставки</h2>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Формула Фишера:</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$(1 + r_{\text{ном}}) = (1 + r_{\text{реал}}) \times (1 + \pi)$$</div>
+            <p style="margin-bottom:0;">Приближённо: $r_{\text{реал}} \approx r_{\text{ном}} - \pi$</p>
+          </div>
+
+          <div class="box-example reveal">
+            <p><em>Пример:</em> номинальная ставка = 15%, инфляция = 7%.</p>
+            <div class="math-block">$$r_{\text{реал}} = \frac{1{,}15}{1{,}07} - 1 = 7{,}48\%$$</div>
+            <p style="margin-bottom:0;">Приближённо: $15\% - 7\% = 8\%$ (погрешность ≈ 0,5 п.п.).</p>
+          </div>
+
+          <!-- ===== 7. Эффективная годовая ставка ===== -->
+          <h2 id="s7" class="reveal">7. Эффективная годовая ставка</h2>
+
+          <p class="reveal">При начислении процентов чаще одного раза в год фактическая доходность выше номинальной:</p>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$EAR = \left(1 + \frac{r_{\text{ном}}}{m}\right)^m - 1$$</div>
+            <p style="margin-bottom:0;">где $m$ — число начислений в год.</p>
+          </div>
+
+          <div class="box-example reveal">
+            <p><em>Пример:</em> номинальная ставка 12%, начисление ежеквартально ($m = 4$):</p>
+            <div class="math-block">$$EAR = \left(1 + \frac{0{,}12}{4}\right)^4 - 1 = (1{,}03)^4 - 1 = 12{,}55\%$$</div>
+          </div>
+
+          <!-- ===== 8. Оценка облигаций ===== -->
+          <h2 id="s8" class="reveal">8. Применение: оценка облигаций</h2>
+
+          <div class="box-formula reveal">
+            <p>Стоимость купонной облигации = PV купонных платежей (аннуитет) + PV номинала:</p>
+            <div class="math-block">$$P = C \times \frac{1 - (1 + r)^{-n}}{r} + \frac{N}{(1 + r)^n}$$</div>
+            <p style="margin-bottom:0;">где $C$ — купон, $N$ — номинал, $r$ — требуемая доходность, $n$ — число периодов.</p>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. Дисконтирование будущего платежа</h3>
+            <p>Компании обещают выплатить 5 000 000 руб. через 3 года. Требуемая доходность — 12%.</p>
+            <div class="math-block">$$PV = \frac{5\,000\,000}{(1{,}12)^3} = \frac{5\,000\,000}{1{,}4049} = 3\,558\,900 \text{ руб.}$$</div>
+            <p style="margin-bottom:0;">Сегодня это обещание стоит 3,56 млн руб.</p>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Ипотечный кредит (аннуитет)</h3>
+            <p>Кредит 6 000 000 руб. на 20 лет под 14% годовых, ежемесячные платежи.</p>
+            <p>Месячная ставка: $r = 14\% / 12 = 1{,}167\%$. Число платежей: $n = 240$.</p>
+            <div class="math-block">$$PMT = \frac{PV \times r}{1 - (1+r)^{-n}} = \frac{6\,000\,000 \times 0{,}01167}{1 - (1{,}01167)^{-240}}$$</div>
+            <div class="math-block">$$PMT = \frac{70\,000}{0{,}9377} = 74\,651 \text{ руб./мес.}$$</div>
+            <p style="margin-bottom:0;">Общая переплата: $74\,651 \times 240 - 6\,000\,000 = 11\,916\,240$ руб. (почти 2x от суммы кредита).</p>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. Оценка ОФЗ 26238</h3>
+            <p>Номинал 1 000 руб., купон 7,1% (35,5 руб. раз в полгода), до погашения — 5 лет (10 полугодовых периодов). Требуемая доходность рынка — 14% годовых (7% за полугодие).</p>
+            <div class="math-block">$$P = 35{,}5 \times \frac{1 - (1{,}07)^{-10}}{0{,}07} + \frac{1\,000}{(1{,}07)^{10}}$$</div>
+            <div class="math-block">$$P = 35{,}5 \times 7{,}0236 + 1\,000 \times 0{,}5083 = 249{,}3 + 508{,}3 = 757{,}6 \text{ руб.}$$</div>
+            <p style="margin-bottom:0;">Облигация торгуется с дисконтом (757,6 < 1 000), поскольку купон (7,1%) ниже рыночной доходности (14%).</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Наращение и дисконтирование</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Вы положили на депозит 2 000 000 руб. под 11% годовых (сложные проценты). Какая сумма будет на счёте через 5 лет?</p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$FV = 2\,000\,000 \times (1{,}11)^5 = 2\,000\,000 \times 1{,}6851 = 3\,370\,100 \text{ руб.}$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. PV аннуитета</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Компания будет получать 500 000 руб. ежегодно в течение 8 лет. Ставка — 10%. Какова приведённая стоимость?</p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$PV = 500\,000 \times \frac{1 - (1{,}10)^{-8}}{0{,}10} = 500\,000 \times 5{,}3349 = 2\,667\,450 \text{ руб.}$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Реальная ставка (формула Фишера)</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Банк предлагает вклад под 16% годовых. Ожидаемая инфляция — 8%. Какова реальная доходность?</p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение (точная формула):</strong></p>
+              <div class="math-block">$$r_{\text{реал}} = \frac{1 + 0{,}16}{1 + 0{,}08} - 1 = \frac{1{,}16}{1{,}08} - 1 = 7{,}41\%$$</div>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>TVM (Time Value of Money)</strong></td><td>Рубль сегодня дороже рубля в будущем</td></tr>
+                <tr><td><strong>Наращение (Compounding)</strong></td><td>Определение будущей стоимости текущих денег</td></tr>
+                <tr><td><strong>Дисконтирование (Discounting)</strong></td><td>Определение текущей стоимости будущих денег</td></tr>
+                <tr><td><strong>PV (Present Value)</strong></td><td>Приведённая (текущая) стоимость</td></tr>
+                <tr><td><strong>FV (Future Value)</strong></td><td>Будущая стоимость</td></tr>
+                <tr><td><strong>Аннуитет (Annuity)</strong></td><td>Серия равных платежей через равные промежутки</td></tr>
+                <tr><td><strong>Перпетуитет (Perpetuity)</strong></td><td>Бессрочный аннуитет</td></tr>
+                <tr><td><strong>Ставка дисконтирования</strong></td><td>Ставка для приведения будущих потоков к PV</td></tr>
+                <tr><td><strong>Номинальная ставка</strong></td><td>Объявленная ставка (включает инфляцию)</td></tr>
+                <tr><td><strong>Реальная ставка</strong></td><td>Ставка, очищенная от инфляции</td></tr>
+                <tr><td><strong>EAR</strong></td><td>Эффективная годовая ставка с учётом частоты начисления</td></tr>
+                <tr><td><strong>Формула Фишера</strong></td><td>Связь номинальной, реальной ставки и инфляции</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Почему рубль сегодня стоит больше, чем рубль через год?',
+            options: [
+              'Потому что бумажные деньги изнашиваются',
+              'Из-за возможности инвестирования, инфляции, риска и предпочтения ликвидности',
+              'Потому что ЦБ печатает деньги',
+              'Только из-за инфляции'
+            ],
+            correct: 1,
+            explanation: 'Четыре причины: возможность инвестирования, инфляция, риск неполучения будущих денег и предпочтение ликвидности.'
+          },
+          {
+            text: 'Какая формула используется для расчёта приведённой стоимости аннуитета?',
+            options: [
+              '$PV = FV / (1 + r)^n$',
+              '$PV = PMT \\times \\frac{1 - (1 + r)^{-n}}{r}$',
+              '$PV = PMT / r$',
+              '$PV = PMT \\times (1 + r)^n$'
+            ],
+            correct: 1,
+            explanation: 'PV аннуитета = PMT \u00d7 (1 \u2212 (1+r)^(\u2212n)) / r. Формула PMT/r \u2014 это перпетуитет (бессрочный аннуитет).'
+          },
+          {
+            text: 'EAR при номинальной ставке 12% и ежеквартальном начислении равна:',
+            options: [
+              '12,00%',
+              '12,36%',
+              '12,55%',
+              '13,00%'
+            ],
+            correct: 2,
+            explanation: 'EAR = (1 + 0,12/4)^4 \u2212 1 = (1,03)^4 \u2212 1 = 12,55%. EAR всегда выше номинальной при m > 1.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-11.html">Тема 1.1. Введение в корпоративные финансы</a> — базовые понятия финансов</li>
+              <li><a href="topic-21.html">Тема 2.1. Риск и доходность</a> — ставка дисконтирования отражает риск</li>
+              <li><a href="topic-31.html">Тема 3.1. Оценка проектов (NPV)</a> — NPV = дисконтирование денежных потоков</li>
+              <li><a href="topic-42.html">Тема 4.2. WACC</a> — WACC как ставка дисконтирования</li>
+              <li><a href="topic-51.html">Тема 5.1. Дивидендная политика</a> — модель Гордона как растущий перпетуитет</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture" aria-label="Навигация по лекциям">
+          <a href="topic-11.html"><span class="label">Назад</span><span class="title">1.1. Введение в корпоративные финансы</span></a>
+          <a href="topic-21.html"><span class="label">Следующая тема</span><span class="title">2.1. Риск и доходность</span></a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

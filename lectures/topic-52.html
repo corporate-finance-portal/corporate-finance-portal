@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 5.2. Оборотный капитал и бюджетирование — Корпоративные финансы</title>
+  <meta name="description" content="Управление оборотным капиталом: NWC, операционный и финансовый циклы, модели EOQ и Баумоля, EFN, бюджетирование, краткосрочное финансирование">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 5.2. Управление оборотным капиталом. Финансовое планирование и бюджетирование">
+  <meta property="og:description" content="NWC, CCC, модель EOQ, модель Баумоля, метод процента от продаж (EFN), бюджет денежных средств, краткосрочное финансирование">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-52">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 5</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 5.2</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Оборотный капитал.<br>Финансовое планирование
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Как управлять запасами, дебиторкой и деньгами. Модели EOQ и Баумоля,
+              финансовый цикл, метод процента от продаж и бюджетирование.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>5. Стратегические финансовые решения</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>— (только ПЗ и СР)</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">ОПК-2, ОПК-5</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 1.2 (TVM), Тема 1.1 (финансовая отчётность)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Оборотный капитал ===== -->
+          <h2 id="s1" class="reveal">1. Оборотный капитал</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Оборотный капитал (Working Capital)</strong> — средства, используемые в текущей операционной деятельности: запасы, дебиторская задолженность, денежные средства.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Чистый оборотный капитал (NWC — Net Working Capital):</strong></p>
+            <div class="math-block">$$NWC = \text{Оборотные активы} - \text{Краткосрочные обязательства}$$</div>
+            <p style="margin-bottom:0;">$NWC > 0$ — компания покрывает краткосрочные обязательства текущими активами. $NWC < 0$ — потенциальные проблемы с ликвидностью.</p>
+          </div>
+
+          <!-- ===== 2. Операционный и финансовый циклы ===== -->
+          <h2 id="s2" class="reveal">2. Операционный и финансовый циклы</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Операционный цикл (Operating Cycle):</strong></p>
+            <div class="math-block">$$OC = T_{\text{зап}} + T_{\text{ДЗ}}$$</div>
+          </div>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Финансовый цикл (Cash Conversion Cycle, CCC):</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$CCC = T_{\text{зап}} + T_{\text{ДЗ}} - T_{\text{КЗ}}$$</div>
+            <p style="margin-bottom:0;">CCC показывает, сколько дней компания финансирует оборотный капитал из собственных/заёмных средств. Цель: <strong>минимизировать CCC</strong> без ущерба для операционной деятельности.</p>
+          </div>
+
+          <div class="box-info reveal">
+            <p><strong>Периоды оборота:</strong></p>
+            <div class="math-block">$$T_{\text{зап}} = \frac{\text{Ср. запасы}}{\text{Себестоимость} / 365}; \quad T_{\text{ДЗ}} = \frac{\text{Ср. ДЗ}}{\text{Выручка} / 365}; \quad T_{\text{КЗ}} = \frac{\text{Ср. КЗ}}{\text{Себестоимость} / 365}$$</div>
+          </div>
+
+          <!-- ===== 3. Модель EOQ ===== -->
+          <h2 id="s3" class="reveal">3. Управление запасами — модель EOQ</h2>
+
+          <p class="reveal"><strong>EOQ (Economic Order Quantity)</strong> — оптимальный размер заказа, минимизирующий суммарные затраты на заказ и хранение:</p>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$Q^* = \sqrt{\frac{2 \times D \times S}{H}}$$</div>
+            <p style="margin-bottom:0;">$D$ — годовой спрос (шт.), $S$ — стоимость размещения одного заказа (руб.), $H$ — стоимость хранения единицы в год (руб.).</p>
+          </div>
+
+          <!-- ===== 4. Управление дебиторской задолженностью ===== -->
+          <h2 id="s4" class="reveal">4. Управление дебиторской задолженностью</h2>
+
+          <p class="reveal"><strong>Кредитная политика</strong> определяет условия предоставления отсрочки покупателям.</p>
+
+          <div class="box-info reveal">
+            <p><strong>5C-модель оценки кредитоспособности:</strong></p>
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead><tr><th>Фактор</th><th>Описание</th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Character</strong></td><td>Репутация, кредитная история</td></tr>
+                  <tr><td><strong>Capacity</strong></td><td>Платёжеспособность</td></tr>
+                  <tr><td><strong>Capital</strong></td><td>Финансовое состояние</td></tr>
+                  <tr><td><strong>Collateral</strong></td><td>Обеспечение</td></tr>
+                  <tr><td><strong>Conditions</strong></td><td>Экономические условия</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ===== 5. Управление денежными средствами ===== -->
+          <h2 id="s5" class="reveal">5. Управление денежными средствами</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Модель Баумоля</strong> — оптимальный остаток денег при предсказуемых потоках:</p>
+            <div class="math-block">$$C^* = \sqrt{\frac{2 \times F \times T}{k}}$$</div>
+            <p style="margin-bottom:0;">$F$ — фиксированные издержки конвертации, $T$ — потребность в деньгах за период, $k$ — альтернативные издержки (ставка по вложениям).</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Модель Миллера-Орра</strong> — для непредсказуемых потоков. Определяет нижнюю ($L$), целевую ($Z$) и верхнюю ($H = 3Z - 2L$) границы:</p>
+            <div class="math-block">$$Z = L + \left(\frac{3F\sigma^2}{4k}\right)^{1/3}$$</div>
+          </div>
+
+          <!-- ===== 6. Краткосрочное финансирование ===== -->
+          <h2 id="s6" class="reveal">6. Краткосрочное финансирование</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr><th>Источник</th><th>Описание</th><th>Стоимость</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Коммерческий кредит</strong></td><td>Отсрочка от поставщиков</td><td>Бесплатный при соблюдении сроков</td></tr>
+                <tr><td><strong>Банковский кредит</strong></td><td>Кредитная линия, овердрафт</td><td>Ключевая + маржа</td></tr>
+                <tr><td><strong>Факторинг</strong></td><td>Продажа ДЗ фактору</td><td>1-3% от суммы</td></tr>
+                <tr><td><strong>Вексельный кредит</strong></td><td>Учёт векселей</td><td>Дисконт</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ===== 7. Финансовое планирование ===== -->
+          <h2 id="s7" class="reveal">7. Финансовое планирование</h2>
+
+          <p class="reveal"><strong>Уровни планирования:</strong></p>
+          <ul class="reveal">
+            <li><strong>Стратегическое</strong> (3-5 лет): общая финансовая стратегия;</li>
+            <li><strong>Тактическое</strong> (1 год): годовой финансовый план;</li>
+            <li><strong>Оперативное</strong> (месяц/квартал): бюджет денежных средств.</li>
+          </ul>
+
+          <!-- ===== 8. Метод процента от продаж ===== -->
+          <h2 id="s8" class="reveal">8. Метод процента от продаж (EFN)</h2>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Потребность во внешнем финансировании (EFN):</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$EFN = \frac{A^*}{S_0} \times \Delta S - \frac{L^*}{S_0} \times \Delta S - PM \times S_1 \times (1 - d)$$</div>
+            <p>$A^*/S_0$ — доля активов, растущих с продажами; $L^*/S_0$ — доля спонтанных обязательств; $PM$ — маржа чистой прибыли; $d$ — коэффициент выплаты дивидендов; $\Delta S = S_1 - S_0$ — прирост продаж.</p>
+          </div>
+
+          <!-- ===== 9. Бюджетирование ===== -->
+          <h2 id="s9" class="reveal">9. Бюджетирование</h2>
+
+          <p class="reveal"><strong>Операционный бюджет:</strong> бюджет продаж &rarr; производства &rarr; закупок &rarr; оплаты труда &rarr; накладных расходов.</p>
+
+          <p class="reveal"><strong>Финансовый бюджет:</strong> бюджет доходов и расходов (P&amp;L) &rarr; бюджет движения денежных средств (Cash Budget) &rarr; прогнозный баланс.</p>
+
+          <div class="box-formula reveal">
+            <p><strong>Бюджет денежных средств (Cash Budget):</strong></p>
+            <div class="math-block">$$\text{Остаток}_{\text{конец}} = \text{Остаток}_{\text{начало}} + \text{Поступления} - \text{Выплаты}$$</div>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. Операционный и финансовый циклы</h3>
+
+            <p>Торговая компания: средние запасы = 150 млн руб., средняя ДЗ = 80 млн руб., средняя КЗ = 60 млн руб. Выручка = 1 200 млн руб., себестоимость = 900 млн руб.</p>
+
+            <div class="math-block">$$T_{\text{зап}} = \frac{150}{900/365} = \frac{150}{2{,}466} = 60{,}8 \text{ дней}$$</div>
+            <div class="math-block">$$T_{\text{ДЗ}} = \frac{80}{1\,200/365} = \frac{80}{3{,}288} = 24{,}3 \text{ дня}$$</div>
+            <div class="math-block">$$T_{\text{КЗ}} = \frac{60}{900/365} = \frac{60}{2{,}466} = 24{,}3 \text{ дня}$$</div>
+            <div class="math-block">$$OC = 60{,}8 + 24{,}3 = 85{,}1 \text{ дня}$$</div>
+            <div class="math-block">$$CCC = 85{,}1 - 24{,}3 = 60{,}8 \text{ дня}$$</div>
+
+            <p style="margin-bottom:0;"><strong>Вывод:</strong> компания финансирует оборотный капитал 60,8 дня из собственных/заёмных средств.</p>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. EOQ</h3>
+
+            <p>Годовой спрос $D = 10\,000$ шт., стоимость заказа $S = 5\,000$ руб., стоимость хранения $H = 200$ руб./шт./год.</p>
+
+            <div class="math-block">$$Q^* = \sqrt{\frac{2 \times 10\,000 \times 5\,000}{200}} = \sqrt{500\,000} = 707 \text{ шт.}$$</div>
+
+            <p style="margin-bottom:0;">Число заказов в год: $10\,000 / 707 = 14{,}1$ &rarr; 14 заказов.</p>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. Модель Баумоля</h3>
+
+            <p>Ежемесячная потребность $T = 5\,000\,000$ руб., стоимость конвертации $F = 1\,000$ руб., ставка $k = 12\%$ годовых (1% в месяц).</p>
+
+            <div class="math-block">$$C^* = \sqrt{\frac{2 \times 1\,000 \times 5\,000\,000}{0{,}01}} = \sqrt{1\,000\,000\,000} = 31\,623 \text{ руб.}$$</div>
+
+            <p style="margin-bottom:0;">Оптимальный остаток &asymp; 31 600 руб. Средний остаток = $C^*/2 = 15\,800$ руб.</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Финансовый цикл</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>$T_{\text{зап}} = 45$ дней, $T_{\text{ДЗ}} = 30$ дней, $T_{\text{КЗ}} = 20$ дней.</p>
+              <p><strong>CCC? Как сократить?</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$CCC = 45 + 30 - 20 = 55 \text{ дней}$$</div>
+              <p style="margin-bottom:0;">Способы сокращения: ускорить оборот запасов (JIT), ужесточить кредитную политику (сократить ДЗ), договориться об отсрочке с поставщиками (увеличить КЗ).</p>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. EFN (метод процента от продаж)</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>$S_0 = 500$ млн, $S_1 = 600$ млн, $A^*/S_0 = 0{,}70$, $L^*/S_0 = 0{,}20$, $PM = 8\%$, $d = 40\%$.</p>
+              <p><strong>Рассчитайте EFN.</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$\Delta S = 600 - 500 = 100 \text{ млн}$$</div>
+              <div class="math-block">$$EFN = 0{,}70 \times 100 - 0{,}20 \times 100 - 0{,}08 \times 600 \times (1 - 0{,}40)$$</div>
+              <div class="math-block">$$= 70 - 20 - 28{,}8 = 21{,}2 \text{ млн руб.}$$</div>
+              <p style="margin-bottom:0;">Компании нужно привлечь 21,2 млн руб. внешнего финансирования.</p>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Оптимальный заказ (EOQ)</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>$D = 5\,000$ шт., $S = 2\,000$ руб., $H = 100$ руб./шт./год.</p>
+              <p><strong>Оптимальный размер заказа?</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$Q^* = \sqrt{\frac{2 \times 5\,000 \times 2\,000}{100}} = \sqrt{200\,000} = 447 \text{ шт.}$$</div>
+              <p style="margin-bottom:0;">Число заказов: $5\,000 / 447 \approx 11$ заказов в год.</p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Оборотный капитал</strong></td><td>Средства для текущей операционной деятельности (Working Capital)</td></tr>
+                <tr><td><strong>NWC</strong></td><td>Чистый оборотный капитал = ОА - КО (Net Working Capital)</td></tr>
+                <tr><td><strong>OC</strong></td><td>Операционный цикл: $T_{\text{зап}} + T_{\text{ДЗ}}$</td></tr>
+                <tr><td><strong>CCC</strong></td><td>Финансовый цикл: $OC - T_{\text{КЗ}}$ (Cash Conversion Cycle)</td></tr>
+                <tr><td><strong>EOQ</strong></td><td>Оптимальный размер заказа (Economic Order Quantity)</td></tr>
+                <tr><td><strong>Модель Баумоля</strong></td><td>Оптимальный остаток денежных средств при предсказуемых потоках</td></tr>
+                <tr><td><strong>Модель Миллера-Орра</strong></td><td>Управление деньгами при непредсказуемых потоках</td></tr>
+                <tr><td><strong>Факторинг</strong></td><td>Финансирование под уступку дебиторской задолженности</td></tr>
+                <tr><td><strong>EFN</strong></td><td>Потребность во внешнем финансировании (External Financing Needed)</td></tr>
+                <tr><td><strong>Cash Budget</strong></td><td>Бюджет движения денежных средств</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Что показывает финансовый цикл (CCC)?',
+            options: [
+              'Время от покупки сырья до продажи продукции',
+              'Сколько дней компания финансирует оборотный капитал из собственных средств',
+              'Период оборота дебиторской задолженности',
+              'Срок погашения краткосрочных обязательств'
+            ],
+            correct: 1,
+            explanation: 'CCC = T\u0437\u0430\u043f + T\u0414\u0417 \u2212 T\u041a\u0417 \u2014 показывает, сколько дней компания финансирует оборотный капитал из собственных или за\u0451мных средств.'
+          },
+          {
+            text: 'Модель EOQ минимизирует:',
+            options: [
+              'Только затраты на хранение',
+              'Только затраты на размещение заказов',
+              'Суммарные затраты на заказ и хранение',
+              'Стоимость закупки товаров'
+            ],
+            correct: 2,
+            explanation: 'EOQ находит оптимальный баланс между затратами на размещение заказов (убывают с ростом Q) и затратами на хранение (растут с ростом Q).'
+          },
+          {
+            text: 'Если NWC < 0, это означает:',
+            options: [
+              'Компания высокоприбыльна',
+              'Компания имеет потенциальные проблемы с ликвидностью',
+              'Компания не имеет долгов',
+              'Компания эффективно управляет запасами'
+            ],
+            correct: 1,
+            explanation: 'Отрицательный NWC означает, что краткосрочные обязательства превышают оборотные активы \u2014 потенциальный риск неспособности расплатиться по текущим долгам.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-12.html">Тема 1.2. Временная стоимость денег</a> — основа моделей Баумоля, EOQ</li>
+              <li><a href="topic-51.html">Тема 5.1. Дивидендная политика</a> — дивиденды влияют на EFN (через $d$)</li>
+              <li><a href="topic-42.html">Тема 4.2. WACC</a> — краткосрочное финансирование и его стоимость</li>
+              <li><a href="topic-31.html">Тема 3.1. NPV</a> — изменение NWC как компонент денежных потоков проекта</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture" aria-label="Навигация по лекциям">
+          <a href="topic-51.html"><span class="label">Назад</span><span class="title">Тема 5.1. Дивидендная политика</span></a>
+          <a href="topic-61.html"><span class="label">Следующая тема</span><span class="title">Тема 6.1. Оценка стоимости компании</span></a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

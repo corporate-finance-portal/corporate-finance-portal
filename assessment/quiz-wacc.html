@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тест: WACC — Корпоративные финансы</title>
+  <meta name="description"
+        content="Тест по теме WACC (средневзвешенная стоимость капитала). 10 вопросов с объяснениями. Темы 4.1–4.2 курса корпоративных финансов.">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Тест: WACC — Корпоративные финансы">
+  <meta property="og:description"
+        content="10 вопросов по средневзвешенной стоимости капитала с подробными объяснениями">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/features.css">
+  <link rel="stylesheet" href="../css/pages.css">
+
+  <!-- Schema.org Quiz JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    "name": "Тест: Средневзвешенная стоимость капитала (WACC)",
+    "about": {
+      "@type": "DefinedTerm",
+      "name": "WACC",
+      "description": "Weighted Average Cost of Capital — средневзвешенная стоимость капитала"
+    },
+    "educationalLevel": "Бакалавриат",
+    "inLanguage": "ru",
+    "numberOfQuestions": 10,
+    "isPartOf": {
+      "@type": "Course",
+      "name": "Корпоративные финансы",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "Московский университет «Синергия»"
+      }
+    },
+    "teaches": [
+      "Средневзвешенная стоимость капитала (WACC)",
+      "Налоговый щит",
+      "Модель CAPM",
+      "Оптимальная структура капитала",
+      "Предельные издержки капитала"
+    ]
+  }
+  </script>
+</head>
+<body data-depth="1" data-page="quiz-wacc">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         QUIZ HERO — Compact Header
+         Title, subtitle, metadata badges
+         ============================================================ -->
+    <section class="section" aria-label="Заголовок теста">
+      <div class="container">
+
+        <div class="section-header" style="margin-bottom: var(--space-2);">
+          <span class="section-tag">Раздел 4. Структура капитала</span>
+          <h2>
+            <span class="accent-dot accent-dot-indigo" aria-hidden="true"></span>
+            Тест: Средневзвешенная стоимость капитала (WACC)
+          </h2>
+          <p class="section-subtitle">
+            10 вопросов &bull; ~15 минут &bull; Темы 4.1–4.2
+          </p>
+        </div>
+
+        <!-- Metadata badges -->
+        <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: center; margin-top: var(--space-4);">
+          <span class="tag tag-indigo">Раздел 4</span>
+          <span class="tag">Сложность: Средняя</span>
+          <span class="tag tag-subtle">ОПК-4</span>
+          <span class="tag tag-subtle">ОПК-5</span>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         INSTRUCTIONS
+         How to take the quiz — .box-info callout
+         ============================================================ -->
+    <section class="section" style="padding-top: 0;" aria-label="Инструкции">
+      <div class="container" style="max-width: var(--container-narrow, 720px);">
+
+        <div class="box-info">
+          <strong>Как проходить тест:</strong>
+          <ul style="margin: var(--space-3) 0 0; padding-left: var(--space-5);">
+            <li>Выберите один правильный ответ из предложенных вариантов</li>
+            <li>После ответа показывается объяснение с разбором</li>
+            <li>Результат отображается после ответа на все вопросы</li>
+            <li>Результат сохраняется в вашем прогрессе</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         QUIZ CONTAINER
+         Questions are rendered by CFUtils.renderQuiz()
+         Score box becomes visible after all questions are answered
+         ============================================================ -->
+    <section class="section" style="padding-top: 0;" aria-label="Вопросы теста">
+      <div class="container" style="max-width: var(--container-narrow, 720px);">
+
+        <!-- Quiz questions rendered here by renderQuiz() -->
+        <div id="quiz-container"></div>
+
+        <!-- Score box — hidden until all questions answered -->
+        <div id="quiz-score" class="score-box">
+          <div class="score-num"></div>
+          <div class="score-msg"></div>
+          <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: center; margin-top: var(--space-6);">
+            <a href="index.html" class="btn btn-ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="3" width="7" height="7"/>
+                <rect x="14" y="3" width="7" height="7"/>
+                <rect x="3" y="14" width="7" height="7"/>
+                <rect x="14" y="14" width="7" height="7"/>
+              </svg>
+              Все тесты
+            </a>
+            <a href="../lectures/topic-42.html" class="btn btn-ghost">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              Повторить тему
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         POST-QUIZ — Related Materials & Navigation
+         Shown below quiz for study continuation
+         ============================================================ -->
+    <section class="section reveal" aria-label="Связанные материалы">
+      <div class="container" style="max-width: var(--container-narrow, 720px);">
+
+        <!-- Key study materials -->
+        <div class="box-key">
+          <strong>Полезные материалы по теме:</strong>
+          <ul style="margin: var(--space-3) 0 0; padding-left: var(--space-5);">
+            <li>
+              <a href="../lectures/topic-42.html">
+                Повторить тему 4.2 — WACC и оптимизация структуры капитала
+              </a>
+            </li>
+            <li>
+              <a href="../tools/wacc-calculator.html">
+                Калькулятор WACC — интерактивный расчёт с пресетами
+              </a>
+            </li>
+            <li>
+              <a href="../cases/lukoil.html">
+                Кейс: Лукойл — расчёт WACC на реальных данных
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Navigation: prev / next quiz -->
+        <nav class="quiz-actions" aria-label="Навигация по тестам">
+          <a href="quiz-sections-3-4.html" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 12H5"/>
+              <path d="m12 19-7-7 7-7"/>
+            </svg>
+            Тест: Разделы 3-4
+          </a>
+          <a href="index.html" class="btn btn-ghost">
+            Все тесты
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14"/>
+              <path d="m12 5 7 7-7 7"/>
+            </svg>
+          </a>
+        </nav>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <!-- ============================================================
+       Quiz Data & Initialization
+       10 questions on WACC (topics 4.1–4.2)
+       ============================================================ -->
+  <script>
+  (function () {
+    'use strict';
+
+    /**
+     * Quiz: Средневзвешенная стоимость капитала (WACC)
+     * 10 вопросов, один правильный ответ, пояснение к каждому.
+     * Источник: topic-42.md (лекция 4.2)
+     */
+    var questions = [
+
+      // --- Вопрос 1: Определение WACC ---
+      {
+        text: 'Что такое WACC?',
+        options: [
+          'Средневзвешенная стоимость капитала — минимальная доходность для инвесторов',
+          'Максимальная доходность инвестиционного проекта',
+          'Ставка рефинансирования Центрального Банка',
+          'Средняя доходность акций на бирже'
+        ],
+        correct: 0,
+        explanation: 'WACC (Weighted Average Cost of Capital) — это минимальная доходность, которую компания должна обеспечить поставщикам капитала. Используется как ставка дисконтирования при оценке проектов.'
+      },
+
+      // --- Вопрос 2: Налоговый щит ---
+      {
+        text: 'Формула WACC: WACC = w<sub>d</sub> &times; k<sub>d</sub> &times; (1&minus;T) + w<sub>e</sub> &times; k<sub>e</sub>. Почему для заёмного капитала используется множитель (1&minus;T)?',
+        options: [
+          'Из-за инфляции',
+          'Из-за налогового щита: проценты уменьшают налогооблагаемую прибыль',
+          'Из-за комиссии банка',
+          'Это стандарт МСФО'
+        ],
+        correct: 1,
+        explanation: 'Налоговый щит (Tax Shield): проценты по долгу вычитаются из налогооблагаемой базы, что снижает реальную стоимость заёмного капитала. При ставке налога 25% экономия составляет 25 копеек с каждого рубля процентов.'
+      },
+
+      // --- Вопрос 3: Влияние налоговой ставки ---
+      {
+        text: 'Как повышение ставки налога на прибыль с 20% до 25% влияет на WACC?',
+        options: [
+          'WACC растёт — налоги увеличивают стоимость капитала',
+          'WACC снижается — увеличивается налоговый щит для заёмного капитала',
+          'WACC не меняется — налог не входит в формулу',
+          'Зависит от доли привилегированных акций'
+        ],
+        correct: 1,
+        explanation: 'При росте налоговой ставки увеличивается множитель (1&minus;T) в пользу долга: стоимость заёмного капитала после налогов снижается сильнее, что снижает WACC (при прочих равных). Это делает долговое финансирование ещё выгоднее.'
+      },
+
+      // --- Вопрос 4: Рыночные vs балансовые веса ---
+      {
+        text: 'Какие веса должны использоваться в формуле WACC?',
+        options: [
+          'Балансовые (по данным бухгалтерского баланса)',
+          'Рыночные (по текущей рыночной стоимости)',
+          'Номинальные (по номиналу ценных бумаг)',
+          'Исторические (средние за 10 лет)'
+        ],
+        correct: 1,
+        explanation: 'Веса определяются по рыночной стоимости, так как она отражает текущую оценку компании инвесторами. Балансовая стоимость — это исторические затраты, которые могут сильно отличаться от реальности.'
+      },
+
+      // --- Вопрос 5: Расчёт WACC (числовая задача) ---
+      {
+        text: 'Компания: долг 30% (k<sub>d</sub>=12%), equity 70% (k<sub>e</sub>=18%), налог 25%. Чему равен WACC?',
+        options: [
+          '12,60%',
+          '15,30%',
+          '16,20%',
+          '14,40%'
+        ],
+        correct: 1,
+        explanation: 'WACC = 0.30 &times; 12% &times; (1&minus;0.25) + 0.70 &times; 18% = 0.30 &times; 9% + 0.70 &times; 18% = 2.70% + 12.60% = 15.30%'
+      },
+
+      // --- Вопрос 6: CAPM (числовая задача) ---
+      {
+        text: 'По модели CAPM: k<sub>e</sub> = r<sub>f</sub> + &beta; &times; (r<sub>m</sub> &minus; r<sub>f</sub>). Если r<sub>f</sub> = 14,6%, &beta; = 0,95, ERP = 6%, чему равна k<sub>e</sub>?',
+        options: [
+          '19,30%',
+          '20,30%',
+          '21,80%',
+          '17,60%'
+        ],
+        correct: 1,
+        explanation: 'k<sub>e</sub> = 14,6% + 0,95 &times; 6,0% = 14,6% + 5,7% = 20,3%. Это стоимость собственного капитала по модели CAPM.'
+      },
+
+      // --- Вопрос 7: WACC как hurdle rate ---
+      {
+        text: 'У компании WACC = 16%. Проект А имеет IRR = 18%, проект Б — IRR = 14%. Какое решение правильное?',
+        options: [
+          'Принять оба проекта',
+          'Принять А, отклонить Б',
+          'Отклонить оба проекта',
+          'Принять Б, отклонить А'
+        ],
+        correct: 1,
+        explanation: 'Проект принимается если IRR &gt; WACC. Проект А: 18% &gt; 16% &rarr; принять. Проект Б: 14% &lt; 16% &rarr; отклонить. WACC выступает ставкой отсечения (hurdle rate).'
+      },
+
+      // --- Вопрос 8: Оптимальная структура капитала ---
+      {
+        text: 'Что происходит с WACC при увеличении доли долга от 0% до 100%?',
+        options: [
+          'WACC монотонно снижается',
+          'WACC монотонно растёт',
+          'WACC сначала снижается, затем растёт (U-образная кривая)',
+          'WACC не зависит от структуры капитала'
+        ],
+        correct: 2,
+        explanation: 'Согласно компромиссной теории (Trade-off): сначала долг снижает WACC (налоговый щит), но после определённой точки финансовый риск растёт &rarr; кредиторы и акционеры требуют больше &rarr; WACC растёт. Минимум кривой — оптимальная структура капитала.'
+      },
+
+      // --- Вопрос 9: Точка разрыва MCC ---
+      {
+        text: 'Что такое точка разрыва (Break Point) в контексте предельных издержек капитала?',
+        options: [
+          'Момент банкротства компании',
+          'Объём финансирования, при превышении которого стоимость источника возрастает',
+          'Точка безубыточности проекта',
+          'Максимальный размер дивидендов'
+        ],
+        correct: 1,
+        explanation: 'Точка разрыва (Break Point) = Сумма ресурса по текущей ставке / Доля ресурса в структуре. При привлечении капитала сверх этого объёма стоимость источника возрастает скачком.'
+      },
+
+      // --- Вопрос 10: Ограничения WACC ---
+      {
+        text: 'В каком случае WACC НЕЛЬЗЯ использовать как ставку дисконтирования?',
+        options: [
+          'Для проекта со средним риском компании',
+          'Для расчёта NPV любого проекта',
+          'Для проекта, риск которого существенно отличается от среднего риска компании',
+          'Для сравнения альтернативных проектов'
+        ],
+        correct: 2,
+        explanation: 'WACC отражает средний риск всей компании. Для проектов с существенно иным риском (например, выход в новую отрасль) нужно корректировать ставку дисконтирования, а не использовать средний WACC.'
+      }
+
+    ];
+
+    // Initialize quiz when DOM is ready
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.CFUtils && window.CFUtils.renderQuiz) {
+        CFUtils.renderQuiz('quiz-container', questions, 'quiz-score');
+      }
+    });
+
+  })();
+  </script>
+
+</body>
+</html>

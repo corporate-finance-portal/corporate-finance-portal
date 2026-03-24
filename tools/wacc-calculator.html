@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор WACC — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор WACC с визуализацией, пресетами российских компаний, CAPM и анализом чувствительности">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- WACC Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'WACC.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) 0;
+    }
+    .toggle-row label {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 40px;
+      height: 22px;
+      background: var(--surface-3);
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: background var(--transition);
+      flex-shrink: 0;
+    }
+    .toggle-switch.active { background: var(--acc); }
+    .toggle-switch::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: #fff;
+      border-radius: var(--radius-full);
+      transition: transform var(--transition);
+    }
+    .toggle-switch.active::after { transform: translateX(18px); }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+
+    .wacc-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .wacc-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .sensitivity-section {
+      margin-top: var(--space-8);
+    }
+    .sensitivity-slider {
+      width: 100%;
+      margin: var(--space-4) 0;
+      accent-color: var(--acc);
+    }
+    .sensitivity-chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+    }
+    .optimal-point {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      color: var(--acc);
+      background: var(--acc-subtle);
+      border: 1px solid var(--acc-glow);
+      border-radius: var(--radius-pill);
+      margin-top: var(--space-3);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="wacc-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор WACC">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Калькулятор WACC</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Калькулятор <span class="text-gradient">WACC</span>
+            </h1>
+
+            <p class="subtitle">
+              Рассчитайте средневзвешенную стоимость капитала с&nbsp;визуализацией
+              структуры, анализом чувствительности и&nbsp;пресетами российских компаний.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Средневзвешенная стоимость капитала</span><br>
+            <span class="kw">WACC</span> = w<sub>d</sub> &times; k<sub>d</sub> &times; (<span class="num">1</span> - T) + w<sub>e</sub> &times; k<sub>e</sub><br><br>
+            <span class="cmt">// где:</span><br>
+            <span class="fn">w<sub>d</sub></span> = доля заёмного капитала<br>
+            <span class="fn">w<sub>e</sub></span> = доля собственного капитала<br>
+            <span class="fn">k<sub>d</sub></span> = ставка по долгу<br>
+            <span class="fn">k<sub>e</sub></span> = стоимость собственного капитала<br>
+            <span class="fn">T</span>&nbsp;&nbsp; = ставка налога на прибыль<br><br>
+            <span class="cmt">// Стоимость собственного капитала (CAPM)</span><br>
+            <span class="kw">k<sub>e</sub></span> = r<sub>f</sub> + &beta; &times; (r<sub>m</sub> - r<sub>f</sub>)
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты компаний</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="lukoil"
+                        data-wd="10" data-we="90" data-kd="14" data-ke="20.3" data-tax="25">
+                  Лукойл
+                </button>
+                <button type="button" class="preset-btn" data-preset="sber"
+                        data-wd="87" data-we="13" data-kd="12" data-ke="25" data-tax="25">
+                  Сбербанк
+                </button>
+                <button type="button" class="preset-btn" data-preset="typical"
+                        data-wd="40" data-we="60" data-kd="15" data-ke="20" data-tax="25">
+                  Типичная
+                </button>
+              </div>
+            </div>
+
+            <!-- wd -->
+            <div class="calc-input-group">
+              <label for="inp-wd">Доля заёмного капитала (w<sub>d</sub>), %</label>
+              <input type="number" id="inp-wd" min="0" max="100" step="1" value="40" placeholder="0 — 100">
+            </div>
+
+            <!-- we (auto) -->
+            <div class="calc-input-group">
+              <label for="inp-we">Доля собственного капитала (w<sub>e</sub>), %</label>
+              <input type="number" id="inp-we" value="60" disabled>
+              <span class="hint">Рассчитывается автоматически: 100 - w<sub>d</sub></span>
+            </div>
+
+            <!-- kd -->
+            <div class="calc-input-group">
+              <label for="inp-kd">Ставка по долгу до налогов (k<sub>d</sub>), %</label>
+              <input type="number" id="inp-kd" min="0" max="100" step="0.1" value="15" placeholder="напр. 15">
+            </div>
+
+            <!-- CAPM / manual toggle -->
+            <div class="toggle-row">
+              <div class="toggle-switch active" id="capm-toggle" role="switch" aria-checked="true" tabindex="0"></div>
+              <label id="capm-toggle-label">Рассчитать k<sub>e</sub> через CAPM</label>
+            </div>
+
+            <!-- CAPM inputs -->
+            <div id="capm-fields">
+              <div class="calc-input-group" style="margin-bottom:var(--space-4)">
+                <label for="inp-rf">Безрисковая ставка (r<sub>f</sub>), %</label>
+                <input type="number" id="inp-rf" min="0" max="100" step="0.1" value="14.6" placeholder="ОФЗ 10 лет">
+                <span class="hint">Доходность ОФЗ 10 лет (март 2026)</span>
+              </div>
+              <div class="calc-input-group" style="margin-bottom:var(--space-4)">
+                <label for="inp-beta">Бета-коэффициент (&beta;)</label>
+                <input type="number" id="inp-beta" min="0" max="5" step="0.01" value="0.95" placeholder="напр. 0.95">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-erp">Рыночная премия за риск (ERP), %</label>
+                <input type="number" id="inp-erp" min="0" max="50" step="0.1" value="6.0" placeholder="напр. 6.0">
+                <span class="hint">Equity Risk Premium (Damodaran, 2026)</span>
+              </div>
+            </div>
+
+            <!-- Manual ke input (hidden by default) -->
+            <div id="manual-ke-field" style="display:none">
+              <div class="calc-input-group">
+                <label for="inp-ke-manual">Стоимость собственного капитала (k<sub>e</sub>), %</label>
+                <input type="number" id="inp-ke-manual" min="0" max="100" step="0.1" value="20" placeholder="напр. 20">
+              </div>
+            </div>
+
+            <!-- Tax -->
+            <div class="calc-input-group">
+              <label for="inp-tax">Ставка налога на прибыль (T), %</label>
+              <input type="number" id="inp-tax" min="0" max="100" step="1" value="25" placeholder="25">
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать WACC
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите «Рассчитать»
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- WACC result (main) -->
+              <div class="calc-result-card primary">
+                <div class="card-label">WACC</div>
+                <div class="card-value"><span class="wacc-value-animated" id="wacc-value">—</span></div>
+                <div class="card-formula" id="wacc-formula"></div>
+              </div>
+
+              <!-- ke (CAPM) -->
+              <div class="calc-result-card" id="ke-card">
+                <div class="card-label">Стоимость собственного капитала (k<sub>e</sub>)</div>
+                <div class="card-value" id="ke-value">—</div>
+                <div class="card-formula" id="ke-formula"></div>
+              </div>
+
+              <!-- kd after tax -->
+              <div class="calc-result-card">
+                <div class="card-label">Стоимость долга после налогов</div>
+                <div class="card-value" id="kd-after-value">—</div>
+                <div class="card-formula" id="kd-formula"></div>
+              </div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>Структура капитала</h4>
+                  <canvas class="chart" id="chart-structure" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Компоненты WACC</h4>
+                  <canvas class="chart" id="chart-components" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SENSITIVITY ANALYSIS
+         ============================================================ -->
+    <section class="section-alt" id="sensitivity">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Анализ</span>
+          <h2>Анализ чувствительности</h2>
+          <p>Как изменяется WACC при разной доле заёмного капитала</p>
+        </div>
+
+        <div class="sensitivity-section" style="max-width:800px;margin:0 auto">
+          <label for="sens-slider" style="font-size:var(--text-sm);color:var(--text-secondary);">
+            Доля долга: <strong id="sens-slider-value">40%</strong>
+          </label>
+          <input type="range" class="sensitivity-slider" id="sens-slider" min="0" max="100" step="1" value="40">
+
+          <div class="sensitivity-chart-box">
+            <canvas class="chart" id="chart-sensitivity" width="700" height="300"></canvas>
+          </div>
+
+          <div id="optimal-point-box" style="text-align:center;margin-top:var(--space-4)"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>WACC</strong> (Weighted Average Cost of Capital) — средневзвешенная стоимость капитала.
+             Отражает минимальную доходность, которую компания должна заработать на существующих активах,
+             чтобы удовлетворить кредиторов и акционеров.</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            WACC = w<sub>d</sub> &times; k<sub>d</sub> &times; (1 - T) + w<sub>e</sub> &times; k<sub>e</sub>
+          </p>
+          <p>Подробнее: <a href="../lectures/topic-42.html">Лекция 4.2 — Стоимость капитала и WACC</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные актуальны на март 2026.</strong> Для получения текущих значений используйте:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://cbr.ru" target="_blank" rel="noopener">cbr.ru</a> — ключевая ставка ЦБ РФ</li>
+            <li><a href="https://moex.com" target="_blank" rel="noopener">moex.com</a> — доходность ОФЗ (безрисковая ставка)</li>
+            <li><a href="https://pages.stern.nyu.edu/~adamodar/" target="_blank" rel="noopener">Damodaran Online</a> — рыночная премия за риск (ERP), бета-коэффициенты по отраслям</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Другие калькуляторы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="../tools/" class="card">
+            <div class="card-body">
+              <div class="card-title">NPV / IRR</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Чистая приведённая стоимость и внутренняя норма доходности</p>
+            </div>
+          </a>
+          <a href="../tools/" class="card">
+            <div class="card-body">
+              <div class="card-title">CAPM</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Модель оценки капитальных активов</p>
+            </div>
+          </a>
+          <a href="../tools/" class="card">
+            <div class="card-body">
+              <div class="card-title">DCF</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Дисконтированные денежные потоки</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- DOM refs ---
+    var form = {
+      wd:       document.getElementById('inp-wd'),
+      we:       document.getElementById('inp-we'),
+      kd:       document.getElementById('inp-kd'),
+      rf:       document.getElementById('inp-rf'),
+      beta:     document.getElementById('inp-beta'),
+      erp:      document.getElementById('inp-erp'),
+      keManual: document.getElementById('inp-ke-manual'),
+      tax:      document.getElementById('inp-tax')
+    };
+
+    var capmToggle      = document.getElementById('capm-toggle');
+    var capmFields      = document.getElementById('capm-fields');
+    var manualKeField   = document.getElementById('manual-ke-field');
+    var btnCalculate    = document.getElementById('btn-calculate');
+    var placeholder     = document.getElementById('results-placeholder');
+    var resultsContent  = document.getElementById('results-content');
+    var sensSlider      = document.getElementById('sens-slider');
+    var sensSliderValue = document.getElementById('sens-slider-value');
+
+    var useCAPM = true;
+    var structureChart = null;
+    var componentsChart = null;
+    var sensitivityChart = null;
+    var lastParams = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        // Remove active from all presets
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        var d = btn.dataset;
+        form.wd.value  = d.wd;
+        form.we.value  = (100 - parseFloat(d.wd)).toFixed(0);
+        form.kd.value  = d.kd;
+        form.tax.value = d.tax;
+
+        if (useCAPM) {
+          // For presets, switch to manual ke since we know ke directly
+          toggleCAPMMode(false);
+        }
+        form.keManual.value = d.ke;
+      });
+    });
+
+    // --- Auto-calculate we = 100 - wd ---
+    form.wd.addEventListener('input', function () {
+      var wd = parseFloat(form.wd.value);
+      if (isNaN(wd)) wd = 0;
+      wd = Math.max(0, Math.min(100, wd));
+      form.we.value = (100 - wd).toFixed(0);
+    });
+
+    // --- CAPM toggle ---
+    function toggleCAPMMode(val) {
+      useCAPM = val;
+      capmToggle.classList.toggle('active', useCAPM);
+      capmToggle.setAttribute('aria-checked', String(useCAPM));
+      capmFields.style.display     = useCAPM ? '' : 'none';
+      manualKeField.style.display  = useCAPM ? 'none' : '';
+    }
+
+    capmToggle.addEventListener('click', function () {
+      toggleCAPMMode(!useCAPM);
+    });
+    capmToggle.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleCAPMMode(!useCAPM);
+      }
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function getParams() {
+      var wd  = parseFloat(form.wd.value) / 100;
+      var we  = parseFloat(form.we.value) / 100;
+      var kd  = parseFloat(form.kd.value) / 100;
+      var tax = parseFloat(form.tax.value) / 100;
+      var ke;
+
+      if (useCAPM) {
+        var rf   = parseFloat(form.rf.value) / 100;
+        var beta = parseFloat(form.beta.value);
+        var erp  = parseFloat(form.erp.value) / 100;
+        ke = CFUtils.calcCAPM({ rf: rf, beta: beta, erp: erp });
+      } else {
+        ke = parseFloat(form.keManual.value) / 100;
+      }
+
+      return { wd: wd, we: we, kd: kd, ke: ke, taxRate: tax };
+    }
+
+    function calculate() {
+      var p = getParams();
+
+      // Validate
+      if (isNaN(p.wd) || isNaN(p.we) || isNaN(p.kd) || isNaN(p.ke) || isNaN(p.taxRate)) {
+        return;
+      }
+
+      lastParams = p;
+
+      var wacc    = CFUtils.calcWACC(p);
+      var kdAfter = p.kd * (1 - p.taxRate);
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // Animate WACC value
+      var waccEl = document.getElementById('wacc-value');
+      waccEl.classList.add('updating');
+      setTimeout(function () {
+        waccEl.textContent = (wacc * 100).toFixed(2) + '%';
+        waccEl.classList.remove('updating');
+      }, 150);
+
+      // Formula breakdowns
+      document.getElementById('wacc-formula').textContent =
+        (p.wd * 100).toFixed(0) + '% x ' + (kdAfter * 100).toFixed(2) + '% + ' +
+        (p.we * 100).toFixed(0) + '% x ' + (p.ke * 100).toFixed(2) + '% = ' +
+        (wacc * 100).toFixed(2) + '%';
+
+      document.getElementById('ke-value').textContent = (p.ke * 100).toFixed(2) + '%';
+      if (useCAPM) {
+        var rf   = parseFloat(form.rf.value);
+        var beta = parseFloat(form.beta.value);
+        var erp  = parseFloat(form.erp.value);
+        document.getElementById('ke-formula').textContent =
+          rf + '% + ' + beta + ' x ' + erp + '% = ' + (p.ke * 100).toFixed(2) + '%';
+        document.getElementById('ke-card').style.display = '';
+      } else {
+        document.getElementById('ke-formula').textContent = 'Введено вручную';
+      }
+
+      document.getElementById('kd-after-value').textContent = (kdAfter * 100).toFixed(2) + '%';
+      document.getElementById('kd-formula').textContent =
+        (p.kd * 100).toFixed(1) + '% x (1 - ' + (p.taxRate * 100).toFixed(0) + '%) = ' +
+        (kdAfter * 100).toFixed(2) + '%';
+
+      // Charts
+      renderCharts(p, wacc, kdAfter);
+
+      // Sensitivity
+      sensSlider.value = Math.round(p.wd * 100);
+      sensSliderValue.textContent = Math.round(p.wd * 100) + '%';
+      renderSensitivity(p);
+    }
+
+    // --- Charts ---
+    function renderCharts(p, wacc, kdAfter) {
+      CFUtils.createPieChart || whenChartReady(function () {});
+
+      var C = CFUtils.COLORS;
+
+      whenChartReady(function () {
+        // Destroy previous
+        if (structureChart) structureChart.destroy();
+        if (componentsChart) componentsChart.destroy();
+
+        // Pie: capital structure
+        var pieCanvas = document.getElementById('chart-structure');
+        structureChart = new Chart(pieCanvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['Долг (w_d)', 'Собственный (w_e)'],
+            datasets: [{
+              data: [p.wd * 100, p.we * 100],
+              backgroundColor: ['#FB7185', '#818CF8'],
+              borderWidth: 0
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 11 } } }
+            }
+          }
+        });
+
+        // Bar: cost components vs WACC
+        var barCanvas = document.getElementById('chart-components');
+        componentsChart = new Chart(barCanvas, {
+          type: 'bar',
+          data: {
+            labels: ['k_d (после налогов)', 'k_e', 'WACC'],
+            datasets: [{
+              data: [kdAfter * 100, p.ke * 100, wacc * 100],
+              backgroundColor: ['#FB7185', '#818CF8', '#FBBF24'],
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.parsed.y.toFixed(2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { color: '#94A3B8', callback: function (v) { return v + '%'; } },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- Sensitivity Analysis ---
+    sensSlider.addEventListener('input', function () {
+      sensSliderValue.textContent = sensSlider.value + '%';
+      if (lastParams) {
+        renderSensitivity(lastParams);
+      }
+    });
+
+    function renderSensitivity(baseParams) {
+      whenChartReady(function () {
+        var labels = [];
+        var values = [];
+        var minWACC = Infinity;
+        var minDebt = 0;
+
+        for (var d = 0; d <= 100; d += 5) {
+          var wd = d / 100;
+          var we = 1 - wd;
+          var w = CFUtils.calcWACC({
+            wd: wd, we: we, kd: baseParams.kd, ke: baseParams.ke, taxRate: baseParams.taxRate
+          });
+          labels.push(d + '%');
+          values.push(w * 100);
+          if (w < minWACC) {
+            minWACC = w;
+            minDebt = d;
+          }
+        }
+
+        if (sensitivityChart) sensitivityChart.destroy();
+
+        var sensCanvas = document.getElementById('chart-sensitivity');
+        sensitivityChart = new Chart(sensCanvas, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'WACC, %',
+              data: values,
+              borderColor: '#818CF8',
+              backgroundColor: 'rgba(129,140,248,0.1)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 3,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'WACC: ' + ctx.parsed.y.toFixed(2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: { color: '#94A3B8', callback: function (v) { return v.toFixed(1) + '%'; } },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                title: { display: true, text: 'Доля долга', color: '#94A3B8' },
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+
+        // Show optimal point
+        var optBox = document.getElementById('optimal-point-box');
+        optBox.innerHTML = '<span class="optimal-point">Минимальный WACC: ' +
+          minWACC.toFixed(2) + '% при доле долга ' + minDebt + '%</span>';
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

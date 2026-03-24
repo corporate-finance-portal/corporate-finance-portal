@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Кейс: Лукойл — WACC и NPV — Корпоративные финансы</title>
+  <meta name="description" content="Кейс ПАО «Лукойл»: расчёт WACC методом CAPM и оценка инвестиционного проекта модернизации НПЗ методом NPV. Пошаговое решение с формулами.">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Кейс: Лукойл — WACC и NPV">
+  <meta property="og:description" content="Расчёт WACC и оценка инвестиционного проекта модернизации НПЗ стоимостью 45 млрд руб.">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="case-lukoil">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Split Layout
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Кейс Лукойл">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div class="hero-content">
+            <nav aria-label="Хлебные крошки" style="margin-bottom: var(--space-4);">
+              <span style="font-family: var(--ff-mono); font-size: var(--text-xs); color: var(--text-muted);">
+                <a href="../cases/" style="color: var(--text-muted); text-decoration: none;">Кейсы</a>
+                <span aria-hidden="true" style="margin: 0 var(--space-2);">/</span>
+                <span style="color: var(--acc);">Лукойл</span>
+              </span>
+            </nav>
+
+            <span class="badge badge-coral" style="margin-bottom: var(--space-4); display: inline-flex;">Нефтегаз</span>
+
+            <h1 style="font-size: clamp(1.8rem, 1.4rem + 2vw, 2.8rem);">
+              ПАО «Лукойл» — <span class="highlight">WACC</span> и оценка инвестиционного проекта
+            </h1>
+
+            <p class="subtitle" style="max-width: 540px;">
+              Расчёт средневзвешенной стоимости капитала и оценка проекта модернизации НПЗ стоимостью 45 млрд руб. методом NPV
+            </p>
+          </div>
+
+          <!-- Right: Key Metrics Card -->
+          <div>
+            <div class="card-static" style="padding: var(--space-6);">
+              <div style="font-family: var(--ff-mono); font-size: var(--text-xs); font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: var(--space-5);">
+                Ключевые показатели
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5);">
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Капитализация</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--acc);">4 500 млрд</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Долг</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--coral);">500 млрд</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">WACC</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--amber);">19,32%</div>
+                </div>
+                <div>
+                  <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Тип кейса</div>
+                  <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; color: var(--text-primary);">M&A / Инвестиции</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         CASE DESCRIPTION
+         ============================================================ -->
+    <section class="section reveal" aria-label="Описание кейса">
+      <div class="container">
+        <div class="lecture-content">
+
+          <h2>Описание ситуации</h2>
+          <p>
+            ПАО «Лукойл» — одна из крупнейших частных нефтегазовых компаний мира. Компания рассматривает инвестиционный проект по модернизации нефтеперерабатывающего завода стоимостью <strong>45 млрд руб.</strong> Для принятия решения необходимо рассчитать WACC компании и оценить проект методом NPV.
+          </p>
+
+          <div class="box-info">
+            <strong>Цель кейса:</strong> рассчитать стоимость собственного капитала ($k_e$) методом CAPM, определить WACC, оценить проект по NPV, PI и DPP, провести анализ чувствительности.
+          </div>
+
+
+          <!-- ============================================================
+               INPUT DATA: Capital Structure
+               ============================================================ -->
+          <h2>Исходные данные</h2>
+
+          <h3>Структура капитала</h3>
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Показатель</th>
+                  <th style="text-align: right;">Значение</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Рыночная капитализация (E)</td>
+                  <td class="number">4 500 млрд руб.</td>
+                </tr>
+                <tr>
+                  <td>Рыночная стоимость долга (D)</td>
+                  <td class="number">500 млрд руб.</td>
+                </tr>
+                <tr>
+                  <td><strong>Итого (V = E + D)</strong></td>
+                  <td class="number"><strong>5 000 млрд руб.</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Параметры модели CAPM</h3>
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Параметр</th>
+                  <th style="text-align: right;">Значение</th>
+                  <th>Источник</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Безрисковая ставка ($r_f$)</td>
+                  <td class="number">14,6%</td>
+                  <td>ОФЗ 10-лет, cbr.ru</td>
+                </tr>
+                <tr>
+                  <td>Бета-коэффициент ($\beta$)</td>
+                  <td class="number">0,95</td>
+                  <td>capm-navigator.ru</td>
+                </tr>
+                <tr>
+                  <td>Рыночная премия за риск (ERP)</td>
+                  <td class="number">6,0%</td>
+                  <td>Damodaran, emerging markets</td>
+                </tr>
+                <tr>
+                  <td>Ставка по долгу ($k_d$)</td>
+                  <td class="number">14,0%</td>
+                  <td>Средневзвешенная по портфелю</td>
+                </tr>
+                <tr>
+                  <td>Ставка налога на прибыль ($T$)</td>
+                  <td class="number">25%</td>
+                  <td>ФЗ №176-ФЗ, с 01.01.2025</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Денежные потоки проекта</h3>
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Год</th>
+                  <th style="text-align: right;">CF (млн руб.)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>0 (инвестиции)</td><td class="number" style="color: var(--error);">−45 000</td></tr>
+                <tr><td>1</td><td class="number">5 000</td></tr>
+                <tr><td>2</td><td class="number">8 000</td></tr>
+                <tr><td>3</td><td class="number">10 000</td></tr>
+                <tr><td>4</td><td class="number">12 000</td></tr>
+                <tr><td>5</td><td class="number">11 000</td></tr>
+                <tr><td>6</td><td class="number">9 000</td></tr>
+                <tr><td>7</td><td class="number">8 000</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <!-- ============================================================
+               STEP-BY-STEP SOLUTION
+               ============================================================ -->
+          <h2>Пошаговое решение</h2>
+
+          <div class="box-example reveal">
+            <h4>Шаг 1. Стоимость собственного капитала (CAPM)</h4>
+            <p>Применяем модель CAPM для расчёта $k_e$:</p>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$k_e = r_f + \beta \times ERP = 14{,}6\% + 0{,}95 \times 6{,}0\% = 14{,}6\% + 5{,}7\% = 20{,}3\%$$
+            </div>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>Шаг 2. Стоимость заёмного капитала (после налогов)</h4>
+            <p>Учитываем налоговый щит:</p>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$k_d^{после} = k_d \times (1 - T) = 14{,}0\% \times (1 - 0{,}25) = 14{,}0\% \times 0{,}75 = 10{,}5\%$$
+            </div>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>Шаг 3. Доли в структуре капитала</h4>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$w_e = \frac{E}{V} = \frac{4\,500}{5\,000} = 0{,}90 \quad (90\%)$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$w_d = \frac{D}{V} = \frac{500}{5\,000} = 0{,}10 \quad (10\%)$$
+            </div>
+          </div>
+
+          <div class="box-formula reveal">
+            <h4>Шаг 4. Расчёт WACC</h4>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$WACC = w_d \times k_d^{после} + w_e \times k_e = 0{,}10 \times 10{,}5\% + 0{,}90 \times 20{,}3\%$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$WACC = 1{,}05\% + 18{,}27\% = \boxed{19{,}32\%}$$
+            </div>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>Шаг 5. Дисконтирование денежных потоков</h4>
+            <p>Дисконтируем каждый денежный поток по ставке WACC = 19,32%:</p>
+
+            <div class="data-table-wrapper" style="margin-top: var(--space-4);">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Год</th>
+                    <th style="text-align: right;">CF (млн)</th>
+                    <th style="text-align: right;">$1/(1{,}1932)^t$</th>
+                    <th style="text-align: right;">PV (млн)</th>
+                    <th style="text-align: right;">Кумул. PV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="number">5 000</td>
+                    <td class="number">0,8381</td>
+                    <td class="number">4 190</td>
+                    <td class="number">4 190</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="number">8 000</td>
+                    <td class="number">0,7024</td>
+                    <td class="number">5 619</td>
+                    <td class="number">9 809</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="number">10 000</td>
+                    <td class="number">0,5887</td>
+                    <td class="number">5 887</td>
+                    <td class="number">15 696</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td class="number">12 000</td>
+                    <td class="number">0,4934</td>
+                    <td class="number">5 921</td>
+                    <td class="number">21 617</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td class="number">11 000</td>
+                    <td class="number">0,4135</td>
+                    <td class="number">4 549</td>
+                    <td class="number">26 166</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td class="number">9 000</td>
+                    <td class="number">0,3465</td>
+                    <td class="number">3 119</td>
+                    <td class="number">29 285</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td class="number">8 000</td>
+                    <td class="number">0,2904</td>
+                    <td class="number">2 323</td>
+                    <td class="number">31 608</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="box-formula reveal">
+            <h4>Шаг 6. Расчёт NPV</h4>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$NPV = \sum_{t=1}^{7} \frac{CF_t}{(1 + WACC)^t} - IC = 31\,608 - 45\,000 = \boxed{-13\,392 \text{ млн руб.}}$$
+            </div>
+          </div>
+
+          <div class="box-example reveal">
+            <h4>Шаг 7. PI и DPP</h4>
+            <p><strong>Индекс прибыльности:</strong></p>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$PI = \frac{\sum PV(CF_t)}{IC} = \frac{31\,608}{45\,000} = \boxed{0{,}702}$$
+            </div>
+            <p>
+              <strong>Дисконтированный срок окупаемости (DPP):</strong> кумулятивный PV не достигает 45 000 за 7 лет — проект <strong>не окупается</strong> в дисконтированных потоках.
+            </p>
+          </div>
+
+
+          <!-- ============================================================
+               INTERACTIVE CHARTS
+               ============================================================ -->
+          <h2>Визуализация</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); margin: var(--space-6) 0;" class="reveal">
+            <div class="card-static" style="padding: var(--space-5);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+                Номинальные vs дисконтированные CF
+              </div>
+              <canvas id="npv-chart" class="chart" width="400" height="280"></canvas>
+            </div>
+            <div class="card-static" style="padding: var(--space-5);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+                Структура капитала
+              </div>
+              <canvas id="structure-chart" class="chart" width="400" height="280"></canvas>
+            </div>
+          </div>
+
+
+          <!-- ============================================================
+               SENSITIVITY ANALYSIS
+               ============================================================ -->
+          <h2>Анализ чувствительности</h2>
+
+          <div class="box-example reveal">
+            <h4>Сценарий: рост $\beta$ до 1,2 (геополитические риски)</h4>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$k_e = 14{,}6\% + 1{,}2 \times 6{,}0\% = 14{,}6\% + 7{,}2\% = 21{,}8\%$$
+            </div>
+            <div class="math-block" style="text-align: center; margin: var(--space-4) 0;">
+              $$WACC = 0{,}10 \times 10{,}5\% + 0{,}90 \times 21{,}8\% = 1{,}05\% + 19{,}62\% = 20{,}67\%$$
+            </div>
+            <p>При повышенном WACC (20,67%) NPV ухудшается до <strong>~&minus;15 800 млн руб.</strong>, усиливая вывод об отклонении проекта.</p>
+          </div>
+
+          <div class="box-info reveal">
+            <h4>При каком WACC проект станет рентабельным?</h4>
+            <p>
+              Проект выходит на NPV = 0 при WACC &asymp; <strong>14%</strong>. Это возможно при значительном снижении ключевой ставки ЦБ (что уменьшит $r_f$) или при увеличении доли заёмного финансирования с сохранением низкой $k_d$.
+            </p>
+          </div>
+
+
+          <!-- ============================================================
+               CONCLUSIONS
+               ============================================================ -->
+          <h2>Выводы</h2>
+
+          <div class="box-key reveal">
+            <ul style="list-style: disc; padding-left: var(--space-5);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                <strong>NPV = &minus;13 392 млн руб.</strong> &lt; 0, <strong>PI = 0,702</strong> &lt; 1 — проект следует <strong>отклонить</strong> при текущей стоимости капитала.
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                Высокий WACC (19,32%) обусловлен: <strong>90% собственного капитала</strong> (дорогой, не даёт налогового щита) и <strong>высокой безрисковой ставкой</strong> ($r_f$ = 14,6%).
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-primary); line-height: 1.7;">
+                <strong>Парадокс:</strong> компания с минимальным долгом имеет высокий WACC. Увеличение доли долга могло бы снизить WACC за счёт налогового щита, но увеличит финансовый риск.
+              </li>
+              <li style="color: var(--text-primary); line-height: 1.7;">
+                Типичная ситуация для российских компаний в период высокой ключевой ставки ЦБ: при <strong>снижении ключевой ставки</strong> проект может стать рентабельным (NPV &asymp; 0 при WACC &asymp; 14%).
+              </li>
+            </ul>
+          </div>
+
+
+          <!-- ============================================================
+               DISCUSSION QUESTIONS
+               ============================================================ -->
+          <h2>Вопросы для обсуждения</h2>
+
+          <div class="box-info reveal">
+            <ol style="list-style: decimal; padding-left: var(--space-5);">
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Почему Лукойл, несмотря на минимальный долг, имеет высокий WACC? Как это связано с теоремами Модильяни-Миллера?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Какой уровень долга был бы оптимален для снижения WACC без существенного роста финансового риска?
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Как изменится решение, если ЦБ снизит ключевую ставку до 10%? Пересчитайте $r_f$, $k_e$ и WACC.
+              </li>
+              <li style="margin-bottom: var(--space-3); color: var(--text-secondary); line-height: 1.7;">
+                Можно ли использовать единый WACC компании для оценки проекта с другим профилем риска (например, выход на зарубежный рынок)?
+              </li>
+              <li style="color: var(--text-secondary); line-height: 1.7;">
+                Какие дополнительные факторы (ESG, санкционные риски, ценовая волатильность нефти) следует учесть при принятии инвестиционного решения?
+              </li>
+            </ol>
+          </div>
+
+
+          <!-- ============================================================
+               RELATED CONTENT
+               ============================================================ -->
+          <h2>Связанные материалы</h2>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin: var(--space-5) 0;" class="reveal">
+            <a href="../lectures/topic-42.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Лекция</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">Тема 4.2. Средневзвешенная стоимость капитала (WACC)</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Теория, формулы, практика расчёта</p>
+            </a>
+            <a href="../tools/wacc-calculator.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Инструмент</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">Калькулятор WACC</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Рассчитайте WACC с визуализацией</p>
+            </a>
+            <a href="gazprom.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Кейс</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">ПАО «Газпром» — Дивидендная политика</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">Анализ дивидендных решений госкомпании</p>
+            </a>
+            <a href="sberbank.html" class="card" style="text-decoration: none;">
+              <div class="card-top"><span class="tag">Кейс</span></div>
+              <h4 style="margin-top: var(--space-3); font-size: var(--text-base);">ПАО «Сбербанк» — Оценка стоимости</h4>
+              <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2);">DCF-модель и мультипликаторы</p>
+            </a>
+          </div>
+
+
+          <!-- ============================================================
+               DATA DISCLAIMER
+               ============================================================ -->
+          <div class="box-warning reveal">
+            Данные условные, составлены на основе публичной отчётности ПАО «Лукойл». Используются исключительно в учебных целях. Актуальны на март 2026.
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div><!-- /.container -->
+    </section>
+
+
+    <!-- ============================================================
+         CASE NAVIGATION: Prev / Next
+         ============================================================ -->
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="lecture-content">
+          <nav class="nav-lecture" aria-label="Навигация по кейсам">
+            <a href="../cases/" aria-label="Все кейсы">
+              <span class="label">Назад</span>
+              <span class="title">Все кейсы</span>
+            </a>
+            <a href="gazprom.html" aria-label="Следующий кейс">
+              <span class="label">Следующий кейс</span>
+              <span class="title">ПАО «Газпром» — Дивидендная политика</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <!-- Page-specific: Charts -->
+  <script>
+    document.addEventListener('chartjs:ready', function () {
+      var chartDefaults = {
+        color: '#94A3B8',
+        borderColor: 'rgba(255,255,255,0.08)',
+        font: { family: "'Inter', system-ui, sans-serif" }
+      };
+
+      Chart.defaults.color = chartDefaults.color;
+      Chart.defaults.borderColor = chartDefaults.borderColor;
+
+      // ---- NPV Bar Chart ----
+      var npvCtx = document.getElementById('npv-chart');
+      if (npvCtx) {
+        new Chart(npvCtx.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['Год 1', 'Год 2', 'Год 3', 'Год 4', 'Год 5', 'Год 6', 'Год 7'],
+            datasets: [
+              {
+                label: 'Номинальный CF (млн)',
+                data: [5000, 8000, 10000, 12000, 11000, 9000, 8000],
+                backgroundColor: 'rgba(129, 140, 248, 0.6)',
+                borderColor: '#818CF8',
+                borderWidth: 1,
+                borderRadius: 4
+              },
+              {
+                label: 'Дисконтированный CF (млн)',
+                data: [4190, 5619, 5887, 5921, 4549, 3119, 2323],
+                backgroundColor: 'rgba(251, 113, 133, 0.6)',
+                borderColor: '#FB7185',
+                borderWidth: 1,
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(255,255,255,0.05)' },
+                ticks: { callback: function (v) { return (v / 1000).toFixed(0) + ' млрд'; } }
+              },
+              x: {
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      }
+
+      // ---- Capital Structure Pie ----
+      var structCtx = document.getElementById('structure-chart');
+      if (structCtx) {
+        new Chart(structCtx.getContext('2d'), {
+          type: 'doughnut',
+          data: {
+            labels: ['Собственный капитал (90%)', 'Заёмный капитал (10%)'],
+            datasets: [{
+              data: [90, 10],
+              backgroundColor: ['rgba(129, 140, 248, 0.7)', 'rgba(251, 113, 133, 0.7)'],
+              borderColor: ['#818CF8', '#FB7185'],
+              borderWidth: 2,
+              hoverOffset: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '55%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { padding: 16, usePointStyle: true, pointStyleWidth: 10, font: { size: 11 } }
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>

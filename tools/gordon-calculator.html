@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор модели Гордона — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор модели Гордона: оценка справедливой стоимости акций через дивиденды, анализ чувствительности и пресеты российских эмитентов">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- Gordon Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'Gordon.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+
+    .price-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .price-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .upside-positive { color: #34D399; }
+    .upside-negative { color: #FB7185; }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-gordon-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор модели Гордона">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Модель Гордона</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Модель <span class="text-gradient">Гордона</span>
+            </h1>
+
+            <p class="subtitle">
+              Оцените справедливую стоимость акций через дивиденды
+              с&nbsp;анализом чувствительности к&nbsp;темпу роста и&nbsp;пресетами российских эмитентов.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Gordon Growth Model (DDM)</span><br>
+            <span class="kw">P<sub>0</sub></span> = D<sub>1</sub> / (K<sub>e</sub> - g)<br><br>
+            <span class="cmt">// где:</span><br>
+            <span class="fn">D<sub>1</sub></span> = ожидаемый дивиденд<br>
+            <span class="fn">K<sub>e</sub></span> = требуемая доходность<br>
+            <span class="fn">g</span>&nbsp;&nbsp; = темп роста дивидендов<br><br>
+            <span class="cmt">// Дивидендная доходность:</span><br>
+            <span class="kw">DY</span> = D<sub>1</sub> / P<sub>0</sub> = K<sub>e</sub> - g
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты компаний</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="lukoil"
+                        data-d1="600" data-ke="20.3" data-g="5" data-price="4800">
+                  Лукойл
+                </button>
+                <button type="button" class="preset-btn" data-preset="sber"
+                        data-d1="33" data-ke="22" data-g="7" data-price="280">
+                  Сбербанк
+                </button>
+                <button type="button" class="preset-btn" data-preset="nornickel"
+                        data-d1="900" data-ke="18" data-g="3" data-price="14000">
+                  Норникель
+                </button>
+              </div>
+            </div>
+
+            <!-- D1 -->
+            <div class="calc-input-group">
+              <label for="inp-d1">Ожидаемый дивиденд (D<sub>1</sub>), руб.</label>
+              <input type="number" id="inp-d1" min="0" step="1" value="600" placeholder="напр. 600">
+              <span class="hint">Дивиденд на акцию за следующий год</span>
+            </div>
+
+            <!-- Ke -->
+            <div class="calc-input-group">
+              <label for="inp-ke">Требуемая доходность (K<sub>e</sub>), %</label>
+              <input type="number" id="inp-ke" min="0" max="100" step="0.1" value="20.3" placeholder="напр. 20.3">
+              <span class="hint">Рассчитайте через <a href="capm-calculator.html" style="color:var(--acc)">CAPM</a></span>
+            </div>
+
+            <!-- g -->
+            <div class="calc-input-group">
+              <label for="inp-g">Темп роста дивидендов (g), %</label>
+              <input type="number" id="inp-g" min="0" max="50" step="0.1" value="5" placeholder="напр. 5">
+              <span class="hint">Устойчивый долгосрочный темп роста (обычно 2-8%)</span>
+            </div>
+
+            <!-- Current price (for comparison) -->
+            <div class="calc-input-group">
+              <label for="inp-price">Текущая рыночная цена, руб. (опционально)</label>
+              <input type="number" id="inp-price" min="0" step="1" value="4800" placeholder="для сравнения">
+              <span class="hint">Для оценки апсайда/даунсайда</span>
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать P<sub>0</sub>
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите &laquo;Рассчитать&raquo;
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- P0 result (main) -->
+              <div class="calc-result-card primary">
+                <div class="card-label">P<sub>0</sub> (справедливая стоимость)</div>
+                <div class="card-value"><span class="price-value-animated" id="p0-value">&mdash;</span></div>
+                <div class="card-formula" id="p0-formula"></div>
+              </div>
+
+              <!-- Secondary metrics -->
+              <div class="results-grid">
+                <div class="calc-result-card">
+                  <div class="card-label">Дивидендная доходность</div>
+                  <div class="card-value" id="dy-value">&mdash;</div>
+                  <div class="card-formula" id="dy-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">Апсайд / Даунсайд</div>
+                  <div class="card-value" id="upside-value">&mdash;</div>
+                  <div class="card-formula" id="upside-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">Implied K<sub>e</sub> (по рыночной цене)</div>
+                  <div class="card-value" id="implied-ke">&mdash;</div>
+                  <div class="card-formula" id="implied-ke-desc"></div>
+                </div>
+                <div class="calc-result-card" id="verdict-card">
+                  <div class="card-label">Вердикт</div>
+                  <div class="card-value" id="verdict-value">&mdash;</div>
+                  <div class="card-formula" id="verdict-desc"></div>
+                </div>
+              </div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>Чувствительность P<sub>0</sub> к темпу роста (g)</h4>
+                  <canvas class="chart" id="chart-sensitivity" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Дивидендная доходность при разных K<sub>e</sub></h4>
+                  <canvas class="chart" id="chart-yield" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>Модель Гордона</strong> (Gordon Growth Model, GGM) &mdash; модель дисконтирования дивидендов
+             с постоянным темпом роста. Используется для оценки стоимости акций компаний со стабильной
+             дивидендной политикой.</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            P<sub>0</sub> = D<sub>1</sub> / (K<sub>e</sub> - g)
+          </p>
+          <ul style="margin-top:var(--space-3);padding-left:var(--space-5);list-style:disc;color:var(--text-secondary);font-size:var(--text-sm);">
+            <li>Требование: <strong>K<sub>e</sub> &gt; g</strong>, иначе модель не работает</li>
+            <li>Модель предполагает <strong>постоянный темп роста</strong> дивидендов навсегда</li>
+            <li>Лучше подходит для зрелых компаний с устойчивой дивидендной политикой</li>
+            <li>Для компаний роста лучше использовать <a href="dcf-calculator.html">DCF</a></li>
+          </ul>
+          <p style="margin-top:var(--space-3);">Подробнее: <a href="../lectures/topic-51.html">Лекция 5.1 &mdash; Оценка стоимости акций</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные пресетов актуальны на март 2026.</strong> Источники:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://moex.com" target="_blank" rel="noopener">moex.com</a> &mdash; текущие котировки, дивидендная история</li>
+            <li><a href="https://smart-lab.ru/dividends" target="_blank" rel="noopener">smart-lab.ru/dividends</a> &mdash; дивидендный календарь</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Связанные материалы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="capm-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">CAPM</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Рассчитать K<sub>e</sub> для модели Гордона</p>
+            </div>
+          </a>
+          <a href="dcf-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">DCF</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка стоимости через денежные потоки</p>
+            </div>
+          </a>
+          <a href="dupont-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Дюпон</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Декомпозиция рентабельности собственного капитала</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- DOM refs ---
+    var form = {
+      d1:    document.getElementById('inp-d1'),
+      ke:    document.getElementById('inp-ke'),
+      g:     document.getElementById('inp-g'),
+      price: document.getElementById('inp-price')
+    };
+
+    var btnCalculate   = document.getElementById('btn-calculate');
+    var placeholder    = document.getElementById('results-placeholder');
+    var resultsContent = document.getElementById('results-content');
+
+    var sensitivityChart = null;
+    var yieldChart = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        form.d1.value    = btn.dataset.d1;
+        form.ke.value    = btn.dataset.ke;
+        form.g.value     = btn.dataset.g;
+        form.price.value = btn.dataset.price;
+      });
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function calculate() {
+      var d1 = parseFloat(form.d1.value);
+      var ke = parseFloat(form.ke.value) / 100;
+      var g  = parseFloat(form.g.value) / 100;
+      var currentPrice = parseFloat(form.price.value) || 0;
+
+      if (isNaN(d1) || isNaN(ke) || isNaN(g) || ke <= g) {
+        if (ke <= g) {
+          alert('K\u2091 должна быть больше g. Иначе модель не имеет смысла.');
+        }
+        return;
+      }
+
+      // Gordon model: P0 = D1 / (Ke - g)
+      var p0 = d1 / (ke - g);
+      var divYield = d1 / p0; // = ke - g
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // P0
+      var p0El = document.getElementById('p0-value');
+      p0El.classList.add('updating');
+      setTimeout(function () {
+        p0El.textContent = CFUtils.formatNumber(p0, 0) + ' \u20BD';
+        p0El.classList.remove('updating');
+      }, 150);
+
+      document.getElementById('p0-formula').textContent =
+        d1 + ' / (' + (ke * 100).toFixed(1) + '% - ' + (g * 100).toFixed(1) + '%) = ' + CFUtils.formatNumber(p0, 0);
+
+      // Dividend yield
+      document.getElementById('dy-value').textContent = (divYield * 100).toFixed(2) + '%';
+      document.getElementById('dy-desc').textContent = 'D\u2081 / P\u2080 = K\u2091 - g = ' + (divYield * 100).toFixed(2) + '%';
+
+      // Upside
+      var upsideEl = document.getElementById('upside-value');
+      if (currentPrice > 0) {
+        var upside = ((p0 - currentPrice) / currentPrice) * 100;
+        upsideEl.textContent = (upside >= 0 ? '+' : '') + upside.toFixed(1) + '%';
+        upsideEl.className = 'card-value ' + (upside >= 0 ? 'upside-positive' : 'upside-negative');
+        document.getElementById('upside-desc').textContent =
+          'Справедливая: ' + CFUtils.formatNumber(p0, 0) + ' vs рыночная: ' + CFUtils.formatNumber(currentPrice, 0);
+      } else {
+        upsideEl.textContent = '\u2014';
+        upsideEl.className = 'card-value';
+        document.getElementById('upside-desc').textContent = 'Введите текущую цену для сравнения';
+      }
+
+      // Implied Ke (from current price)
+      if (currentPrice > 0) {
+        var impliedKe = d1 / currentPrice + g;
+        document.getElementById('implied-ke').textContent = (impliedKe * 100).toFixed(2) + '%';
+        document.getElementById('implied-ke-desc').textContent =
+          d1 + ' / ' + CFUtils.formatNumber(currentPrice, 0) + ' + ' + (g * 100).toFixed(1) + '% = ' + (impliedKe * 100).toFixed(2) + '%';
+      } else {
+        document.getElementById('implied-ke').textContent = '\u2014';
+        document.getElementById('implied-ke-desc').textContent = 'Введите текущую цену';
+      }
+
+      // Verdict
+      var verdictEl = document.getElementById('verdict-value');
+      if (currentPrice > 0) {
+        var upside2 = ((p0 - currentPrice) / currentPrice) * 100;
+        if (upside2 > 15) {
+          verdictEl.textContent = 'Недооценена';
+          verdictEl.style.color = '#34D399';
+          document.getElementById('verdict-desc').textContent = 'Потенциал роста ' + upside2.toFixed(0) + '% \u2014 привлекательна для покупки';
+        } else if (upside2 > -10) {
+          verdictEl.textContent = 'Справедливо оценена';
+          verdictEl.style.color = '#FBBF24';
+          document.getElementById('verdict-desc').textContent = 'Цена близка к справедливой стоимости';
+        } else {
+          verdictEl.textContent = 'Переоценена';
+          verdictEl.style.color = '#FB7185';
+          document.getElementById('verdict-desc').textContent = 'Рыночная цена выше справедливой на ' + Math.abs(upside2).toFixed(0) + '%';
+        }
+      } else {
+        verdictEl.textContent = '\u2014';
+        verdictEl.style.color = '';
+        document.getElementById('verdict-desc').textContent = 'Введите текущую рыночную цену';
+      }
+
+      // Charts
+      renderCharts(d1, ke, g, currentPrice, p0);
+    }
+
+    function renderCharts(d1, ke, g, currentPrice, p0) {
+      whenChartReady(function () {
+        if (sensitivityChart) sensitivityChart.destroy();
+        if (yieldChart) yieldChart.destroy();
+
+        // Line: P0 sensitivity to g
+        var gValues = [];
+        var pValues = [];
+        var kePercent = ke * 100;
+        for (var gv = 0; gv < kePercent - 0.5; gv += 0.5) {
+          var gRate = gv / 100;
+          if (ke - gRate <= 0.001) break;
+          gValues.push(gv.toFixed(1) + '%');
+          pValues.push(d1 / (ke - gRate));
+        }
+
+        var sensCanvas = document.getElementById('chart-sensitivity');
+        sensitivityChart = new Chart(sensCanvas, {
+          type: 'line',
+          data: {
+            labels: gValues,
+            datasets: [{
+              label: 'P\u2080, \u20BD',
+              data: pValues,
+              borderColor: '#818CF8',
+              backgroundColor: 'rgba(129,140,248,0.1)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 0,
+              pointHoverRadius: 5
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  title: function (items) { return 'g = ' + items[0].label; },
+                  label: function (ctx) { return 'P\u2080 = ' + CFUtils.formatNumber(ctx.parsed.y, 0) + ' \u20BD'; }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: { color: '#94A3B8', callback: function (v) { return CFUtils.formatNumber(v, 0); } },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                title: { display: true, text: 'Темп роста (g)', color: '#94A3B8' },
+                ticks: { color: '#94A3B8', maxTicksLimit: 10 },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+
+        // Bar: dividend yield at different Ke values
+        var keLabels = [];
+        var dyValues = [];
+        for (var k = 12; k <= 30; k += 2) {
+          var kRate = k / 100;
+          if (kRate <= g) continue;
+          keLabels.push(k + '%');
+          var fairP = d1 / (kRate - g);
+          dyValues.push((d1 / fairP) * 100);
+        }
+
+        var yieldCanvas = document.getElementById('chart-yield');
+        yieldChart = new Chart(yieldCanvas, {
+          type: 'bar',
+          data: {
+            labels: keLabels,
+            datasets: [{
+              label: 'Div Yield, %',
+              data: dyValues,
+              backgroundColor: '#FBBF24',
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'DY: ' + ctx.parsed.y.toFixed(2) + '%'; }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { color: '#94A3B8', callback: function (v) { return v.toFixed(0) + '%'; } },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                title: { display: true, text: 'K\u2091', color: '#94A3B8' },
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

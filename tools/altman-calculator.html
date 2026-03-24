@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор Z-score Альтмана — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор Z-score Альтмана: оценка вероятности банкротства с визуализацией компонентов и пресетами российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- Altman Z-Score Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'Altman.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+
+    .z-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .z-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .zone-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      border-radius: var(--radius-pill);
+      margin-top: var(--space-2);
+    }
+    .zone-safe { background: rgba(52,211,153,0.15); color: #34D399; border: 1px solid rgba(52,211,153,0.3); }
+    .zone-grey { background: rgba(251,191,36,0.15); color: #FBBF24; border: 1px solid rgba(251,191,36,0.3); }
+    .zone-distress { background: rgba(251,113,133,0.15); color: #FB7185; border: 1px solid rgba(251,113,133,0.3); }
+
+    .inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+      .inputs-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-altman-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор Z-score Альтмана">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Z-score Альтмана</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Z-score <span class="text-gradient">Альтмана</span>
+            </h1>
+
+            <p class="subtitle">
+              Оцените вероятность банкротства компании по&nbsp;5-факторной модели Альтмана
+              с&nbsp;визуализацией вклада каждого компонента и&nbsp;индикатором зоны риска.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Altman Z-Score (5-factor model)</span><br>
+            <span class="kw">Z</span> = <span class="num">1.2</span>&times;X<sub>1</sub> + <span class="num">1.4</span>&times;X<sub>2</sub> + <span class="num">3.3</span>&times;X<sub>3</sub> + <span class="num">0.6</span>&times;X<sub>4</sub> + <span class="num">1.0</span>&times;X<sub>5</sub><br><br>
+            <span class="cmt">// где:</span><br>
+            <span class="fn">X<sub>1</sub></span> = WC / Total Assets<br>
+            <span class="fn">X<sub>2</sub></span> = RE / Total Assets<br>
+            <span class="fn">X<sub>3</sub></span> = EBIT / Total Assets<br>
+            <span class="fn">X<sub>4</sub></span> = Market Cap / Total Liabilities<br>
+            <span class="fn">X<sub>5</sub></span> = Sales / Total Assets<br><br>
+            <span class="cmt">// Z &gt; 2.99 &rarr; Safe zone</span><br>
+            <span class="cmt">// Z &lt; 1.81 &rarr; Distress zone</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты компаний</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="lukoil">Лукойл 2024</button>
+                <button type="button" class="preset-btn" data-preset="mechel">Мечел 2020</button>
+                <button type="button" class="preset-btn" data-preset="sber">Сбербанк 2024</button>
+              </div>
+            </div>
+
+            <div class="inputs-grid">
+              <!-- Working Capital -->
+              <div class="calc-input-group">
+                <label for="inp-wc">Рабочий капитал (WC), млрд</label>
+                <input type="number" id="inp-wc" step="1" value="800" placeholder="ОА - КО">
+                <span class="hint">Оборотные активы минус краткосрочные обязательства</span>
+              </div>
+
+              <!-- Retained Earnings -->
+              <div class="calc-input-group">
+                <label for="inp-re">Нераспределённая прибыль (RE), млрд</label>
+                <input type="number" id="inp-re" step="1" value="3500" placeholder="накопленная RE">
+              </div>
+
+              <!-- EBIT -->
+              <div class="calc-input-group">
+                <label for="inp-ebit">EBIT, млрд</label>
+                <input type="number" id="inp-ebit" step="1" value="800" placeholder="операционная прибыль">
+              </div>
+
+              <!-- Market Cap -->
+              <div class="calc-input-group">
+                <label for="inp-mcap">Рыночная капитализация, млрд</label>
+                <input type="number" id="inp-mcap" step="1" value="4500" placeholder="Market Cap">
+              </div>
+
+              <!-- Sales -->
+              <div class="calc-input-group">
+                <label for="inp-sales">Выручка (Sales), млрд</label>
+                <input type="number" id="inp-sales" step="1" value="7500" placeholder="годовая выручка">
+              </div>
+
+              <!-- Total Assets -->
+              <div class="calc-input-group">
+                <label for="inp-ta">Совокупные активы (TA), млрд</label>
+                <input type="number" id="inp-ta" step="1" value="6000" placeholder="Total Assets">
+              </div>
+
+              <!-- Total Liabilities -->
+              <div class="calc-input-group">
+                <label for="inp-tl">Совокупные обязательства (TL), млрд</label>
+                <input type="number" id="inp-tl" step="1" value="2500" placeholder="Total Liabilities">
+              </div>
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать Z-score
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите &laquo;Рассчитать&raquo;
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- Z-score result (main) -->
+              <div class="calc-result-card primary" id="z-card">
+                <div class="card-label">Z-score Альтмана</div>
+                <div class="card-value"><span class="z-value-animated" id="z-value">&mdash;</span></div>
+                <div class="card-formula" id="z-formula"></div>
+                <div id="zone-badge"></div>
+              </div>
+
+              <!-- Interpretation -->
+              <div class="calc-result-card">
+                <div class="card-label">Интерпретация</div>
+                <div class="card-value" id="zone-text" style="font-size:var(--text-lg)">&mdash;</div>
+                <div class="card-formula" id="zone-desc"></div>
+              </div>
+
+              <!-- Component ratios -->
+              <div class="calc-result-card">
+                <div class="card-label">Коэффициенты (X1 &mdash; X5)</div>
+                <div class="card-formula" id="ratios-text" style="line-height:1.8"></div>
+              </div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>Индикатор Z-score</h4>
+                  <canvas class="chart" id="chart-gauge" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Вклад компонентов</h4>
+                  <canvas class="chart" id="chart-components" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>Z-score Альтмана</strong> &mdash; модель прогнозирования банкротства, разработанная
+             Эдвардом Альтманом в 1968 году. Комбинирует 5 финансовых показателей для оценки
+             кредитоспособности компании.</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            Z = 1.2&times;X<sub>1</sub> + 1.4&times;X<sub>2</sub> + 3.3&times;X<sub>3</sub> + 0.6&times;X<sub>4</sub> + 1.0&times;X<sub>5</sub>
+          </p>
+          <ul style="margin-top:var(--space-3);padding-left:var(--space-5);list-style:disc;color:var(--text-secondary);font-size:var(--text-sm);">
+            <li><strong>Z &gt; 2.99</strong> &mdash; безопасная зона (вероятность банкротства минимальна)</li>
+            <li><strong>1.81 &le; Z &le; 2.99</strong> &mdash; серая зона (неопределённость)</li>
+            <li><strong>Z &lt; 1.81</strong> &mdash; зона бедствия (высокая вероятность банкротства)</li>
+            <li>Модель разработана для публичных производственных компаний</li>
+          </ul>
+          <p style="margin-top:var(--space-3);">Подробнее: <a href="../lectures/topic-63.html">Лекция 6.3 &mdash; Финансовый анализ и прогнозирование банкротства</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные пресетов актуальны на март 2026.</strong> Источники финансовой отчётности:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://e-disclosure.ru" target="_blank" rel="noopener">e-disclosure.ru</a> &mdash; отчётность МСФО, баланс, P&L</li>
+            <li><a href="https://smart-lab.ru" target="_blank" rel="noopener">smart-lab.ru</a> &mdash; агрегированные данные, мультипликаторы</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Связанные материалы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="dupont-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Анализ Дюпона</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Декомпозиция ROE на компоненты</p>
+            </div>
+          </a>
+          <a href="wacc-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">WACC</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Средневзвешенная стоимость капитала</p>
+            </div>
+          </a>
+          <a href="dcf-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">DCF</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Оценка стоимости компании</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- Preset data ---
+    var presets = {
+      lukoil: { wc: 800, re: 3500, ebit: 800, mcap: 4500, sales: 7500, ta: 6000, tl: 2500 },
+      mechel: { wc: -50, re: -120, ebit: 15, mcap: 30, sales: 300, ta: 500, tl: 450 },
+      sber:   { wc: 5000, re: 4000, ebit: 2200, mcap: 6500, sales: 4500, ta: 50000, tl: 44000 }
+    };
+
+    // --- DOM refs ---
+    var form = {
+      wc:    document.getElementById('inp-wc'),
+      re:    document.getElementById('inp-re'),
+      ebit:  document.getElementById('inp-ebit'),
+      mcap:  document.getElementById('inp-mcap'),
+      sales: document.getElementById('inp-sales'),
+      ta:    document.getElementById('inp-ta'),
+      tl:    document.getElementById('inp-tl')
+    };
+
+    var btnCalculate   = document.getElementById('btn-calculate');
+    var placeholder    = document.getElementById('results-placeholder');
+    var resultsContent = document.getElementById('results-content');
+
+    var gaugeChart = null;
+    var componentsChart = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        var p = presets[btn.dataset.preset];
+        if (!p) return;
+        form.wc.value    = p.wc;
+        form.re.value    = p.re;
+        form.ebit.value  = p.ebit;
+        form.mcap.value  = p.mcap;
+        form.sales.value = p.sales;
+        form.ta.value    = p.ta;
+        form.tl.value    = p.tl;
+      });
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function calculate() {
+      var wc    = parseFloat(form.wc.value) || 0;
+      var re    = parseFloat(form.re.value) || 0;
+      var ebit  = parseFloat(form.ebit.value) || 0;
+      var mcap  = parseFloat(form.mcap.value) || 0;
+      var sales = parseFloat(form.sales.value) || 0;
+      var ta    = parseFloat(form.ta.value) || 0;
+      var tl    = parseFloat(form.tl.value) || 0;
+
+      if (ta === 0) {
+        alert('Совокупные активы (TA) не могут быть равны 0.');
+        return;
+      }
+
+      // Calculate ratios
+      var x1 = wc / ta;
+      var x2 = re / ta;
+      var x3 = ebit / ta;
+      var x4 = tl > 0 ? mcap / tl : 0;
+      var x5 = sales / ta;
+
+      // Z-score
+      var z = CFUtils.calcAltmanZ({
+        wcTA: x1, reTa: x2, ebitTA: x3, mveBVD: x4, salesTA: x5
+      });
+
+      // Component contributions
+      var c1 = 1.2 * x1;
+      var c2 = 1.4 * x2;
+      var c3 = 3.3 * x3;
+      var c4 = 0.6 * x4;
+      var c5 = 1.0 * x5;
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // Z-score value
+      var zEl = document.getElementById('z-value');
+      var zCard = document.getElementById('z-card');
+      zEl.classList.add('updating');
+      setTimeout(function () {
+        zEl.textContent = z.toFixed(3);
+        zEl.classList.remove('updating');
+      }, 150);
+
+      document.getElementById('z-formula').textContent =
+        '1.2\u00D7' + x1.toFixed(3) + ' + 1.4\u00D7' + x2.toFixed(3) +
+        ' + 3.3\u00D7' + x3.toFixed(3) + ' + 0.6\u00D7' + x4.toFixed(3) +
+        ' + 1.0\u00D7' + x5.toFixed(3);
+
+      // Zone badge
+      var zoneBadge = document.getElementById('zone-badge');
+      var zoneText = document.getElementById('zone-text');
+      var zoneDesc = document.getElementById('zone-desc');
+
+      if (z > 2.99) {
+        zoneBadge.innerHTML = '<span class="zone-indicator zone-safe">Безопасная зона (Z > 2.99)</span>';
+        zCard.style.borderColor = '#34D399';
+        zEl.style.color = '#34D399';
+        zoneText.textContent = 'Финансово устойчива';
+        zoneText.style.color = '#34D399';
+        zoneDesc.textContent = 'Компания демонстрирует сильные финансовые показатели. Вероятность банкротства минимальна.';
+      } else if (z >= 1.81) {
+        zoneBadge.innerHTML = '<span class="zone-indicator zone-grey">Серая зона (1.81 \u2264 Z \u2264 2.99)</span>';
+        zCard.style.borderColor = '#FBBF24';
+        zEl.style.color = '#FBBF24';
+        zoneText.textContent = 'Зона неопределённости';
+        zoneText.style.color = '#FBBF24';
+        zoneDesc.textContent = 'Результат неоднозначен. Необходим дополнительный анализ финансового состояния.';
+      } else {
+        zoneBadge.innerHTML = '<span class="zone-indicator zone-distress">Зона бедствия (Z < 1.81)</span>';
+        zCard.style.borderColor = '#FB7185';
+        zEl.style.color = '#FB7185';
+        zoneText.textContent = 'Высокий риск банкротства';
+        zoneText.style.color = '#FB7185';
+        zoneDesc.textContent = 'Компания находится в зоне финансового бедствия. Высокая вероятность дефолта в ближайшие 2 года.';
+      }
+
+      // Ratios text
+      document.getElementById('ratios-text').innerHTML =
+        'X<sub>1</sub> = WC/TA = ' + x1.toFixed(3) + '<br>' +
+        'X<sub>2</sub> = RE/TA = ' + x2.toFixed(3) + '<br>' +
+        'X<sub>3</sub> = EBIT/TA = ' + x3.toFixed(3) + '<br>' +
+        'X<sub>4</sub> = MCap/TL = ' + x4.toFixed(3) + '<br>' +
+        'X<sub>5</sub> = Sales/TA = ' + x5.toFixed(3);
+
+      // Charts
+      renderCharts(z, c1, c2, c3, c4, c5);
+    }
+
+    function renderCharts(z, c1, c2, c3, c4, c5) {
+      whenChartReady(function () {
+        if (gaugeChart) gaugeChart.destroy();
+        if (componentsChart) componentsChart.destroy();
+
+        // Gauge-style doughnut
+        var maxZ = 5;
+        var displayZ = Math.min(Math.max(z, 0), maxZ);
+        var remaining = maxZ - displayZ;
+        var gaugeColor = z > 2.99 ? '#34D399' : z >= 1.81 ? '#FBBF24' : '#FB7185';
+
+        var gaugeCanvas = document.getElementById('chart-gauge');
+        gaugeChart = new Chart(gaugeCanvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['Z-score', ''],
+            datasets: [{
+              data: [displayZ, remaining],
+              backgroundColor: [gaugeColor, 'rgba(148,163,184,0.1)'],
+              borderWidth: 0,
+              circumference: 270,
+              rotation: 225
+            }]
+          },
+          options: {
+            responsive: true,
+            cutout: '75%',
+            plugins: {
+              legend: { display: false },
+              tooltip: { enabled: false }
+            }
+          },
+          plugins: [{
+            id: 'gaugeCenter',
+            afterDraw: function (chart) {
+              var ctx = chart.ctx;
+              var w = chart.width;
+              var h = chart.height;
+              ctx.save();
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillStyle = gaugeColor;
+              ctx.font = 'bold 28px "Space Grotesk", sans-serif';
+              ctx.fillText(z.toFixed(2), w / 2, h / 2 + 10);
+              ctx.fillStyle = '#94A3B8';
+              ctx.font = '12px "JetBrains Mono", monospace';
+              ctx.fillText('Z-SCORE', w / 2, h / 2 + 35);
+              ctx.restore();
+            }
+          }]
+        });
+
+        // Bar: component contributions
+        var compCanvas = document.getElementById('chart-components');
+        componentsChart = new Chart(compCanvas, {
+          type: 'bar',
+          data: {
+            labels: ['1.2\u00D7X\u2081', '1.4\u00D7X\u2082', '3.3\u00D7X\u2083', '0.6\u00D7X\u2084', '1.0\u00D7X\u2085'],
+            datasets: [{
+              label: 'Вклад',
+              data: [c1, c2, c3, c4, c5],
+              backgroundColor: [
+                c1 >= 0 ? '#818CF8' : '#FB7185',
+                c2 >= 0 ? '#818CF8' : '#FB7185',
+                c3 >= 0 ? '#818CF8' : '#FB7185',
+                c4 >= 0 ? '#818CF8' : '#FB7185',
+                c5 >= 0 ? '#818CF8' : '#FB7185'
+              ],
+              borderRadius: 4
+            }]
+          },
+          options: {
+            responsive: true,
+            indexAxis: 'y',
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'Вклад: ' + ctx.parsed.x.toFixed(3); }
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: '#94A3B8' },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              y: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

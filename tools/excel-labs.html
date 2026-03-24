@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel-практикумы — Корпоративные финансы</title>
+  <meta name="description" content="6 практикумов в Excel: TVM, NPV/IRR, WACC, DCF-модель, финансовый анализ, мультипликаторы — пошаговые инструкции с формулами">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Excel-практикумы — Корпоративные финансы">
+  <meta property="og:description" content="Пошаговые лабораторные работы в Excel: от TVM до DCF-модели с формулами ячеек и ожидаемыми результатами">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- Excel Labs Page --- */
+
+    .lab-section {
+      margin-bottom: var(--space-10);
+    }
+
+    .lab-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+      margin-bottom: var(--space-6);
+      padding-bottom: var(--space-4);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .lab-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: var(--acc);
+      color: var(--bg);
+      font-family: var(--ff-mono);
+      font-weight: var(--fw-bold);
+      font-size: var(--text-lg);
+      border-radius: var(--radius-lg);
+      flex-shrink: 0;
+    }
+
+    .lab-header-text h2 {
+      font-size: var(--text-2xl);
+      margin-bottom: var(--space-2);
+    }
+
+    .lab-objective {
+      color: var(--text-secondary);
+      font-size: var(--text-base);
+      line-height: 1.6;
+    }
+
+    .lab-topics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-2);
+    }
+
+    .lab-topic-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--acc);
+      background: var(--acc-subtle);
+      border-radius: 999px;
+    }
+
+    /* Task sub-header */
+    .task-title {
+      font-size: var(--text-lg);
+      font-weight: var(--fw-semibold);
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-3);
+      padding-left: var(--space-3);
+      border-left: 3px solid var(--acc);
+    }
+
+    /* Cell formula table improvements */
+    .cell-table {
+      width: 100%;
+      margin: var(--space-4) 0;
+    }
+
+    .cell-table th {
+      text-align: left;
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      padding: var(--space-2) var(--space-3);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cell-table td {
+      padding: var(--space-2) var(--space-3);
+      border-bottom: 1px solid var(--border);
+      font-size: var(--text-sm);
+      vertical-align: top;
+    }
+
+    .cell-table code {
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      color: var(--acc);
+      background: var(--acc-subtle);
+      padding: 1px var(--space-1);
+      border-radius: var(--radius-sm);
+    }
+
+    .cell-ref {
+      font-family: var(--ff-mono);
+      font-weight: var(--fw-medium);
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    /* Step list */
+    .step-list {
+      counter-reset: step;
+      list-style: none;
+      padding: 0;
+    }
+
+    .step-list li {
+      counter-increment: step;
+      position: relative;
+      padding-left: var(--space-8);
+      margin-bottom: var(--space-3);
+      line-height: 1.7;
+      color: var(--text-secondary);
+    }
+
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: 2px;
+      width: 24px;
+      height: 24px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      font-weight: var(--fw-bold);
+      color: var(--acc);
+    }
+
+    /* Hero tags */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-3);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--acc);
+      background: var(--acc-subtle);
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Download button */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      text-decoration: none;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .btn-download:hover {
+      border-color: var(--acc);
+      color: var(--acc);
+    }
+
+    /* Hotkey table */
+    .hotkey-table kbd {
+      display: inline-block;
+      padding: 2px 6px;
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 1px 0 var(--border);
+    }
+
+    /* Lecture content compatible styles */
+    .lecture-content h3 {
+      margin-top: var(--space-6);
+      margin-bottom: var(--space-3);
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-excel-labs">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок страницы">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="../index.html" style="color: var(--text-muted);">Главная</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Инструменты</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Excel-практикумы</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Excel-практикумы
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              <strong>6 лабораторных работ</strong> с пошаговыми инструкциями: от временной
+              стоимости денег до DCF-модели оценки компании.
+            </p>
+
+            <div class="hero-tags">
+              <span class="hero-tag">TVM</span>
+              <span class="hero-tag">NPV / IRR</span>
+              <span class="hero-tag">WACC</span>
+              <span class="hero-tag">DCF-модель</span>
+              <span class="hero-tag">Финанализ</span>
+              <span class="hero-tag">Мультипликаторы</span>
+            </div>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Практикумов</td><td><strong>6</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Инструмент</td><td>Microsoft Excel / Google Sheets</td></tr>
+                <tr><td style="color: var(--text-muted);">Уровень</td><td>Базовый &rarr; Продвинутый</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">ОПК-2, ОПК-5</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Темы 1.2, 3.1, 4.2, 6.1</td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top: var(--space-4);">
+              <a href="#" class="btn-download" onclick="return false;" title="Шаблоны готовятся">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Скачать шаблоны .xlsx
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LABS CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== ПРАКТИКУМ 1. TVM ===== -->
+          <div class="lab-section" id="lab1">
+            <div class="lab-header">
+              <span class="lab-num">1</span>
+              <div class="lab-header-text">
+                <h2>Временная стоимость денег (TVM)</h2>
+                <p class="lab-objective">Освоить финансовые функции Excel для расчётов TVM: будущая и приведённая стоимость, аннуитеты, кредитный калькулятор.</p>
+                <div class="lab-topics">
+                  <span class="lab-topic-tag">Тема 1.2</span>
+                </div>
+              </div>
+            </div>
+
+            <h3>Основные функции</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Функция</th><th>Назначение</th><th>Синтаксис</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>ПС</code> / <code>PV</code></td><td>Приведённая стоимость</td><td><code>=ПС(ставка; кпер; плт; [бс]; [тип])</code></td></tr>
+                <tr><td><code>БС</code> / <code>FV</code></td><td>Будущая стоимость</td><td><code>=БС(ставка; кпер; плт; [пс]; [тип])</code></td></tr>
+                <tr><td><code>СТАВКА</code> / <code>RATE</code></td><td>Процентная ставка</td><td><code>=СТАВКА(кпер; плт; пс; [бс]; [тип])</code></td></tr>
+                <tr><td><code>КПЕР</code> / <code>NPER</code></td><td>Количество периодов</td><td><code>=КПЕР(ставка; плт; пс; [бс]; [тип])</code></td></tr>
+                <tr><td><code>ПЛТ</code> / <code>PMT</code></td><td>Периодический платёж</td><td><code>=ПЛТ(ставка; кпер; пс; [бс]; [тип])</code></td></tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 1.1 -->
+            <h3 class="task-title" id="task-1-1">Задание 1.1. Сравнение инвестиционных предложений</h3>
+
+            <p>Банк A: депозит 1 000 000 руб. под 10% годовых, капитализация ежегодно, 5 лет.<br>
+            Банк B: депозит 1 000 000 руб. под 9,5% годовых, капитализация ежемесячно, 5 лет.</p>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Содержание</th><th>Формула</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="cell-ref">B2</td><td>Вклад</td><td>-1 000 000</td></tr>
+                <tr><td class="cell-ref">B3</td><td>Ставка (годовая)</td><td>10%</td></tr>
+                <tr><td class="cell-ref">B4</td><td>Период (лет)</td><td>5</td></tr>
+                <tr><td class="cell-ref">B5</td><td>FV (Банк A)</td><td><code>=БС(B3;B4;0;B2)</code></td></tr>
+                <tr><td class="cell-ref">C3</td><td>Ставка (месячная)</td><td><code>=9,5%/12</code></td></tr>
+                <tr><td class="cell-ref">C4</td><td>Периодов</td><td><code>=5*12</code></td></tr>
+                <tr><td class="cell-ref">C5</td><td>FV (Банк B)</td><td><code>=БС(C3;C4;0;B2)</code></td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-key">
+              <p><strong>Ожидаемый результат:</strong></p>
+              <ul>
+                <li>Банк A: <div class="math-block">$$1\,000\,000 \times (1{,}10)^5 = 1\,610\,510 \text{ руб.}$$</div></li>
+                <li>Банк B: <div class="math-block">$$1\,000\,000 \times (1 + 0{,}095/12)^{60} = 1\,600\,527 \text{ руб.}$$</div></li>
+              </ul>
+              <p style="margin-bottom: 0;">Банк А выгоднее, несмотря на менее частую капитализацию, из-за более высокой ставки.</p>
+            </div>
+
+            <!-- Задание 1.2 -->
+            <h3 class="task-title" id="task-1-2">Задание 1.2. Кредитный калькулятор</h3>
+
+            <p>Автокредит: сумма 2 000 000 руб., ставка 15% годовых, срок 3 года, ежемесячные платежи.</p>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Содержание</th><th>Формула</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="cell-ref">B2</td><td>Сумма кредита</td><td>2 000 000</td></tr>
+                <tr><td class="cell-ref">B3</td><td>Годовая ставка</td><td>15%</td></tr>
+                <tr><td class="cell-ref">B4</td><td>Месячная ставка</td><td><code>=B3/12</code></td></tr>
+                <tr><td class="cell-ref">B5</td><td>Срок (месяцев)</td><td>36</td></tr>
+                <tr><td class="cell-ref">B6</td><td>Ежемесячный платёж</td><td><code>=ПЛТ(B4;B5;B2)</code></td></tr>
+                <tr><td class="cell-ref">B7</td><td>Общая сумма выплат</td><td><code>=B6*B5</code></td></tr>
+                <tr><td class="cell-ref">B8</td><td>Переплата</td><td><code>=B7+B2</code></td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-info">
+              <p><strong>График платежей (строки 11-46):</strong></p>
+              <table class="data-table cell-table" style="margin-bottom: 0;">
+                <thead>
+                  <tr><th>Столбец</th><th>Содержание</th><th>Формула (строка 11)</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>A</td><td>Месяц</td><td>1</td></tr>
+                  <tr><td>B</td><td>Остаток на начало</td><td><code>=B2</code></td></tr>
+                  <tr><td>C</td><td>Процентная часть</td><td><code>=B11*$B$4</code></td></tr>
+                  <tr><td>D</td><td>Основная часть</td><td><code>=-$B$6-C11</code></td></tr>
+                  <tr><td>E</td><td>Остаток на конец</td><td><code>=B11-D11</code></td></tr>
+                </tbody>
+              </table>
+              <p style="margin-top: var(--space-2); margin-bottom: 0;">Далее B12: <code>=E11</code>, протянуть до строки 46.</p>
+            </div>
+          </div>
+
+          <!-- ===== ПРАКТИКУМ 2. NPV/IRR ===== -->
+          <div class="lab-section" id="lab2">
+            <div class="lab-header">
+              <span class="lab-num">2</span>
+              <div class="lab-header-text">
+                <h2>Оценка инвестиционных проектов (NPV, IRR)</h2>
+                <p class="lab-objective">Рассчитать NPV, IRR, PI, DPP для инвестиционного проекта и построить профиль NPV.</p>
+                <div class="lab-topics">
+                  <span class="lab-topic-tag">Тема 3.1</span>
+                </div>
+              </div>
+            </div>
+
+            <h3>Основные функции</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Функция</th><th>Назначение</th><th>Синтаксис</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><code>ЧПС</code> / <code>NPV</code></td><td>Чистая приведённая стоимость</td><td><code>=ЧПС(ставка; CF1:CFn) + CF0</code></td></tr>
+                <tr><td><code>ВСД</code> / <code>IRR</code></td><td>Внутренняя норма доходности</td><td><code>=ВСД(CF0:CFn; [предположение])</code></td></tr>
+                <tr><td><code>ЧИСТНЗ</code> / <code>XNPV</code></td><td>NPV для нерегулярных потоков</td><td><code>=ЧИСТНЗ(ставка; значения; даты)</code></td></tr>
+                <tr><td><code>ЧИСТВНДОХ</code> / <code>XIRR</code></td><td>IRR для нерегулярных потоков</td><td><code>=ЧИСТВНДОХ(значения; даты)</code></td></tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 2.1 -->
+            <h3 class="task-title" id="task-2-1">Задание 2.1. Сравнение двух проектов</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Год</th><th>Проект Alpha</th><th>Проект Beta</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>0</td><td>-5 000</td><td>-5 000</td></tr>
+                <tr><td>1</td><td>1 500</td><td>500</td></tr>
+                <tr><td>2</td><td>1 800</td><td>1 000</td></tr>
+                <tr><td>3</td><td>2 000</td><td>2 000</td></tr>
+                <tr><td>4</td><td>1 200</td><td>3 000</td></tr>
+                <tr><td>5</td><td>800</td><td>3 500</td></tr>
+              </tbody>
+            </table>
+
+            <p>Ставка дисконтирования: 12%.</p>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Формула</th><th>Описание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="cell-ref">B9</td><td><code>=ЧПС(0,12;B3:B7)+B2</code></td><td>NPV проекта Alpha</td></tr>
+                <tr><td class="cell-ref">C9</td><td><code>=ЧПС(0,12;C3:C7)+C2</code></td><td>NPV проекта Beta</td></tr>
+                <tr><td class="cell-ref">B10</td><td><code>=ВСД(B2:B7)</code></td><td>IRR проекта Alpha</td></tr>
+                <tr><td class="cell-ref">C10</td><td><code>=ВСД(C2:C7)</code></td><td>IRR проекта Beta</td></tr>
+                <tr><td class="cell-ref">B11</td><td><code>=(B9-B2)/(-B2)</code></td><td>PI проекта Alpha</td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-warning">
+              <p style="margin-bottom: 0;"><strong>Важно:</strong> функция <code>ЧПС</code> в Excel дисконтирует с первого аргумента (не с нулевого), поэтому инвестицию (CF0) прибавляем отдельно.</p>
+            </div>
+
+            <!-- Задание 2.2 -->
+            <h3 class="task-title" id="task-2-2">Задание 2.2. Профиль NPV (график)</h3>
+
+            <p>Построить зависимость NPV от ставки дисконтирования (0%-30%):</p>
+
+            <ol class="step-list">
+              <li>В столбце A введите ставки: 0%, 2%, 4%, ..., 30%.</li>
+              <li>В столбце B рассчитайте NPV Alpha: <code>=ЧПС(A14;$B$3:$B$7)+$B$2</code>.</li>
+              <li>В столбце C рассчитайте NPV Beta аналогично.</li>
+              <li>Выделите диапазон A:C и вставьте <strong>линейный график</strong> с двумя сериями.</li>
+              <li>Точки пересечения с осью X -- это IRR каждого проекта.</li>
+            </ol>
+
+            <div class="box-info">
+              <p style="margin-bottom: 0;">График профиля NPV наглядно показывает, при какой ставке один проект становится выгоднее другого (точка пересечения кривых).</p>
+            </div>
+          </div>
+
+          <!-- ===== ПРАКТИКУМ 3. WACC ===== -->
+          <div class="lab-section" id="lab3">
+            <div class="lab-header">
+              <span class="lab-num">3</span>
+              <div class="lab-header-text">
+                <h2>WACC -- расчёт и анализ чувствительности</h2>
+                <p class="lab-objective">Рассчитать WACC и исследовать влияние структуры капитала на стоимость финансирования.</p>
+                <div class="lab-topics">
+                  <span class="lab-topic-tag">Тема 4.2</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Задание 3.1 -->
+            <h3 class="task-title" id="task-3-1">Задание 3.1. Расчёт WACC</h3>
+
+            <p>Данные компании:</p>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Параметр</th><th>Значение</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Собственный капитал (E)</td><td>6 000 млн руб.</td></tr>
+                <tr><td>Заёмный капитал (D)</td><td>4 000 млн руб.</td></tr>
+                <tr><td>Стоимость собственного капитала ($k_e$)</td><td>16%</td></tr>
+                <tr><td>Стоимость долга ($k_d$, до налогов)</td><td>10%</td></tr>
+                <tr><td>Ставка налога (T)</td><td>20%</td></tr>
+              </tbody>
+            </table>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Формула</th><th>Описание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="cell-ref">B7</td><td><code>=B2+B3</code></td><td>V = E + D</td></tr>
+                <tr><td class="cell-ref">B8</td><td><code>=B2/B7</code></td><td>Доля E</td></tr>
+                <tr><td class="cell-ref">B9</td><td><code>=B3/B7</code></td><td>Доля D</td></tr>
+                <tr><td class="cell-ref">B10</td><td><code>=B8*B4+B9*B5*(1-B6)</code></td><td>WACC</td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-key">
+              <p><strong>Результат:</strong></p>
+              <div class="math-block">$$WACC = 0{,}60 \times 16\% + 0{,}40 \times 10\% \times 0{,}80 = 9{,}6\% + 3{,}2\% = 12{,}8\%$$</div>
+            </div>
+
+            <!-- Задание 3.2 -->
+            <h3 class="task-title" id="task-3-2">Задание 3.2. Таблица чувствительности</h3>
+
+            <p>Построить таблицу данных (Data Table): как WACC зависит от D/E и $k_d$.</p>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th></th><th>$k_d$ = 8%</th><th>$k_d$ = 10%</th><th>$k_d$ = 12%</th><th>$k_d$ = 14%</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="cell-ref">D/E = 0,0</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td class="cell-ref">D/E = 0,5</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td class="cell-ref">D/E = 1,0</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td class="cell-ref">D/E = 1,5</td><td></td><td></td><td></td><td></td></tr>
+                <tr><td class="cell-ref">D/E = 2,0</td><td></td><td></td><td></td><td></td></tr>
+              </tbody>
+            </table>
+
+            <ol class="step-list">
+              <li>Создать формулу WACC, ссылающуюся на ячейки с D/E и $k_d$.</li>
+              <li>Меню: <strong>Данные &rarr; Анализ "что если" &rarr; Таблица данных</strong>.</li>
+              <li>Подставить ячейку строки ($k_d$) и ячейку столбца (D/E).</li>
+            </ol>
+
+            <div class="box-info">
+              <p style="margin-bottom: 0;">Таблица данных (Data Table) автоматически пересчитывает формулу для всех комбинаций двух параметров. Это мощный инструмент анализа чувствительности без VBA.</p>
+            </div>
+          </div>
+
+          <!-- ===== ПРАКТИКУМ 4. DCF-модель ===== -->
+          <div class="lab-section" id="lab4">
+            <div class="lab-header">
+              <span class="lab-num">4</span>
+              <div class="lab-header-text">
+                <h2>DCF-модель оценки компании</h2>
+                <p class="lab-objective">Построить полную DCF-модель: от прогноза выручки до справедливой цены акции с анализом чувствительности.</p>
+                <div class="lab-topics">
+                  <span class="lab-topic-tag">Тема 6.1</span>
+                  <span class="lab-topic-tag">Тема 4.2</span>
+                </div>
+              </div>
+            </div>
+
+            <h3>Структура модели (4 листа)</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Лист</th><th>Содержание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Допущения</strong></td><td>Входные параметры, темпы роста</td></tr>
+                <tr><td><strong>P&L Прогноз</strong></td><td>Прогнозный отчёт о прибылях</td></tr>
+                <tr><td><strong>FCF</strong></td><td>Расчёт свободного денежного потока</td></tr>
+                <tr><td><strong>Оценка</strong></td><td>DCF, терминальная стоимость, equity bridge</td></tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 4.1 -->
+            <h3 class="task-title" id="task-4-1">Задание 4.1. Лист "Допущения"</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Параметр</th><th>Факт 2025</th><th>2026</th><th>2027</th><th>2028</th><th>2029</th><th>2030</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Темп роста выручки</td><td>--</td><td>12%</td><td>10%</td><td>8%</td><td>6%</td><td>5%</td></tr>
+                <tr><td>Маржа EBIT</td><td>18%</td><td>19%</td><td>19%</td><td>20%</td><td>20%</td><td>20%</td></tr>
+                <tr><td>DA / Выручка</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td><td>5%</td></tr>
+                <tr><td>CAPEX / Выручка</td><td>7%</td><td>7%</td><td>6%</td><td>6%</td><td>6%</td><td>6%</td></tr>
+                <tr><td>$\Delta$NWC / $\Delta$Выручка</td><td>10%</td><td>10%</td><td>10%</td><td>10%</td><td>10%</td><td>10%</td></tr>
+                <tr><td>Налог</td><td>20%</td><td>20%</td><td>20%</td><td>20%</td><td>20%</td><td>20%</td></tr>
+              </tbody>
+            </table>
+
+            <p>Факт выручки 2025: <strong>10 000 млн руб.</strong></p>
+
+            <!-- Задание 4.2 -->
+            <h3 class="task-title" id="task-4-2">Задание 4.2. Лист "FCF"</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Строка</th><th>2026</th><th>Формула</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Выручка</td><td>11 200</td><td><code>=Факт*(1+рост)</code></td></tr>
+                <tr><td>EBIT</td><td>2 128</td><td><code>=Выручка*маржа_EBIT</code></td></tr>
+                <tr><td>NOPAT</td><td>1 702</td><td><code>=EBIT*(1-T)</code></td></tr>
+                <tr><td>+DA</td><td>560</td><td><code>=Выручка*DA%</code></td></tr>
+                <tr><td>-CAPEX</td><td>784</td><td><code>=Выручка*CAPEX%</code></td></tr>
+                <tr><td>$-\Delta$NWC</td><td>120</td><td><code>=</code>$\Delta$<code>Выручка*NWC%</code></td></tr>
+                <tr><td><strong>FCFF</strong></td><td><strong>1 358</strong></td><td><code>=NOPAT+DA-CAPEX-</code>$\Delta$<code>NWC</code></td></tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 4.3 -->
+            <h3 class="task-title" id="task-4-3">Задание 4.3. Лист "Оценка"</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Формула</th><th>Описание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>WACC</td><td>12%</td><td>Из Практикума 3</td></tr>
+                <tr><td>TV</td><td><code>=FCFF_2030*(1+g)/(WACC-g)</code></td><td>Терминальная стоимость (Гордон, g=2%)</td></tr>
+                <tr><td>PV(FCF)</td><td><code>=FCFF_t/(1+WACC)^t</code></td><td>PV каждого денежного потока</td></tr>
+                <tr><td>PV(TV)</td><td><code>=TV/(1+WACC)^5</code></td><td>PV терминальной стоимости</td></tr>
+                <tr><td>EV</td><td><code>=СУММ(PV_FCF)+PV(TV)</code></td><td>Enterprise Value</td></tr>
+                <tr><td>Чистый долг</td><td>3 000</td><td>Долг минус денежные средства</td></tr>
+                <tr><td>Equity Value</td><td><code>=EV-Чистый_долг</code></td><td>Стоимость для акционеров</td></tr>
+                <tr><td>Акций (млн)</td><td>50</td><td>Количество акций</td></tr>
+                <tr><td>Цена акции</td><td><code>=Equity/Акций</code></td><td>Справедливая цена</td></tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 4.4 -->
+            <h3 class="task-title" id="task-4-4">Задание 4.4. Анализ чувствительности</h3>
+
+            <p>Построить таблицу: цена акции при разных WACC (10-14%) и g (1-3%).</p>
+
+            <div class="box-key">
+              <p style="margin-bottom: 0;">Таблица чувствительности даёт <strong>диапазон справедливой стоимости</strong>, а не единственную точку. Это показывает инвестору, как сильно оценка зависит от ключевых допущений.</p>
+            </div>
+          </div>
+
+          <!-- ===== ПРАКТИКУМ 5. Финансовый анализ ===== -->
+          <div class="lab-section" id="lab5">
+            <div class="lab-header">
+              <span class="lab-num">5</span>
+              <div class="lab-header-text">
+                <h2>Финансовый анализ в Excel</h2>
+                <p class="lab-objective">Рассчитать финансовые коэффициенты, построить Du Pont декомпозицию и Z-score Альтмана.</p>
+                <div class="lab-topics">
+                  <span class="lab-topic-tag">Тема 7.1</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Задание 5.1 -->
+            <h3 class="task-title" id="task-5-1">Задание 5.1. Панель коэффициентов (Dashboard)</h3>
+
+            <p>Создать лист с автоматическим расчётом коэффициентов из исходных данных.</p>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Блок</th><th>Показатели</th><th>Условное форматирование</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Ликвидность</td><td>Current, Quick, Cash Ratio</td><td>Зелёный (норма) / Красный</td></tr>
+                <tr><td>Рентабельность</td><td>ROA, ROE, ROS, EBITDA маржа</td><td>Градиент (больше = зеленее)</td></tr>
+                <tr><td>Устойчивость</td><td>Автономии, D/E, ICR</td><td>Зелёный / Жёлтый / Красный</td></tr>
+                <tr><td>Активность</td><td>Оборачиваемость активов, ДЗ, КЗ</td><td>Без форматирования</td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-info">
+              <p><strong>Условное форматирование для Current Ratio:</strong></p>
+              <ul style="margin-bottom: 0;">
+                <li>Значение &lt; 1,0 &rarr; красный фон</li>
+                <li>Значение 1,0-1,5 &rarr; жёлтый</li>
+                <li>Значение &gt; 1,5 &rarr; зелёный</li>
+              </ul>
+            </div>
+
+            <!-- Задание 5.2 -->
+            <h3 class="task-title" id="task-5-2">Задание 5.2. Du Pont декомпозиция</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Формула</th><th>Описание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>ROS</td><td><code>=Чистая_прибыль/Выручка</code></td><td>Рентабельность продаж</td></tr>
+                <tr><td>TAT</td><td><code>=Выручка/Активы</code></td><td>Оборачиваемость активов</td></tr>
+                <tr><td>EM</td><td><code>=Активы/СК</code></td><td>Мультипликатор собственного капитала</td></tr>
+                <tr><td>ROE (Du Pont)</td><td><code>=ROS*TAT*EM</code></td><td>Декомпозиция ROE</td></tr>
+                <tr><td>ROE (прямой)</td><td><code>=Чистая_прибыль/СК</code></td><td>Проверочный расчёт</td></tr>
+                <tr><td>Проверка</td><td><code>=ROE_DuPont-ROE_прямой</code></td><td>Должно быть &asymp; 0</td></tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 5.3 -->
+            <h3 class="task-title" id="task-5-3">Задание 5.3. Z-score Альтмана</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Ячейка</th><th>Формула</th><th>Описание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>X1</td><td><code>=NWC/Активы</code></td><td>Ликвидность</td></tr>
+                <tr><td>X2</td><td><code>=Нераспр_прибыль/Активы</code></td><td>Накопленная прибыльность</td></tr>
+                <tr><td>X3</td><td><code>=EBIT/Активы</code></td><td>Операционная эффективность</td></tr>
+                <tr><td>X4</td><td><code>=Рын_СК/Обязательства</code></td><td>Рыночная устойчивость</td></tr>
+                <tr><td>X5</td><td><code>=Выручка/Активы</code></td><td>Оборачиваемость</td></tr>
+                <tr><td>Z</td><td><code>=1.2*X1+1.4*X2+3.3*X3+0.6*X4+1.0*X5</code></td><td>Z-score</td></tr>
+                <tr><td>Зона</td><td><code>=ЕСЛИ(Z&gt;2.99;"Безопасная"; ЕСЛИ(Z&gt;1.81;"Серая";"Опасная"))</code></td><td>Интерпретация</td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-key">
+              <p><strong>Интерпретация Z-score:</strong></p>
+              <div class="math-block">$$Z = 1{,}2 X_1 + 1{,}4 X_2 + 3{,}3 X_3 + 0{,}6 X_4 + 1{,}0 X_5$$</div>
+              <ul style="margin-bottom: 0;">
+                <li><strong>Z &gt; 2,99</strong> -- безопасная зона (банкротство маловероятно)</li>
+                <li><strong>1,81 &lt; Z &lt; 2,99</strong> -- серая зона (неопределённость)</li>
+                <li><strong>Z &lt; 1,81</strong> -- опасная зона (высокий риск банкротства)</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ===== ПРАКТИКУМ 6. Мультипликаторы ===== -->
+          <div class="lab-section" id="lab6">
+            <div class="lab-header">
+              <span class="lab-num">6</span>
+              <div class="lab-header-text">
+                <h2>Сравнительная оценка (мультипликаторы)</h2>
+                <p class="lab-objective">Рассчитать мультипликаторы компаний-аналогов и оценить целевую компанию методом сравнительного анализа.</p>
+                <div class="lab-topics">
+                  <span class="lab-topic-tag">Тема 6.1</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Задание 6.1 -->
+            <h3 class="task-title" id="task-6-1">Задание 6.1. Таблица аналогов</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Компания</th><th>Капитал.</th><th>Чистый долг</th><th>EV</th><th>EBITDA</th><th>ЧП</th><th>EV/EBITDA</th><th>P/E</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Аналог 1</td><td></td><td></td>
+                  <td><code>=Кап+ЧД</code></td><td></td><td></td>
+                  <td><code>=EV/EBITDA</code></td><td><code>=Кап/ЧП</code></td>
+                </tr>
+                <tr><td>Аналог 2</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr><td>Аналог 3</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                <tr>
+                  <td><strong>Медиана</strong></td><td></td><td></td><td></td><td></td><td></td>
+                  <td><code>=МЕДИАНА()</code></td><td><code>=МЕДИАНА()</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Среднее</strong></td><td></td><td></td><td></td><td></td><td></td>
+                  <td><code>=СРЗНАЧ()</code></td><td><code>=СРЗНАЧ()</code></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Задание 6.2 -->
+            <h3 class="task-title" id="task-6-2">Задание 6.2. Оценка целевой компании</h3>
+
+            <table class="data-table cell-table">
+              <thead>
+                <tr><th>Метод</th><th>Формула</th><th>Результат</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>По EV/EBITDA</td><td><code>=EBITDA_цель * Медиана_EV_EBITDA</code></td><td>EV</td></tr>
+                <tr><td>По P/E</td><td><code>=ЧП_цель * Медиана_PE</code></td><td>Equity</td></tr>
+                <tr><td>Equity из EV</td><td><code>=EV - Чистый_долг</code></td><td>Equity</td></tr>
+                <tr><td>Цена акции</td><td><code>=Equity / Кол_акций</code></td><td></td></tr>
+              </tbody>
+            </table>
+
+            <div class="box-info">
+              <p style="margin-bottom: 0;">Медиана предпочтительнее среднего, так как устойчива к выбросам. Для надёжности сравните результаты по EV/EBITDA и P/E -- расхождение более 20% может означать, что аналоги подобраны некорректно.</p>
+            </div>
+          </div>
+
+          <!-- ===== СОВЕТЫ ===== -->
+          <div class="lab-section" id="tips">
+            <div class="lab-header">
+              <span class="lab-num" style="background: var(--text-muted);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/></svg>
+              </span>
+              <div class="lab-header-text">
+                <h2>Советы по работе в Excel</h2>
+                <p class="lab-objective">Горячие клавиши, именованные диапазоны и защита модели.</p>
+              </div>
+            </div>
+
+            <h3>Горячие клавиши</h3>
+
+            <table class="data-table cell-table hotkey-table">
+              <thead>
+                <tr><th>Клавиша</th><th>Действие</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><kbd>F2</kbd></td><td>Редактировать ячейку</td></tr>
+                <tr><td><kbd>F4</kbd></td><td>Переключить абсолютную/относительную ссылку ($)</td></tr>
+                <tr><td><kbd>Ctrl</kbd>+<kbd>~</kbd></td><td>Показать все формулы</td></tr>
+                <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>Ввод формулы массива (старые версии)</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>=</kbd></td><td>Автосумма</td></tr>
+              </tbody>
+            </table>
+
+            <h3>Именованные диапазоны</h3>
+
+            <p>Используйте именованные диапазоны для читаемости формул:</p>
+            <ul>
+              <li><code>WACC</code> вместо <code>$B$10</code></li>
+              <li><code>Tax_Rate</code> вместо <code>$C$6</code></li>
+            </ul>
+            <p><strong>Создание:</strong> выделить ячейку &rarr; поле имени (слева от строки формул) &rarr; ввести имя.</p>
+
+            <h3>Защита модели</h3>
+
+            <div class="box-info">
+              <ul style="margin-bottom: 0;">
+                <li><strong>Защита листа:</strong> Рецензирование &rarr; Защитить лист (разблокировать только входные ячейки)</li>
+                <li><strong>Проверка данных:</strong> Данные &rarr; Проверка данных (ограничить допустимые значения)</li>
+                <li><strong>Цветовое кодирование:</strong> Входные данные -- синий шрифт, формулы -- чёрный</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- ===== Связи с темами ===== -->
+          <div class="box-key" style="margin-top: var(--space-8);">
+            <h3 style="margin-top: 0;">Связи с темами курса</h3>
+            <table class="data-table cell-table" style="margin-bottom: 0;">
+              <thead>
+                <tr><th>Практикум</th><th>Темы курса</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><a href="#lab1">1. TVM</a></td><td>1.2. Временная стоимость денег</td></tr>
+                <tr><td><a href="#lab2">2. NPV/IRR</a></td><td>3.1. Оценка инвестиционных проектов</td></tr>
+                <tr><td><a href="#lab3">3. WACC</a></td><td>4.2. WACC и структура капитала</td></tr>
+                <tr><td><a href="#lab4">4. DCF-модель</a></td><td>6.1. Оценка стоимости компании</td></tr>
+                <tr><td><a href="#lab5">5. Финансовый анализ</a></td><td>7.1. Финансовый анализ отчётности</td></tr>
+                <tr><td><a href="#lab6">6. Мультипликаторы</a></td><td>6.1. Оценка стоимости компании</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Глоссарий — Корпоративные финансы</title>
+  <meta name="description" content="Глоссарий корпоративных финансов: 84+ термина с определениями — WACC, NPV, CAPM, DCF, ROE, EBITDA и другие ключевые понятия курса">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Глоссарий — Корпоративные финансы">
+  <meta property="og:description" content="84+ финансовых термина с определениями: WACC, NPV, IRR, CAPM, DCF, EBITDA, M&A и другие">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/pages.css">
+  <link rel="stylesheet" href="css/features.css">
+
+  <style>
+    /* --- Glossary Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .glossary-hero {
+      text-align: center;
+    }
+    .glossary-hero .subtitle {
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Alphabetical Navigation */
+    .alpha-nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-2);
+      max-width: 800px;
+      margin: 0 auto var(--space-8);
+    }
+    .alpha-nav a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 36px;
+      height: 36px;
+      padding: 0 var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        color var(--transition),
+        background-color var(--transition),
+        border-color var(--transition);
+    }
+    .alpha-nav a:hover {
+      color: var(--acc);
+      background: var(--acc-subtle);
+      border-color: var(--acc-glow);
+    }
+
+    /* Counter badge */
+    .glossary-count {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-bottom: var(--space-6);
+    }
+    .glossary-count strong {
+      color: var(--acc);
+    }
+
+    /* No results message */
+    .glossary-no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: var(--space-12) var(--space-4);
+      color: var(--text-muted);
+      font-size: var(--text-lg);
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .alpha-nav a {
+        min-width: 32px;
+        height: 32px;
+        font-size: var(--text-xs);
+      }
+    }
+  </style>
+</head>
+<body data-page="glossary" data-depth="0">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero" aria-label="Глоссарий">
+      <div class="container glossary-hero">
+        <nav class="breadcrumb" aria-label="Хлебные крошки" style="justify-content:center">
+          <a href="index.html">Главная</a>
+          <span class="sep">/</span>
+          <span>Глоссарий</span>
+        </nav>
+
+        <h1>
+          <span class="text-gradient">Глоссарий</span>
+        </h1>
+
+        <p class="subtitle">
+          84+ финансовых термина с&nbsp;определениями
+        </p>
+      </div>
+    </section>
+
+
+    <!-- ============================================================
+         SEARCH + ALPHABET NAV + TERMS
+         ============================================================ -->
+    <section class="section" aria-label="Поиск и список терминов">
+      <div class="container">
+
+        <!-- Search -->
+        <div class="glossary-search">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input type="text" placeholder="Поиск термина..." aria-label="Поиск термина">
+        </div>
+
+        <!-- Alphabetical Navigation -->
+        <nav class="alpha-nav" aria-label="Навигация по буквам">
+          <a href="#letter-А" data-letter="А">А</a>
+          <a href="#letter-Б" data-letter="Б">Б</a>
+          <a href="#letter-В" data-letter="В">В</a>
+          <a href="#letter-Г" data-letter="Г">Г</a>
+          <a href="#letter-Д" data-letter="Д">Д</a>
+          <a href="#letter-Е" data-letter="Е">Е</a>
+          <a href="#letter-И" data-letter="И">И</a>
+          <a href="#letter-К" data-letter="К">К</a>
+          <a href="#letter-Л" data-letter="Л">Л</a>
+          <a href="#letter-М" data-letter="М">М</a>
+          <a href="#letter-Н" data-letter="Н">Н</a>
+          <a href="#letter-О" data-letter="О">О</a>
+          <a href="#letter-П" data-letter="П">П</a>
+          <a href="#letter-Р" data-letter="Р">Р</a>
+          <a href="#letter-С" data-letter="С">С</a>
+          <a href="#letter-Т" data-letter="Т">Т</a>
+          <a href="#letter-У" data-letter="У">У</a>
+          <a href="#letter-Ф" data-letter="Ф">Ф</a>
+          <a href="#letter-Ч" data-letter="Ч">Ч</a>
+          <a href="#letter-Э" data-letter="Э">Э</a>
+          <a href="#letter-C" data-letter="C">C</a>
+          <a href="#letter-D" data-letter="D">D</a>
+          <a href="#letter-E" data-letter="E">E</a>
+          <a href="#letter-I" data-letter="I">I</a>
+          <a href="#letter-L" data-letter="L">L</a>
+          <a href="#letter-M" data-letter="M">M</a>
+          <a href="#letter-N" data-letter="N">N</a>
+          <a href="#letter-P" data-letter="P">P</a>
+          <a href="#letter-R" data-letter="R">R</a>
+          <a href="#letter-S" data-letter="S">S</a>
+          <a href="#letter-W" data-letter="W">W</a>
+        </nav>
+
+        <!-- Terms List -->
+        <div class="glossary-list">
+
+          <!-- ===== А ===== -->
+          <h3 class="glossary-letter-heading" id="letter-А">А</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Агентская проблема</div>
+            <div class="glossary-definition">Конфликт интересов между менеджментом и акционерами</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Акция</div>
+            <div class="glossary-definition">Ценная бумага, удостоверяющая право на долю в капитале компании и получение дивидендов</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Альтмана Z-модель</div>
+            <div class="glossary-definition">Модель прогнозирования банкротства на основе 5 финансовых коэффициентов</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Аннуитет</div>
+            <div class="glossary-definition">Серия равных платежей через равные промежутки времени</div>
+          </div>
+
+          <!-- ===== Б ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Б">Б</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Байбэк (Buyback)</div>
+            <div class="glossary-definition">Обратный выкуп компанией собственных акций на открытом рынке</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Безрисковая ставка (Rf)</div>
+            <div class="glossary-definition">Доходность актива с нулевым кредитным риском (обычно ОФЗ или US Treasury)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Бета-коэффициент (&beta;)</div>
+            <div class="glossary-definition">Мера систематического риска актива относительно рыночного портфеля</div>
+          </div>
+
+          <!-- ===== В ===== -->
+          <h3 class="glossary-letter-heading" id="letter-В">В</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">WACC</div>
+            <div class="glossary-definition">Средневзвешенная стоимость капитала, комбинирующая стоимость долга и собственного капитала</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Внутренняя норма доходности (IRR)</div>
+            <div class="glossary-definition">Ставка дисконтирования, при которой NPV проекта равен нулю</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Временная стоимость денег (TVM)</div>
+            <div class="glossary-definition">Концепция: рубль сегодня стоит больше рубля завтра</div>
+          </div>
+
+          <!-- ===== Г ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Г">Г</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Гордона модель</div>
+            <div class="glossary-definition">Модель оценки акций через дивиденды: P = D&#8321;/(r&minus;g)</div>
+          </div>
+
+          <!-- ===== Д ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Д">Д</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Денежный поток (Cash Flow)</div>
+            <div class="glossary-definition">Чистый приток или отток денежных средств за период</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Диверсификация</div>
+            <div class="glossary-definition">Распределение инвестиций для снижения несистематического риска</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Дивиденд</div>
+            <div class="glossary-definition">Часть прибыли компании, распределяемая среди акционеров</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Дивидендная доходность</div>
+            <div class="glossary-definition">Отношение годового дивиденда к текущей цене акции (DPS/P)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Дисконтирование</div>
+            <div class="glossary-definition">Приведение будущих денежных потоков к текущей стоимости</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Дисконтированный срок окупаемости (DPP)</div>
+            <div class="glossary-definition">Время, за которое дисконтированные потоки покрывают инвестиции</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Долг/Капитал (D/E)</div>
+            <div class="glossary-definition">Показатель финансового рычага: отношение заёмных средств к собственному капиталу</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">DCF (Discounted Cash Flow)</div>
+            <div class="glossary-definition">Метод оценки стоимости через дисконтирование будущих денежных потоков</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Дюпона формула (DuPont)</div>
+            <div class="glossary-definition">Декомпозиция ROE: маржинальность &times; оборачиваемость &times; леверидж</div>
+          </div>
+
+          <!-- ===== Е ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Е">Е</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">EVA (Economic Value Added)</div>
+            <div class="glossary-definition">Экономическая добавленная стоимость: NOPAT &minus; WACC &times; Invested Capital</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">EBITDA</div>
+            <div class="glossary-definition">Прибыль до вычета процентов, налогов, износа и амортизации</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">EV (Enterprise Value)</div>
+            <div class="glossary-definition">Стоимость предприятия: рыночная капитализация + чистый долг</div>
+          </div>
+
+          <!-- ===== И ===== -->
+          <h3 class="glossary-letter-heading" id="letter-И">И</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Индекс рентабельности (PI)</div>
+            <div class="glossary-definition">Отношение PV будущих денежных потоков к начальным инвестициям</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Инвестиционный проект</div>
+            <div class="glossary-definition">Комплекс мероприятий по вложению капитала с целью получения дохода</div>
+          </div>
+
+          <!-- ===== К ===== -->
+          <h3 class="glossary-letter-heading" id="letter-К">К</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Капитализация</div>
+            <div class="glossary-definition">Рыночная стоимость всех акций компании (акции &times; цена)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Капитальные затраты (CAPEX)</div>
+            <div class="glossary-definition">Расходы на приобретение или модернизацию основных средств</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">CAPM</div>
+            <div class="glossary-definition">Модель оценки капитальных активов: E(r) = Rf + &beta;(Rm &minus; Rf)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Ковариация</div>
+            <div class="glossary-definition">Мера совместной изменчивости двух переменных</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Корреляция</div>
+            <div class="glossary-definition">Нормализованная мера линейной зависимости между переменными</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Коэффициент покрытия процентов (ICR)</div>
+            <div class="glossary-definition">EBIT / Процентные расходы</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Коэффициент текущей ликвидности</div>
+            <div class="glossary-definition">Отношение текущих активов к текущим обязательствам</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Купонная ставка</div>
+            <div class="glossary-definition">Процентная ставка по облигации, определяющая размер регулярных выплат</div>
+          </div>
+
+          <!-- ===== Л ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Л">Л</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Леверидж (финансовый рычаг)</div>
+            <div class="glossary-definition">Использование заёмных средств для увеличения ROE</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Ликвидность</div>
+            <div class="glossary-definition">Способность актива быстро конвертироваться в денежные средства</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">LBO (Leveraged Buyout)</div>
+            <div class="glossary-definition">Выкуп компании с привлечением значительного долгового финансирования</div>
+          </div>
+
+          <!-- ===== М ===== -->
+          <h3 class="glossary-letter-heading" id="letter-М">М</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Маржинальность</div>
+            <div class="glossary-definition">Отношение прибыли к выручке (Net Margin = Net Income / Revenue)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Модильяни-Миллера теоремы</div>
+            <div class="glossary-definition">Фундаментальные теории о влиянии структуры капитала на стоимость фирмы</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Мультипликатор</div>
+            <div class="glossary-definition">Коэффициент для сравнительной оценки (P/E, EV/EBITDA, P/BV)</div>
+          </div>
+
+          <!-- ===== Н ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Н">Н</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Несистематический риск</div>
+            <div class="glossary-definition">Специфический риск компании, устранимый диверсификацией</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Номинальная стоимость</div>
+            <div class="glossary-definition">Фиксированная стоимость ценной бумаги, указанная при выпуске</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">NOPAT</div>
+            <div class="glossary-definition">Чистая операционная прибыль после налогов</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">NPV (Net Present Value)</div>
+            <div class="glossary-definition">Чистая приведённая стоимость: сумма дисконтированных денежных потоков минус инвестиции</div>
+          </div>
+
+          <!-- ===== О ===== -->
+          <h3 class="glossary-letter-heading" id="letter-О">О</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Облигация</div>
+            <div class="glossary-definition">Долговая ценная бумага с фиксированным доходом</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Оборачиваемость активов</div>
+            <div class="glossary-definition">Revenue / Total Assets, показывает эффективность использования активов</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Оборотный капитал</div>
+            <div class="glossary-definition">Разница между текущими активами и текущими обязательствами (Working Capital)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Операционный рычаг</div>
+            <div class="glossary-definition">Степень влияния изменения выручки на операционную прибыль</div>
+          </div>
+
+          <!-- ===== П ===== -->
+          <h3 class="glossary-letter-heading" id="letter-П">П</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Перпетуитет</div>
+            <div class="glossary-definition">Бесконечная серия равных платежей (PV = C/r)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Портфель</div>
+            <div class="glossary-definition">Набор финансовых активов, принадлежащих инвестору</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Премия за рыночный риск (ERP)</div>
+            <div class="glossary-definition">Превышение доходности рыночного портфеля над безрисковой ставкой</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Приведённая стоимость (PV)</div>
+            <div class="glossary-definition">Текущая стоимость будущего денежного потока</div>
+          </div>
+
+          <!-- ===== Р ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Р">Р</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Рентабельность активов (ROA)</div>
+            <div class="glossary-definition">Net Income / Total Assets</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Рентабельность инвестированного капитала (ROIC)</div>
+            <div class="glossary-definition">NOPAT / Invested Capital</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Рентабельность собственного капитала (ROE)</div>
+            <div class="glossary-definition">Net Income / Equity</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Риск</div>
+            <div class="glossary-definition">Неопределённость будущих результатов, измеряемая стандартным отклонением доходности</div>
+          </div>
+
+          <!-- ===== С ===== -->
+          <h3 class="glossary-letter-heading" id="letter-С">С</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Систематический риск</div>
+            <div class="glossary-definition">Рыночный риск, который нельзя устранить диверсификацией</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Стандартное отклонение (&sigma;)</div>
+            <div class="glossary-definition">Мера волатильности доходности актива</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Ставка дисконтирования</div>
+            <div class="glossary-definition">Ставка, используемая для приведения будущих потоков к текущей стоимости</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Стоимость долга (Kd)</div>
+            <div class="glossary-definition">Эффективная процентная ставка по заёмному капиталу после налогов</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Стоимость собственного капитала (Ke)</div>
+            <div class="glossary-definition">Требуемая доходность акционеров (часто через CAPM)</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Структура капитала</div>
+            <div class="glossary-definition">Соотношение собственного и заёмного капитала в финансировании компании</div>
+          </div>
+
+          <!-- ===== Т ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Т">Т</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Терминальная стоимость</div>
+            <div class="glossary-definition">Стоимость бизнеса за пределами прогнозного периода в DCF-модели</div>
+          </div>
+
+          <!-- ===== У ===== -->
+          <h3 class="glossary-letter-heading" id="letter-У">У</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Учётная ставка</div>
+            <div class="glossary-definition">Ставка Центрального банка, влияющая на стоимость заимствований в экономике</div>
+          </div>
+
+          <!-- ===== Ф ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Ф">Ф</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Финансовый анализ</div>
+            <div class="glossary-definition">Оценка финансового состояния и результатов деятельности компании</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Финансовый рычаг</div>
+            <div class="glossary-definition">См. Леверидж</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Фундаментальный анализ</div>
+            <div class="glossary-definition">Оценка внутренней стоимости актива на основе финансовых показателей</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Free Cash Flow (FCF)</div>
+            <div class="glossary-definition">Свободный денежный поток: операционный CF минус капитальные затраты</div>
+          </div>
+
+          <!-- ===== Ч ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Ч">Ч</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Чистый долг</div>
+            <div class="glossary-definition">Общий долг минус денежные средства и эквиваленты</div>
+          </div>
+
+          <!-- ===== Э ===== -->
+          <h3 class="glossary-letter-heading" id="letter-Э">Э</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Эмитент</div>
+            <div class="glossary-definition">Организация, выпускающая ценные бумаги</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Эффективная ставка</div>
+            <div class="glossary-definition">Реальная ставка с учётом капитализации процентов</div>
+          </div>
+
+
+          <!-- ==========================================================
+               ENGLISH TERMS (commonly used as-is in Russian finance)
+               ========================================================== -->
+
+          <!-- ===== C ===== -->
+          <h3 class="glossary-letter-heading" id="letter-C">C</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">CAPM</div>
+            <div class="glossary-definition">Capital Asset Pricing Model &mdash; модель ценообразования капитальных активов</div>
+          </div>
+
+          <!-- ===== D ===== -->
+          <h3 class="glossary-letter-heading" id="letter-D">D</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">DCF</div>
+            <div class="glossary-definition">Discounted Cash Flow &mdash; метод дисконтированных денежных потоков</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">DPP</div>
+            <div class="glossary-definition">Discounted Payback Period &mdash; дисконтированный срок окупаемости</div>
+          </div>
+
+          <!-- ===== E ===== -->
+          <h3 class="glossary-letter-heading" id="letter-E">E</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">EBITDA</div>
+            <div class="glossary-definition">Earnings Before Interest, Taxes, Depreciation, Amortization</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">EPS</div>
+            <div class="glossary-definition">Earnings Per Share &mdash; прибыль на акцию</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">ESG</div>
+            <div class="glossary-definition">Environmental, Social, Governance &mdash; экологические, социальные и управленческие факторы</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">EV/EBITDA</div>
+            <div class="glossary-definition">Мультипликатор стоимости предприятия</div>
+          </div>
+
+          <!-- ===== I ===== -->
+          <h3 class="glossary-letter-heading" id="letter-I">I</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">IPO</div>
+            <div class="glossary-definition">Initial Public Offering &mdash; первичное публичное размещение</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">IRR</div>
+            <div class="glossary-definition">Internal Rate of Return &mdash; внутренняя норма доходности</div>
+          </div>
+
+          <!-- ===== L ===== -->
+          <h3 class="glossary-letter-heading" id="letter-L">L</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">LBO</div>
+            <div class="glossary-definition">Leveraged Buyout &mdash; выкуп с использованием заёмных средств</div>
+          </div>
+
+          <!-- ===== M ===== -->
+          <h3 class="glossary-letter-heading" id="letter-M">M</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">M&amp;A</div>
+            <div class="glossary-definition">Mergers and Acquisitions &mdash; слияния и поглощения</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">MOEX</div>
+            <div class="glossary-definition">Moscow Exchange &mdash; Московская биржа</div>
+          </div>
+
+          <!-- ===== N ===== -->
+          <h3 class="glossary-letter-heading" id="letter-N">N</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">NPV</div>
+            <div class="glossary-definition">Net Present Value &mdash; чистая приведённая стоимость</div>
+          </div>
+
+          <!-- ===== P ===== -->
+          <h3 class="glossary-letter-heading" id="letter-P">P</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">P/BV</div>
+            <div class="glossary-definition">Price to Book Value &mdash; отношение цены к балансовой стоимости</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">P/E</div>
+            <div class="glossary-definition">Price to Earnings &mdash; отношение цены к прибыли</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">Payout Ratio</div>
+            <div class="glossary-definition">Доля чистой прибыли, направляемая на дивиденды</div>
+          </div>
+
+          <!-- ===== R ===== -->
+          <h3 class="glossary-letter-heading" id="letter-R">R</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">ROA</div>
+            <div class="glossary-definition">Return on Assets &mdash; рентабельность активов</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">ROE</div>
+            <div class="glossary-definition">Return on Equity &mdash; рентабельность собственного капитала</div>
+          </div>
+
+          <div class="glossary-item">
+            <div class="glossary-term">ROIC</div>
+            <div class="glossary-definition">Return on Invested Capital &mdash; рентабельность инвестированного капитала</div>
+          </div>
+
+          <!-- ===== S ===== -->
+          <h3 class="glossary-letter-heading" id="letter-S">S</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">SML</div>
+            <div class="glossary-definition">Security Market Line &mdash; линия рынка ценных бумаг</div>
+          </div>
+
+          <!-- ===== W ===== -->
+          <h3 class="glossary-letter-heading" id="letter-W">W</h3>
+
+          <div class="glossary-item">
+            <div class="glossary-term">WACC</div>
+            <div class="glossary-definition">Weighted Average Cost of Capital &mdash; средневзвешенная стоимость капитала</div>
+          </div>
+
+          <!-- No results fallback -->
+          <div class="glossary-no-results" id="glossary-no-results">
+            Ничего не найдено. Попробуйте другой запрос.
+          </div>
+
+        </div><!-- /.glossary-list -->
+
+      </div><!-- /.container -->
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="js/components.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/search.js"></script>
+
+  <!-- Glossary: search filter + alphabet nav -->
+  <script>
+  (function() {
+    // Search filter
+    var input = document.querySelector('.glossary-search input');
+    if (!input) return;
+    var noResults = document.getElementById('glossary-no-results');
+
+    input.addEventListener('input', function() {
+      var query = this.value.toLowerCase().trim();
+      var items = document.querySelectorAll('.glossary-item');
+      var headings = document.querySelectorAll('.glossary-letter-heading');
+      var visibleCount = 0;
+
+      items.forEach(function(item) {
+        var term = item.querySelector('.glossary-term');
+        var def = item.querySelector('.glossary-definition');
+        var text = (term ? term.textContent : '') + ' ' + (def ? def.textContent : '');
+        var match = text.toLowerCase().indexOf(query) > -1;
+        item.style.display = match ? '' : 'none';
+        if (match) visibleCount++;
+      });
+
+      // Hide letter headings with no visible items
+      headings.forEach(function(h) {
+        var next = h.nextElementSibling;
+        var hasVisible = false;
+        while (next && !next.classList.contains('glossary-letter-heading')) {
+          if (next.classList.contains('glossary-item') && next.style.display !== 'none') {
+            hasVisible = true;
+            break;
+          }
+          next = next.nextElementSibling;
+        }
+        h.style.display = hasVisible || !query ? '' : 'none';
+      });
+
+      // Show/hide no-results message
+      if (noResults) {
+        noResults.style.display = (visibleCount === 0 && query) ? 'block' : 'none';
+      }
+    });
+
+    // Alphabet navigation smooth scroll
+    document.querySelectorAll('.alpha-nav a').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        var letter = this.dataset.letter;
+        var target = document.getElementById('letter-' + letter);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  })();
+  </script>
+
+</body>
+</html>

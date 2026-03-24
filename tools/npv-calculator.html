@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор NPV — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный калькулятор NPV с визуализацией денежных потоков, IRR, PI, DPP и пресетами российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- NPV Calculator Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'NPV.formula';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    .calc-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+    }
+
+    .calc-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+    }
+    .calc-input-group label {
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-medium);
+      color: var(--text-secondary);
+    }
+    .calc-input-group input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      transition: border-color var(--transition), box-shadow var(--transition);
+      outline: none;
+    }
+    .calc-input-group input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-glow);
+    }
+    .calc-input-group input::placeholder { color: var(--text-muted); }
+    .calc-input-group input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .calc-input-group .hint {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+    }
+
+    .calc-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      margin-bottom: var(--space-4);
+    }
+    .calc-result-card .card-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-2);
+    }
+    .calc-result-card .card-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .calc-result-card .card-formula {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+    .calc-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .calc-result-card.primary .card-value {
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--acc);
+    }
+    .calc-result-card.positive .card-value { color: #34D399; }
+    .calc-result-card.negative .card-value { color: #FB7185; }
+
+    .npv-value-animated {
+      display: inline-block;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .npv-value-animated.updating {
+      transform: scale(1.05);
+      opacity: 0.7;
+    }
+
+    .chart-container {
+      margin-top: var(--space-6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-4);
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-4);
+    }
+    .chart-box h4 {
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-3);
+    }
+
+    .cf-inputs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .chart-container { grid-template-columns: 1fr; }
+      .cf-inputs-grid { grid-template-columns: 1fr; }
+      .results-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-npv-calculator">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Калькулятор NPV">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Калькулятор NPV</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Калькулятор <span class="text-gradient">NPV</span>
+            </h1>
+
+            <p class="subtitle">
+              Рассчитайте чистую приведённую стоимость проекта с&nbsp;визуализацией
+              денежных потоков, IRR, индексом прибыльности и&nbsp;дисконтированным сроком окупаемости.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Чистая приведённая стоимость</span><br>
+            <span class="kw">NPV</span> = &sum; CF<sub>t</sub> / (<span class="num">1</span> + r)<sup>t</sup><br><br>
+            <span class="cmt">// Дополнительные метрики:</span><br>
+            <span class="fn">PI</span>&nbsp; = PV(CF) / I<sub>0</sub><br>
+            <span class="fn">IRR</span> = r при NPV = <span class="num">0</span><br>
+            <span class="fn">DPP</span> = t при &sum;PV(CF) &ge; <span class="num">0</span><br><br>
+            <span class="cmt">// Критерий: NPV &gt; 0 &rarr; проект принять</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CALCULATOR
+         ============================================================ -->
+    <section class="section" id="calculator">
+      <div class="container">
+
+        <div class="calc-layout">
+
+          <!-- LEFT: Inputs -->
+          <div class="calc-inputs">
+
+            <!-- Presets -->
+            <div>
+              <label style="font-size:var(--text-sm);color:var(--text-muted);margin-bottom:var(--space-2);display:block;">Пресеты проектов</label>
+              <div class="calc-presets">
+                <button type="button" class="preset-btn" data-preset="lukoil">Лукойл НПЗ</button>
+                <button type="button" class="preset-btn" data-preset="startup">IT-стартап</button>
+                <button type="button" class="preset-btn" data-preset="realty">Недвижимость</button>
+              </div>
+            </div>
+
+            <!-- Initial investment -->
+            <div class="calc-input-group">
+              <label for="inp-invest">Начальные инвестиции (I<sub>0</sub>), млн руб.</label>
+              <input type="number" id="inp-invest" min="0" step="1" value="100" placeholder="напр. 100">
+            </div>
+
+            <!-- Discount rate -->
+            <div class="calc-input-group">
+              <label for="inp-rate">Ставка дисконтирования (r), %</label>
+              <input type="number" id="inp-rate" min="0" max="100" step="0.1" value="15" placeholder="напр. 15">
+              <span class="hint">Обычно равна WACC компании</span>
+            </div>
+
+            <!-- Cash flows -->
+            <div class="calc-input-group">
+              <label>Денежные потоки по годам (CF), млн руб.</label>
+              <span class="hint">Оставьте 0 для неиспользуемых лет</span>
+            </div>
+            <div class="cf-inputs-grid">
+              <div class="calc-input-group">
+                <label for="inp-cf1">Год 1</label>
+                <input type="number" id="inp-cf1" step="1" value="20" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf2">Год 2</label>
+                <input type="number" id="inp-cf2" step="1" value="25" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf3">Год 3</label>
+                <input type="number" id="inp-cf3" step="1" value="30" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf4">Год 4</label>
+                <input type="number" id="inp-cf4" step="1" value="35" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf5">Год 5</label>
+                <input type="number" id="inp-cf5" step="1" value="40" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf6">Год 6</label>
+                <input type="number" id="inp-cf6" step="1" value="0" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf7">Год 7</label>
+                <input type="number" id="inp-cf7" step="1" value="0" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf8">Год 8</label>
+                <input type="number" id="inp-cf8" step="1" value="0" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf9">Год 9</label>
+                <input type="number" id="inp-cf9" step="1" value="0" placeholder="0">
+              </div>
+              <div class="calc-input-group">
+                <label for="inp-cf10">Год 10</label>
+                <input type="number" id="inp-cf10" step="1" value="0" placeholder="0">
+              </div>
+            </div>
+
+            <!-- Calculate -->
+            <button type="button" class="btn btn-fill btn-lg" id="btn-calculate" style="width:100%;margin-top:var(--space-3)">
+              Рассчитать NPV
+            </button>
+
+          </div>
+
+          <!-- RIGHT: Results -->
+          <div class="calc-result" id="results-panel">
+            <div style="text-align:center;padding:var(--space-8) 0;color:var(--text-muted);font-size:var(--text-sm);" id="results-placeholder">
+              Заполните параметры и нажмите &laquo;Рассчитать&raquo;
+            </div>
+
+            <div id="results-content" style="display:none">
+
+              <!-- NPV result (main) -->
+              <div class="calc-result-card primary" id="npv-card">
+                <div class="card-label">NPV (чистая приведённая стоимость)</div>
+                <div class="card-value"><span class="npv-value-animated" id="npv-value">&mdash;</span></div>
+                <div class="card-formula" id="npv-formula"></div>
+              </div>
+
+              <!-- Secondary metrics -->
+              <div class="results-grid">
+                <div class="calc-result-card">
+                  <div class="card-label">IRR (внутренняя норма доходности)</div>
+                  <div class="card-value" id="irr-value">&mdash;</div>
+                  <div class="card-formula" id="irr-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">PI (индекс прибыльности)</div>
+                  <div class="card-value" id="pi-value">&mdash;</div>
+                  <div class="card-formula" id="pi-desc"></div>
+                </div>
+                <div class="calc-result-card">
+                  <div class="card-label">DPP (дисконт. срок окупаемости)</div>
+                  <div class="card-value" id="dpp-value">&mdash;</div>
+                  <div class="card-formula" id="dpp-desc"></div>
+                </div>
+                <div class="calc-result-card" id="verdict-card">
+                  <div class="card-label">Вердикт</div>
+                  <div class="card-value" id="verdict-value">&mdash;</div>
+                  <div class="card-formula" id="verdict-desc"></div>
+                </div>
+              </div>
+
+              <!-- Charts -->
+              <div class="chart-container">
+                <div class="chart-box">
+                  <h4>Номинальные vs дисконтированные CF</h4>
+                  <canvas class="chart" id="chart-cf" width="200" height="200"></canvas>
+                </div>
+                <div class="chart-box">
+                  <h4>Накопленная приведённая стоимость</h4>
+                  <canvas class="chart" id="chart-cumulative" width="200" height="200"></canvas>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         THEORY REFERENCE
+         ============================================================ -->
+    <section class="section" id="theory">
+      <div class="container" style="max-width:800px">
+        <div class="box-formula">
+          <p><strong>NPV</strong> (Net Present Value) &mdash; чистая приведённая стоимость.
+             Показывает прирост стоимости компании при реализации проекта.
+             Если NPV &gt; 0, проект создаёт стоимость и его следует принять.</p>
+          <p style="font-family:var(--ff-mono);font-size:var(--text-lg);margin:var(--space-4) 0;">
+            NPV = -I<sub>0</sub> + &sum;<sub>t=1..n</sub> CF<sub>t</sub> / (1 + r)<sup>t</sup>
+          </p>
+          <ul style="margin-top:var(--space-3);padding-left:var(--space-5);list-style:disc;color:var(--text-secondary);font-size:var(--text-sm);">
+            <li><strong>IRR</strong> &mdash; ставка дисконтирования, при которой NPV = 0</li>
+            <li><strong>PI</strong> &mdash; отношение PV денежных потоков к начальным инвестициям (PI &gt; 1 &rarr; проект выгоден)</li>
+            <li><strong>DPP</strong> &mdash; число лет до полного возврата инвестиций с учётом дисконтирования</li>
+          </ul>
+          <p style="margin-top:var(--space-3);">Подробнее: <a href="../lectures/topic-31.html">Лекция 3.1 &mdash; Инвестиционный анализ и NPV</a></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p><strong>Данные пресетов актуальны на март 2026.</strong> Для реальных расчётов используйте:</p>
+          <ul style="margin-top:var(--space-2);padding-left:var(--space-5);list-style:disc;">
+            <li><a href="https://moex.com" target="_blank" rel="noopener">moex.com</a> &mdash; финансовая отчётность эмитентов</li>
+            <li><a href="https://e-disclosure.ru" target="_blank" rel="noopener">e-disclosure.ru</a> &mdash; раскрытие информации, годовые отчёты</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Связанные материалы</h2>
+        </div>
+        <div class="related-grid">
+          <a href="wacc-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">WACC</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Средневзвешенная стоимость капитала</p>
+            </div>
+          </a>
+          <a href="dcf-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">DCF</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Дисконтированные денежные потоки</p>
+            </div>
+          </a>
+          <a href="capm-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">CAPM</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Модель оценки капитальных активов</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    // --- Preset data ---
+    var presets = {
+      lukoil: {
+        invest: 45000, rate: 19.32,
+        cfs: [8000, 10000, 12000, 11000, 9500, 8000, 7000, 0, 0, 0]
+      },
+      startup: {
+        invest: 5, rate: 25,
+        cfs: [0.5, 1.2, 2.0, 3.0, 4.0, 0, 0, 0, 0, 0]
+      },
+      realty: {
+        invest: 10, rate: 15,
+        cfs: [1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 12.0]
+      }
+    };
+
+    // --- DOM refs ---
+    var inpInvest = document.getElementById('inp-invest');
+    var inpRate   = document.getElementById('inp-rate');
+    var cfInputs  = [];
+    for (var i = 1; i <= 10; i++) {
+      cfInputs.push(document.getElementById('inp-cf' + i));
+    }
+
+    var btnCalculate   = document.getElementById('btn-calculate');
+    var placeholder    = document.getElementById('results-placeholder');
+    var resultsContent = document.getElementById('results-content');
+
+    var cfChart = null;
+    var cumChart = null;
+
+    // --- Preset buttons ---
+    document.querySelectorAll('.preset-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.preset-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+
+        var p = presets[btn.dataset.preset];
+        if (!p) return;
+        inpInvest.value = p.invest;
+        inpRate.value = p.rate;
+        for (var j = 0; j < 10; j++) {
+          cfInputs[j].value = p.cfs[j] || 0;
+        }
+      });
+    });
+
+    // --- Calculate ---
+    btnCalculate.addEventListener('click', calculate);
+
+    function getCashflows() {
+      var invest = parseFloat(inpInvest.value) || 0;
+      var cfs = [-invest];
+      for (var j = 0; j < 10; j++) {
+        var v = parseFloat(cfInputs[j].value) || 0;
+        if (v !== 0 || j < 5) cfs.push(v);
+        else if (cfs.length > 1 && j > 0) {
+          // Only add trailing zeros if there are non-zero values after
+          var hasMore = false;
+          for (var k = j; k < 10; k++) {
+            if (parseFloat(cfInputs[k].value) || 0) { hasMore = true; break; }
+          }
+          if (hasMore) cfs.push(v);
+        }
+      }
+      return cfs;
+    }
+
+    function calculate() {
+      var rate = parseFloat(inpRate.value) / 100;
+      var cfs = getCashflows();
+      var invest = Math.abs(cfs[0]);
+
+      if (isNaN(rate) || invest === 0) return;
+
+      var npv = CFUtils.calcNPV(rate, cfs);
+      var irr = CFUtils.calcIRR(cfs, rate);
+      var pi  = CFUtils.calcPI(rate, cfs);
+      var dpp = CFUtils.calcDPP(rate, cfs);
+
+      // Show results
+      placeholder.style.display = 'none';
+      resultsContent.style.display = '';
+
+      // NPV
+      var npvEl = document.getElementById('npv-value');
+      var npvCard = document.getElementById('npv-card');
+      npvEl.classList.add('updating');
+      setTimeout(function () {
+        npvEl.textContent = CFUtils.formatNumber(npv, 2) + ' млн';
+        npvEl.classList.remove('updating');
+      }, 150);
+
+      npvCard.classList.remove('positive', 'negative');
+      if (npv >= 0) {
+        npvCard.classList.add('positive');
+        npvCard.style.borderColor = '#34D399';
+      } else {
+        npvCard.classList.add('negative');
+        npvCard.style.borderColor = '#FB7185';
+      }
+
+      document.getElementById('npv-formula').textContent =
+        '-' + CFUtils.formatNumber(invest, 0) + ' + PV(CF) = ' + CFUtils.formatNumber(npv, 2);
+
+      // IRR
+      var irrVal = isFinite(irr) ? (irr * 100).toFixed(2) + '%' : 'Не определено';
+      document.getElementById('irr-value').textContent = irrVal;
+      document.getElementById('irr-desc').textContent =
+        isFinite(irr) ? (irr > rate ? 'IRR > r: проект выгоден' : 'IRR < r: проект невыгоден') : '';
+
+      // PI
+      document.getElementById('pi-value').textContent = pi.toFixed(3);
+      document.getElementById('pi-desc').textContent =
+        pi >= 1 ? 'PI >= 1: проект выгоден' : 'PI < 1: проект невыгоден';
+
+      // DPP
+      document.getElementById('dpp-value').textContent =
+        dpp !== null ? dpp.toFixed(1) + ' лет' : 'Не окупается';
+      document.getElementById('dpp-desc').textContent =
+        dpp !== null ? 'Инвестиции вернутся через ' + dpp.toFixed(1) + ' лет' : 'Проект не окупается в горизонте';
+
+      // Verdict
+      var verdict = npv > 0 ? 'Принять' : 'Отклонить';
+      var verdictEl = document.getElementById('verdict-value');
+      var verdictCard = document.getElementById('verdict-card');
+      verdictEl.textContent = verdict;
+      verdictEl.style.color = npv > 0 ? '#34D399' : '#FB7185';
+      document.getElementById('verdict-desc').textContent =
+        npv > 0 ? 'NPV > 0, IRR ' + irrVal + ' > r ' + (rate * 100).toFixed(1) + '%'
+                : 'NPV < 0, проект разрушает стоимость';
+
+      // Charts
+      renderCharts(cfs, rate);
+    }
+
+    function renderCharts(cfs, rate) {
+      whenChartReady(function () {
+        if (cfChart) cfChart.destroy();
+        if (cumChart) cumChart.destroy();
+
+        var labels = [];
+        var nominal = [];
+        var discounted = [];
+        var cumPV = [];
+        var cumSum = 0;
+
+        for (var t = 0; t < cfs.length; t++) {
+          labels.push(t === 0 ? 'I\u2080' : 'Год ' + t);
+          nominal.push(cfs[t]);
+          var pv = cfs[t] / Math.pow(1 + rate, t);
+          discounted.push(pv);
+          cumSum += pv;
+          cumPV.push(cumSum);
+        }
+
+        // Bar chart: nominal vs discounted
+        var cfCanvas = document.getElementById('chart-cf');
+        cfChart = new Chart(cfCanvas, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [
+              {
+                label: 'Номинальный CF',
+                data: nominal,
+                backgroundColor: '#818CF8',
+                borderRadius: 4
+              },
+              {
+                label: 'Дисконтированный CF',
+                data: discounted,
+                backgroundColor: '#FBBF24',
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { position: 'bottom', labels: { color: '#94A3B8', font: { size: 11 } } },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return ctx.dataset.label + ': ' + ctx.parsed.y.toFixed(2); }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: { color: '#94A3B8' },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+
+        // Line chart: cumulative PV
+        var cumCanvas = document.getElementById('chart-cumulative');
+        cumChart = new Chart(cumCanvas, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Накопленная PV',
+              data: cumPV,
+              borderColor: '#818CF8',
+              backgroundColor: 'rgba(129,140,248,0.1)',
+              fill: true,
+              tension: 0.3,
+              pointRadius: 4,
+              pointHoverRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) { return 'Cumulative PV: ' + ctx.parsed.y.toFixed(2); }
+                }
+              },
+              annotation: {
+                annotations: {
+                  zeroLine: {
+                    type: 'line',
+                    yMin: 0,
+                    yMax: 0,
+                    borderColor: '#FB7185',
+                    borderWidth: 1,
+                    borderDash: [5, 5]
+                  }
+                }
+              }
+            },
+            scales: {
+              y: {
+                ticks: { color: '#94A3B8' },
+                grid: { color: 'rgba(148,163,184,0.1)' }
+              },
+              x: {
+                ticks: { color: '#94A3B8' },
+                grid: { display: false }
+              }
+            }
+          }
+        });
+      });
+    }
+
+    // --- whenChartReady helper ---
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') return fn();
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        fn();
+      });
+    }
+
+  });
+  </script>
+
+</body>
+</html>

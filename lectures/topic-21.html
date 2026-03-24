@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 2.1. Концепция риска и доходности — Корпоративные финансы</title>
+  <meta name="description" content="Риск и доходность финансовых активов: ожидаемая доходность, стандартное отклонение, ковариация, корреляция, диверсификация, портфель из двух активов">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 2.1. Концепция риска и доходности финансовых активов">
+  <meta property="og:description" content="Ожидаемая доходность, дисперсия, стандартное отклонение, виды рисков, диверсификация, портфель из двух активов — примеры расчётов">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-21">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 2</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 2.1</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Концепция риска<br>и доходности
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Как измерить доходность и риск финансовых активов, почему диверсификация
+              снижает риск портфеля и чем систематический риск отличается от несистематического.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>2. Риск и доходность</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">УК-2, ОПК-3</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 1.2 (Временная стоимость денег), Статистика</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Понятие риска и доходности ===== -->
+          <h2 id="s1" class="reveal">1. Понятие риска и доходности</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Доходность (Return)</strong> — прирост стоимости инвестиции за период:</p>
+            <div class="math-block">$$r = \frac{P_1 - P_0 + D}{P_0}$$</div>
+            <p style="margin-bottom:0;">где $P_0$ — цена покупки, $P_1$ — цена продажи, $D$ — дивиденды (или купоны).</p>
+          </div>
+
+          <div class="box-key reveal">
+            <p><strong>Риск (Risk)</strong> — вероятность отклонения фактической доходности от ожидаемой. Чем больше разброс возможных результатов, тем выше риск.</p>
+            <p style="margin-bottom:0;">Фундаментальный принцип: <strong>чем выше риск, тем выше требуемая доходность</strong>. Инвесторы требуют компенсацию (премию) за принятие риска.</p>
+          </div>
+
+          <!-- ===== 2. Ожидаемая доходность ===== -->
+          <h2 id="s2" class="reveal">2. Ожидаемая доходность</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>По сценариям (ex ante):</strong></p>
+            <div class="math-block">$$E(r) = \sum_{i=1}^{n} p_i \times r_i$$</div>
+            <p>где $p_i$ — вероятность сценария $i$, $r_i$ — доходность при сценарии $i$.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>По историческим данным (ex post):</strong></p>
+            <div class="math-block">$$\bar{r} = \frac{1}{n} \sum_{t=1}^{n} r_t$$</div>
+          </div>
+
+          <!-- ===== 3. Меры риска ===== -->
+          <h2 id="s3" class="reveal">3. Меры риска</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Дисперсия (Variance, $\sigma^2$):</strong></p>
+            <div class="math-block">$$\sigma^2 = \sum_{i=1}^{n} p_i \times (r_i - E(r))^2$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Стандартное отклонение (Standard Deviation, $\sigma$):</strong></p>
+            <div class="math-block">$$\sigma = \sqrt{\sigma^2}$$</div>
+            <p>Наиболее популярная мера <strong>общего риска</strong> актива. Измеряется в тех же единицах, что и доходность (%).</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Коэффициент вариации (CV):</strong></p>
+            <div class="math-block">$$CV = \frac{\sigma}{E(r)}$$</div>
+            <p style="margin-bottom:0;">CV позволяет сравнивать риск активов с разным уровнем доходности — показывает «риск на единицу доходности».</p>
+          </div>
+
+          <!-- ===== 4. Нормальное распределение ===== -->
+          <h2 id="s4" class="reveal">4. Нормальное распределение</h2>
+
+          <div class="box-info reveal">
+            <p>Если доходности подчиняются нормальному распределению, то:</p>
+            <ul>
+              <li><strong>68,3%</strong> наблюдений лежат в интервале $E(r) \pm 1\sigma$</li>
+              <li><strong>95,4%</strong> — в интервале $E(r) \pm 2\sigma$</li>
+              <li><strong>99,7%</strong> — в интервале $E(r) \pm 3\sigma$</li>
+            </ul>
+            <p style="margin-bottom:0;"><em>Пример:</em> если $E(r) = 15\%$, $\sigma = 20\%$, то с вероятностью 95% доходность будет от −25% до +55%.</p>
+          </div>
+
+          <!-- ===== 5. Виды рисков ===== -->
+          <h2 id="s5" class="reveal">5. Виды рисков</h2>
+
+          <div class="box-warning reveal">
+            <p><strong>Систематический (рыночный) риск</strong> — обусловлен макроэкономическими факторами (инфляция, ставки, кризисы, политика). <strong>Нельзя устранить</strong> диверсификацией.</p>
+          </div>
+
+          <div class="box-info reveal">
+            <p><strong>Несистематический (специфический) риск</strong> — связан с конкретной компанией или отраслью (управленческие ошибки, судебные иски, технологические сбои). <strong>Устраняется</strong> диверсификацией.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$\text{Общий риск} = \text{Систематический} + \text{Несистематический}$$</div>
+            <p style="margin-bottom:0;">Портфель из 20–30 случайно выбранных акций устраняет большую часть несистематического риска.</p>
+          </div>
+
+          <figure class="reveal" style="margin: var(--space-8) 0; padding: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);">
+            <pre class="font-mono text-sm" style="color: var(--text-secondary); line-height: 1.6; overflow-x: auto;">
+   Риск (σ)
+    |
+    |*
+    |  *
+    |    *  несистематический
+    |      *    риск
+    |        *___________
+    |                     систематический риск
+    |________________________
+    1    5   10  20  30     Число акций в портфеле</pre>
+            <figcaption class="text-sm text-muted" style="margin-top: var(--space-3); text-align: center;">Диверсификация устраняет несистематический риск, но не систематический</figcaption>
+          </figure>
+
+          <!-- ===== 6. Ковариация и корреляция ===== -->
+          <h2 id="s6" class="reveal">6. Ковариация и корреляция</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Ковариация</strong> — мера совместного изменения доходностей двух активов:</p>
+            <div class="math-block">$$Cov(r_A, r_B) = \sum_{i=1}^{n} p_i \times (r_{A,i} - E(r_A)) \times (r_{B,i} - E(r_B))$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Корреляция</strong> — нормированная ковариация (от −1 до +1):</p>
+            <div class="math-block">$$\rho_{AB} = \frac{Cov(r_A, r_B)}{\sigma_A \times \sigma_B}$$</div>
+          </div>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr><th>Корреляция</th><th>Значение</th><th>Эффект диверсификации</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="mono">$\rho = +1$</td><td>Активы движутся синхронно</td><td style="color: var(--error);">Нет эффекта</td></tr>
+                <tr><td class="mono">$\rho = 0$</td><td>Линейная связь отсутствует</td><td style="color: var(--amber);">Умеренный эффект</td></tr>
+                <tr><td class="mono">$\rho = -1$</td><td>Активы движутся в противофазе</td><td style="color: var(--success);">Максимальный эффект</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ===== 7. Риск портфеля ===== -->
+          <h2 id="s7" class="reveal">7. Риск портфеля из двух активов</h2>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Ожидаемая доходность портфеля:</strong></p>
+            <div class="math-block">$$E(r_p) = w_A \times E(r_A) + w_B \times E(r_B)$$</div>
+          </div>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Риск портфеля:</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$\sigma_p = \sqrt{w_A^2 \sigma_A^2 + w_B^2 \sigma_B^2 + 2 w_A w_B \rho_{AB} \sigma_A \sigma_B}$$</div>
+          </div>
+
+          <div class="box-key reveal">
+            <p style="margin-bottom:0;">Ключевой вывод: <strong>риск портфеля может быть ниже риска каждого отдельного актива</strong> (если $\rho < 1$). Это основа диверсификации.</p>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. Ожидаемая доходность и риск по сценариям</h3>
+            <p>Акции Лукойла оценены по трём сценариям:</p>
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Сценарий</th><th>Вероятность</th><th>Доходность</th></tr></thead>
+                <tbody>
+                  <tr><td>Рост нефти</td><td class="number">0,30</td><td class="number">+25%</td></tr>
+                  <tr><td>Стабильность</td><td class="number">0,50</td><td class="number">+12%</td></tr>
+                  <tr><td>Падение нефти</td><td class="number">0,20</td><td class="number">−8%</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="math-block">$$E(r) = 0{,}30 \times 25\% + 0{,}50 \times 12\% + 0{,}20 \times (-8\%) = 7{,}5 + 6{,}0 - 1{,}6 = 11{,}9\%$$</div>
+            <div class="math-block">$$\sigma^2 = 0{,}30(25 - 11{,}9)^2 + 0{,}50(12 - 11{,}9)^2 + 0{,}20(-8 - 11{,}9)^2 = 130{,}7$$</div>
+            <div class="math-block">$$\sigma = \sqrt{130{,}7} = 11{,}4\%$$</div>
+            <div class="math-block">$$CV = 11{,}4\% / 11{,}9\% = 0{,}96$$</div>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Риск портфеля из двух активов</h3>
+            <p>Портфель: 60% акции Лукойл ($\sigma_A = 11{,}4\%$), 40% акции Сбербанк ($\sigma_B = 18{,}0\%$). Корреляция $\rho = 0{,}35$.</p>
+
+            <div class="math-block">$$\sigma_p = \sqrt{(0{,}6)^2 \times (11{,}4)^2 + (0{,}4)^2 \times (18{,}0)^2 + 2 \times 0{,}6 \times 0{,}4 \times 0{,}35 \times 11{,}4 \times 18{,}0}$$</div>
+            <div class="math-block">$$= \sqrt{46{,}8 + 51{,}8 + 34{,}5} = \sqrt{133{,}1} = 11{,}5\%$$</div>
+
+            <div class="box-key" style="margin-top: var(--space-5);">
+              <p style="margin-bottom:0;">Риск портфеля (11,5%) <strong>ниже</strong> средневзвешенного риска ($0{,}6 \times 11{,}4 + 0{,}4 \times 18{,}0 = 14{,}0\%$). Экономия 2,5 п.п. — это эффект диверсификации.</p>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Расчёт ожидаемой доходности и σ</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Акции Газпрома:</p>
+              <div class="data-table-wrapper" style="margin-bottom: var(--space-4);">
+                <table class="data-table">
+                  <thead><tr><th>Сценарий</th><th>Вероятность</th><th>Доходность</th></tr></thead>
+                  <tbody>
+                    <tr><td>Оптимистичный</td><td class="number">0,25</td><td class="number">+30%</td></tr>
+                    <tr><td>Базовый</td><td class="number">0,50</td><td class="number">+10%</td></tr>
+                    <tr><td>Пессимистичный</td><td class="number">0,25</td><td class="number">−15%</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$E(r) = 0{,}25 \times 30 + 0{,}50 \times 10 + 0{,}25 \times (-15) = 8{,}75\%$$</div>
+              <div class="math-block">$$\sigma^2 = 0{,}25(30-8{,}75)^2 + 0{,}50(10-8{,}75)^2 + 0{,}25(-15-8{,}75)^2 = 254{,}7$$</div>
+              <div class="math-block">$$\sigma = \sqrt{254{,}7} = 16{,}0\%$$</div>
+              <div class="math-block">$$CV = 16{,}0 / 8{,}75 = 1{,}83$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. Портфель из двух активов</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>50% Газпром ($E(r) = 8{,}75\%$, $\sigma = 16\%$) и 50% Сбербанк ($E(r) = 14\%$, $\sigma = 20\%$). $\rho = 0{,}40$.</p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$E(r_p) = 0{,}5 \times 8{,}75 + 0{,}5 \times 14 = 11{,}375\%$$</div>
+              <div class="math-block">$$\sigma_p = \sqrt{0{,}25 \times 256 + 0{,}25 \times 400 + 2 \times 0{,}25 \times 0{,}40 \times 16 \times 20}$$</div>
+              <div class="math-block">$$= \sqrt{64 + 100 + 64} = \sqrt{228} = 15{,}1\%$$</div>
+              <p style="margin-bottom:0;">Средневзвешенный σ: $0{,}5 \times 16 + 0{,}5 \times 20 = 18\%$. Портфельный σ = 15,1% — экономия 2,9 п.п. благодаря диверсификации.</p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Ожидаемая доходность</strong></td><td>Средневзвешенная доходность по всем сценариям</td></tr>
+                <tr><td><strong>Стандартное отклонение ($\sigma$)</strong></td><td>Мера общего риска актива</td></tr>
+                <tr><td><strong>Дисперсия ($\sigma^2$)</strong></td><td>Квадрат стандартного отклонения</td></tr>
+                <tr><td><strong>Коэффициент вариации (CV)</strong></td><td>Риск на единицу доходности</td></tr>
+                <tr><td><strong>Систематический риск</strong></td><td>Рыночный риск, не устраняется диверсификацией</td></tr>
+                <tr><td><strong>Несистематический риск</strong></td><td>Специфический риск, устраняется диверсификацией</td></tr>
+                <tr><td><strong>Диверсификация</strong></td><td>Распределение инвестиций для снижения риска</td></tr>
+                <tr><td><strong>Ковариация</strong></td><td>Мера совместной изменчивости двух активов</td></tr>
+                <tr><td><strong>Корреляция ($\rho$)</strong></td><td>Нормированная ковариация (от −1 до +1)</td></tr>
+                <tr><td><strong>Портфель</strong></td><td>Набор финансовых активов инвестора</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Какой вид риска устраняется диверсификацией?',
+            options: [
+              'Систематический (рыночный)',
+              'Несистематический (специфический)',
+              'Оба вида',
+              'Ни один'
+            ],
+            correct: 1,
+            explanation: 'Несистематический (специфический) риск устраняется диверсификацией. Систематический (рыночный) риск \u2014 нет, он зависит от макроэкономических факторов.'
+          },
+          {
+            text: 'Что показывает коэффициент вариации (CV)?',
+            options: [
+              'Абсолютный размер риска',
+              'Риск на единицу доходности',
+              'Корреляцию двух активов',
+              'Долю актива в портфеле'
+            ],
+            correct: 1,
+            explanation: 'CV = \u03c3 / E(r) \u2014 позволяет сравнивать риск активов с разным уровнем доходности.'
+          },
+          {
+            text: 'При какой корреляции диверсификация наиболее эффективна?',
+            options: [
+              '\u03c1 = +1',
+              '\u03c1 = 0',
+              '\u03c1 = \u22121',
+              '\u03c1 = +0,5'
+            ],
+            correct: 2,
+            explanation: 'При \u03c1 = \u22121 активы движутся в противофазе \u2014 максимальный эффект диверсификации, риск портфеля можно свести к нулю.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-12.html">Тема 1.2. Временная стоимость денег</a> — ставка дисконтирования отражает риск</li>
+              <li><a href="topic-22.html">Тема 2.2. Модель CAPM</a> — формализация связи «риск — доходность»</li>
+              <li><a href="topic-31.html">Тема 3.1. Оценка проектов (NPV/IRR)</a> — ставка дисконтирования учитывает риск</li>
+              <li><a href="topic-42.html">Тема 4.2. WACC</a> — стоимость капитала отражает риск компании</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture" aria-label="Навигация по лекциям">
+          <a href="topic-12.html"><span class="label">Назад</span><span class="title">1.2. Временная стоимость денег</span></a>
+          <a href="topic-22.html"><span class="label">Следующая тема</span><span class="title">2.2. Модель CAPM</span></a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 1.1. Введение в корпоративные финансы — Корпоративные финансы</title>
+  <meta name="description" content="Введение в корпоративные финансы: понятие корпорации, цели финансового менеджмента, агентские конфликты, корпоративное управление, ROE и формула Дюпона">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 1.1. Введение в корпоративные финансы">
+  <meta property="og:description" content="Понятие корпорации, цели финансового менеджмента, агентские конфликты, корпоративное управление, ROE, ROA и формула Дюпона">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-11">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 1</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 1.1</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Введение в корпоративные<br>финансы
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Что такое корпорация, зачем нужен финансовый менеджмент, как возникают
+              агентские конфликты и почему главная цель — максимизация стоимости.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>1. Основы корпоративных финансов</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">УК-1, ОПК-1</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Экономическая теория, Финансы, Менеджмент</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Понятие корпорации и корпоративных финансов ===== -->
+          <h2 id="s1" class="reveal">1. Понятие корпорации и корпоративных финансов</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Корпорация (Corporation)</strong> — юридическое лицо, капитал которого разделён на акции, с ограниченной ответственностью акционеров. В российском праве аналогом является <strong>ПАО (Публичное акционерное общество)</strong>.</p>
+          </div>
+
+          <p class="reveal">Ключевые признаки корпорации:</p>
+          <ul class="reveal">
+            <li><strong>Ограниченная ответственность</strong> — акционеры рискуют только вложенными средствами;</li>
+            <li><strong>Разделение собственности и управления</strong> — акционеры владеют, менеджеры управляют;</li>
+            <li><strong>Свободная передача долей</strong> — акции можно продать на рынке;</li>
+            <li><strong>Бессрочное существование</strong> — компания не зависит от состава владельцев.</li>
+          </ul>
+
+          <div class="box-info reveal">
+            <p><strong>Корпоративные финансы (Corporate Finance)</strong> — область финансовой науки, изучающая принципы и методы принятия финансовых решений корпорациями. Три ключевых вопроса:</p>
+            <ol>
+              <li><strong>В какие активы инвестировать?</strong> — инвестиционные решения (capital budgeting);</li>
+              <li><strong>Как финансировать инвестиции?</strong> — финансовые решения (capital structure);</li>
+              <li><strong>Как управлять текущей деятельностью?</strong> — управление оборотным капиталом (working capital management).</li>
+            </ol>
+          </div>
+
+          <!-- ===== 2. Цели корпорации ===== -->
+          <h2 id="s2" class="reveal">2. Цели корпорации</h2>
+
+          <div class="box-key reveal">
+            <p>Главная цель корпорации — <strong>максимизация рыночной стоимости компании</strong> (Shareholder Value Maximization). Это означает принятие решений, увеличивающих благосостояние акционеров.</p>
+          </div>
+
+          <p class="reveal">Почему не «максимизация прибыли»?</p>
+          <ul class="reveal">
+            <li>Прибыль — бухгалтерский показатель, подвержен манипуляциям;</li>
+            <li>Не учитывает временну&#x301;ю стоимость денег (1 млрд прибыли сегодня ≠ через 10 лет);</li>
+            <li>Не учитывает риск (прибыль с высоким риском менее ценна);</li>
+            <li>Не учитывает долгосрочные последствия решений.</li>
+          </ul>
+
+          <p class="reveal"><strong>Альтернативные концепции:</strong></p>
+          <ul class="reveal">
+            <li>Максимизация прибыли (краткосрочная ориентация);</li>
+            <li>Максимизация выручки (рост доли рынка);</li>
+            <li>Социальная ответственность (ESG — Environmental, Social, Governance);</li>
+            <li>Стейкхолдерский подход (баланс интересов всех заинтересованных сторон).</li>
+          </ul>
+
+          <!-- ===== 3. Агентские конфликты ===== -->
+          <h2 id="s3" class="reveal">3. Агентские конфликты</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Агентская проблема (Agency Problem)</strong> возникает, когда интересы менеджеров (агентов) расходятся с интересами акционеров (принципалов).</p>
+          </div>
+
+          <p class="reveal"><strong>Конфликт «акционеры — менеджеры»:</strong> менеджеры могут стремиться к личному обогащению, престижу, расширению «империи». Пример: чрезмерные расходы на офисы, корпоративные джеты, непрофильные приобретения.</p>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr><th>Механизм</th><th>Описание</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Вознаграждение</strong></td><td>Опционы на акции, бонусы, привязанные к росту стоимости</td></tr>
+                <tr><td><strong>Мониторинг</strong></td><td>Совет директоров, внешний аудит, ревизионная комиссия</td></tr>
+                <tr><td><strong>Угроза поглощения</strong></td><td>Неэффективный менеджмент → падение цены акций → враждебное поглощение</td></tr>
+                <tr><td><strong>Долговые ковенанты</strong></td><td>Кредиторы ограничивают рискованное поведение менеджмента</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="box-warning reveal">
+            <p><strong>Конфликт «акционеры — кредиторы»:</strong> акционеры могут инвестировать в рискованные проекты (если проект успешен — выигрывают акционеры; если провал — убытки несут кредиторы).</p>
+            <p style="margin-bottom:0;">Решение: защитные ковенанты в кредитных договорах, обеспечение, контроль D/E.</p>
+          </div>
+
+          <p class="reveal"><strong>Агентские издержки (Agency Costs):</strong></p>
+          <ol class="reveal">
+            <li>Расходы на мониторинг (audit, совет директоров);</li>
+            <li>Расходы на стимулирование (опционы, бонусы);</li>
+            <li>Остаточные потери (субоптимальные решения, несмотря на контроль).</li>
+          </ol>
+
+          <!-- ===== 4. Корпоративное управление ===== -->
+          <h2 id="s4" class="reveal">4. Корпоративное управление</h2>
+
+          <div class="box-info reveal">
+            <p><strong>Корпоративное управление (Corporate Governance)</strong> — система правил и механизмов, обеспечивающих баланс интересов акционеров, менеджеров и других стейкхолдеров.</p>
+            <ul>
+              <li><strong>Совет директоров</strong> — стратегическое руководство, контроль менеджмента;</li>
+              <li><strong>Комитет по аудиту</strong> — контроль финансовой отчётности;</li>
+              <li><strong>Раскрытие информации</strong> — обязательная публикация финансовой отчётности (МСФО);</li>
+              <li><strong>Кодекс корпоративного управления ЦБ РФ</strong> — рекомендации для публичных компаний.</li>
+            </ul>
+          </div>
+
+          <!-- ===== 5. Функции финансового менеджера ===== -->
+          <h2 id="s5" class="reveal">5. Функции финансового менеджера</h2>
+
+          <p class="reveal"><strong>Финансовый менеджер (CFO — Chief Financial Officer)</strong> отвечает за три типа решений:</p>
+          <ol class="reveal">
+            <li><strong>Инвестиционные решения:</strong> в какие проекты и активы вкладывать средства? (Критерии: NPV, IRR, PI — темы 3.1–3.2)</li>
+            <li><strong>Финансовые решения:</strong> как привлечь капитал? Долг или акции? (Темы 4.1–4.2)</li>
+            <li><strong>Решения по оборотному капиталу:</strong> управление запасами, дебиторской задолженностью, денежными средствами (Тема 5.2)</li>
+          </ol>
+
+          <!-- ===== 6. Финансовая среда ===== -->
+          <h2 id="s6" class="reveal">6. Финансовая среда</h2>
+
+          <p class="reveal">Корпорация функционирует в финансовой среде, включающей:</p>
+          <ul class="reveal">
+            <li><strong>Финансовые рынки:</strong> денежный рынок (краткосрочные инструменты), рынок капитала (долгосрочные — акции, облигации);</li>
+            <li><strong>Финансовые институты:</strong> банки, инвестиционные фонды, страховые компании, пенсионные фонды;</li>
+            <li><strong>Финансовые инструменты:</strong> акции, облигации, кредиты, деривативы.</li>
+          </ul>
+
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Российская специфика</h3>
+            <ul>
+              <li>Московская биржа (MOEX) — основная торговая площадка;</li>
+              <li>Высокая доля государственных компаний (Газпром, Роснефть, Сбербанк);</li>
+              <li>Ключевая ставка ЦБ РФ (15,0% на март 2026) — влияет на стоимость капитала;</li>
+              <li>Ограниченная ликвидность рынка по сравнению с развитыми рынками.</li>
+            </ul>
+          </div>
+
+          <!-- ============================================================
+               ФОРМУЛЫ
+               ============================================================ -->
+          <h2 id="formulas" class="reveal">Ключевые формулы</h2>
+
+          <div class="box-formula reveal">
+            <p><strong>Рентабельность собственного капитала (ROE):</strong></p>
+            <div class="math-block">$$ROE = \frac{\text{Чистая прибыль}}{\text{Собственный капитал}} \times 100\%$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Рентабельность активов (ROA):</strong></p>
+            <div class="math-block">$$ROA = \frac{\text{Чистая прибыль}}{\text{Совокупные активы}} \times 100\%$$</div>
+          </div>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Формула Дюпона (3-факторная декомпозиция ROE):</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$ROE = \underbrace{\frac{NI}{Sales}}_{\text{чистая маржа}} \times \underbrace{\frac{Sales}{Assets}}_{\text{оборачиваемость}} \times \underbrace{\frac{Assets}{Equity}}_{\text{фин. леверидж}}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Коэффициент D/E (финансовый рычаг):</strong></p>
+            <div class="math-block">$$D/E = \frac{\text{Заёмный капитал}}{\text{Собственный капитал}}$$</div>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. ROE и ROA для ПАО «Сбербанк» (2023 г.)</h3>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Показатель</th><th>Значение</th></tr></thead>
+                <tbody>
+                  <tr><td>Чистая прибыль</td><td class="number">1 493 млрд руб.</td></tr>
+                  <tr><td>Собственный капитал</td><td class="number">5 900 млрд руб.</td></tr>
+                  <tr><td>Совокупные активы</td><td class="number">45 000 млрд руб.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="math-block">$$ROE = \frac{1\,493}{5\,900} \times 100\% = 25{,}3\%$$</div>
+            <div class="math-block">$$ROA = \frac{1\,493}{45\,000} \times 100\% = 3{,}3\%$$</div>
+
+            <p style="margin-bottom:0;"><strong>Интерпретация:</strong> ROE значительно выше ROA. Это связано с высоким финансовым левериджем банка: Активы/Капитал = 45 000/5 900 = 7,6x. Каждый рубль собственного капитала «работает» с 7,6 руб. активов.</p>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Формула Дюпона для Сбербанка (2023 г.)</h3>
+
+            <p>При чистом процентном доходе ≈ 2 500 млрд руб.:</p>
+            <div class="math-block">$$ROE = \frac{1\,493}{2\,500} \times \frac{2\,500}{45\,000} \times \frac{45\,000}{5\,900} = 59{,}7\% \times 5{,}6\% \times 7{,}63 = 25{,}5\%$$</div>
+            <p style="margin-bottom:0;">Основной драйвер ROE — <strong>финансовый леверидж</strong> (7,63x).</p>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. D/E для ПАО «Газпром»</h3>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Показатель</th><th>Значение</th></tr></thead>
+                <tbody>
+                  <tr><td>Долгосрочный долг</td><td class="number">5 000 млрд руб.</td></tr>
+                  <tr><td>Собственный капитал</td><td class="number">15 000 млрд руб.</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="math-block">$$D/E = \frac{5\,000}{15\,000} = 0{,}33$$</div>
+            <p style="margin-bottom:0;"><strong>Интерпретация:</strong> на каждый рубль собственного капитала приходится 33 коп. долга. Это умеренный леверидж — компания преимущественно финансируется за счёт собственных средств.</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Анализ ROE и формула Дюпона</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Даны показатели компании: чистая прибыль = 500 млн руб., выручка = 5 000 млн руб., активы = 10 000 млн руб., собственный капитал = 4 000 млн руб.</p>
+              <p><strong>Рассчитайте ROE, ROA, D/E. Разложите ROE по формуле Дюпона.</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$ROE = 500 / 4\,000 = 12{,}5\%$$</div>
+              <div class="math-block">$$ROA = 500 / 10\,000 = 5{,}0\%$$</div>
+              <div class="math-block">$$D/E = (10\,000 - 4\,000) / 4\,000 = 6\,000 / 4\,000 = 1{,}5$$</div>
+              <p>Формула Дюпона:</p>
+              <div class="math-block">$$ROE = \frac{500}{5\,000} \times \frac{5\,000}{10\,000} \times \frac{10\,000}{4\,000} = 10\% \times 50\% \times 2{,}5 = 12{,}5\%$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. Сравнительный анализ двух компаний</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Сравните ROE двух компаний:</p>
+              <div class="data-table-wrapper" style="margin-bottom: var(--space-4);">
+                <table class="data-table">
+                  <thead><tr><th>Показатель</th><th>Компания А</th><th>Компания Б</th></tr></thead>
+                  <tbody>
+                    <tr><td>Чистая маржа</td><td class="number">15%</td><td class="number">8%</td></tr>
+                    <tr><td>Оборачиваемость активов</td><td class="number">0,5x</td><td class="number">1,5x</td></tr>
+                    <tr><td>Финансовый леверидж</td><td class="number">2,0x</td><td class="number">1,5x</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$ROE_A = 15\% \times 0{,}5 \times 2{,}0 = 15{,}0\%$$</div>
+              <div class="math-block">$$ROE_Б = 8\% \times 1{,}5 \times 1{,}5 = 18{,}0\%$$</div>
+              <p style="margin-bottom:0;">Компания Б имеет выше ROE (18% > 15%), несмотря на более низкую маржу. Её преимущество — высокая оборачиваемость активов. Компания А компенсирует низкую оборачиваемость высокой маржой и большим левериджем.</p>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Контрольные вопросы для самопроверки</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <ol>
+                <li>В чём состоит главная цель корпорации с позиции корпоративных финансов?</li>
+                <li>Какие три типа финансовых решений принимает финансовый менеджер?</li>
+                <li>Что такое агентская проблема? Между кем возникают конфликты?</li>
+                <li>Назовите основные механизмы снижения агентских издержек.</li>
+                <li>Чем ПАО отличается от ООО с точки зрения корпоративных финансов?</li>
+                <li>Как формула Дюпона помогает понять источники высокого ROE?</li>
+                <li>Какова роль Московской биржи в финансовой среде российских корпораций?</li>
+              </ol>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Корпорация (Corporation)</strong></td><td>Юридическое лицо с капиталом, разделённым на акции, и ограниченной ответственностью</td></tr>
+                <tr><td><strong>Корпоративные финансы</strong></td><td>Наука о принятии финансовых решений корпорациями</td></tr>
+                <tr><td><strong>Максимизация стоимости</strong></td><td>Главная цель корпорации — увеличение рыночной стоимости для акционеров</td></tr>
+                <tr><td><strong>Агентская проблема</strong></td><td>Конфликт интересов между менеджерами и акционерами</td></tr>
+                <tr><td><strong>Агентские издержки</strong></td><td>Затраты на мониторинг, стимулирование и остаточные потери</td></tr>
+                <tr><td><strong>CFO</strong></td><td>Финансовый менеджер, принимающий инвестиционные и финансовые решения</td></tr>
+                <tr><td><strong>ROE (Return on Equity)</strong></td><td>Рентабельность собственного капитала</td></tr>
+                <tr><td><strong>ROA (Return on Assets)</strong></td><td>Рентабельность активов</td></tr>
+                <tr><td><strong>D/E (Debt-to-Equity)</strong></td><td>Соотношение заёмного и собственного капитала</td></tr>
+                <tr><td><strong>Corporate Governance</strong></td><td>Система контроля и баланса интересов стейкхолдеров</td></tr>
+                <tr><td><strong>ПАО</strong></td><td>Публичное акционерное общество — российский аналог корпорации</td></tr>
+                <tr><td><strong>Формула Дюпона</strong></td><td>Декомпозиция ROE на маржу, оборачиваемость и леверидж</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Какова главная цель корпорации с точки зрения финансового менеджмента?',
+            options: [
+              'Максимизация выручки',
+              'Максимизация рыночной стоимости компании',
+              'Максимизация бухгалтерской прибыли',
+              'Минимизация затрат'
+            ],
+            correct: 1,
+            explanation: 'Главная цель \u2014 максимизация рыночной стоимости (Shareholder Value Maximization). Прибыль не учитывает риск, временну\u0301ю стоимость денег и подвержена манипуляциям.'
+          },
+          {
+            text: 'Что такое агентская проблема?',
+            options: [
+              'Конфликт между компанией и государством',
+              'Конфликт интересов между менеджерами и акционерами',
+              'Проблема выбора брокера',
+              'Конфликт между поставщиками'
+            ],
+            correct: 1,
+            explanation: 'Агентская проблема (Agency Problem) возникает, когда интересы менеджеров (агентов) расходятся с интересами акционеров (принципалов).'
+          },
+          {
+            text: 'Формула Дюпона раскладывает ROE на три фактора. Какие?',
+            options: [
+              'Маржа, оборачиваемость, леверидж',
+              'Прибыль, активы, долг',
+              'Выручка, расходы, налоги',
+              'Дивиденды, проценты, амортизация'
+            ],
+            correct: 0,
+            explanation: 'ROE = (NI/Sales) \u00d7 (Sales/Assets) \u00d7 (Assets/Equity) \u2014 чистая маржа, оборачиваемость активов и финансовый леверидж.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-12.html">Тема 1.2. Временная стоимость денег</a> — основа для понимания стоимости в финансах</li>
+              <li><a href="topic-21.html">Тема 2.1. Риск и доходность</a> — развитие понятия «доходность» (ROE, ROA)</li>
+              <li><a href="topic-41.html">Тема 4.1. Структура капитала</a> — развитие D/E и левериджа</li>
+              <li><a href="topic-51.html">Тема 5.1. Дивидендная политика</a> — агентский конфликт как фактор дивидендных решений</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture" aria-label="Навигация по лекциям">
+          <a href="topic-12.html"><span class="label">Следующая тема</span><span class="title">1.2. Временная стоимость денег</span></a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

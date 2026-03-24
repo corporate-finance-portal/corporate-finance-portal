@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Корпоративные финансы — Образовательный портал</title>
+  <meta name="description" content="Образовательный портал по корпоративным финансам. 18 лекций, 7 калькуляторов, 15 кейсов, 40+ тестов. Университет «Синергия»">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Корпоративные финансы — Образовательный портал">
+  <meta property="og:description" content="Интерактивный курс: 18 лекций, калькуляторы WACC/NPV/CAPM/DCF, 15 кейсов российских компаний, 40+ тестов">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/features.css">
+
+  <!-- Schema.org Course JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": "Корпоративные финансы",
+    "description": "Образовательный портал по корпоративным финансам. 18 лекций, 7 калькуляторов, 15 кейсов, 40+ тестов.",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "Московский университет «Синергия»",
+      "url": "https://synergy.ru"
+    },
+    "educationalLevel": "Бакалавриат",
+    "inLanguage": "ru",
+    "numberOfCredits": "4",
+    "about": [
+      "WACC", "NPV", "IRR", "CAPM", "DCF",
+      "Структура капитала", "Дивидендная политика",
+      "Оценка бизнеса", "Финансовый анализ"
+    ],
+    "hasCourseInstance": {
+      "@type": "CourseInstance",
+      "courseMode": "online",
+      "inLanguage": "ru",
+      "instructor": {
+        "@type": "Person",
+        "name": "проф. С.Г. Стерник"
+      }
+    },
+    "teaches": [
+      "Корпоративные финансы",
+      "Инвестиционный анализ",
+      "Оценка бизнеса",
+      "Финансовый менеджмент"
+    ]
+  }
+  </script>
+</head>
+<body data-page="index" data-depth="0">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Split Layout — Text Left + Nav Cards Right
+         ============================================================ -->
+    <section class="hero hero-bento" aria-label="Главный экран">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Text + CTA -->
+          <div class="hero-content">
+            <span class="hero-badge" aria-label="Университет">
+              <span class="pulse" aria-hidden="true"></span>
+              Синергия &bull; 38.03.01 Экономика &bull; Бакалавриат
+            </span>
+
+            <h1>
+              Корпоративные<br>
+              <span class="text-gradient">финансы</span>
+            </h1>
+
+            <p class="subtitle">
+              Интерактивный образовательный портал: от временной стоимости денег
+              до оценки бизнеса и ESG-трендов. Лекции с формулами, калькуляторы
+              с визуализацией, кейсы реальных компаний.
+            </p>
+
+            <div class="hero-actions">
+              <a href="lectures/" class="btn btn-primary btn-pill btn-lg" aria-label="Перейти к лекциям">
+                Начать обучение
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <a href="tools/" class="btn btn-outline btn-pill btn-lg" aria-label="Перейти к инструментам">
+                Инструменты
+              </a>
+            </div>
+          </div>
+
+          <!-- Right: 4 Navigation Cards (2x2 grid) -->
+          <div class="hero-visual">
+
+            <a href="lectures/" class="card card-glass card-nav" aria-label="12 лекций по 7 разделам">
+              <div class="card-nav-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h6"/></svg>
+              </div>
+              <span class="card-nav-num" data-count="12">0</span>
+              <span class="card-nav-label">Лекций</span>
+              <span class="card-nav-desc">7 разделов, от основ до финансового анализа</span>
+            </a>
+
+            <a href="tools/" class="card card-glass card-nav card-nav-coral" aria-label="9 инструментов — калькуляторы и справочники">
+              <div class="card-nav-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="16" y2="18"/></svg>
+              </div>
+              <span class="card-nav-num" data-count="9">0</span>
+              <span class="card-nav-label">Инструментов</span>
+              <span class="card-nav-desc">7 калькуляторов, формулы и Excel-практикумы</span>
+            </a>
+
+            <a href="cases/" class="card card-glass card-nav card-nav-amber" aria-label="13 кейсов реальных компаний">
+              <div class="card-nav-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+              </div>
+              <span class="card-nav-num" data-count="13">0</span>
+              <span class="card-nav-label">Кейсов</span>
+              <span class="card-nav-desc">Лукойл, Газпром, Apple, Disney и другие</span>
+            </a>
+
+            <a href="assessment/" class="card card-glass card-nav" aria-label="50 тестовых вопросов">
+              <div class="card-nav-icon" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+              </div>
+              <span class="card-nav-num" data-count="50">0</span>
+              <span class="card-nav-label">Вопросов</span>
+              <span class="card-nav-desc">3 теста для проверки знаний</span>
+            </a>
+
+          </div><!-- /.hero-visual -->
+
+        </div><!-- /.hero-grid -->
+
+        <!-- Ticker: Key financial metrics -->
+        <div class="hero-ticker" aria-label="Ключевые показатели">
+          <div class="ticker-items">
+            <div class="ticker-item">
+              <span class="ticker-label">WACC</span>
+              <span class="ticker-value">11.8%</span>
+            </div>
+            <div class="ticker-divider" aria-hidden="true"></div>
+            <div class="ticker-item">
+              <span class="ticker-label">NPV</span>
+              <span class="ticker-value ticker-positive">+2.4B</span>
+            </div>
+            <div class="ticker-divider" aria-hidden="true"></div>
+            <div class="ticker-item">
+              <span class="ticker-label">CAPM</span>
+              <span class="ticker-value">18.2%</span>
+            </div>
+            <div class="ticker-divider" aria-hidden="true"></div>
+            <div class="ticker-item">
+              <span class="ticker-label">IRR</span>
+              <span class="ticker-value ticker-positive">24.6%</span>
+            </div>
+            <div class="ticker-divider" aria-hidden="true"></div>
+            <div class="ticker-item">
+              <span class="ticker-label">P/E</span>
+              <span class="ticker-value">8.4x</span>
+            </div>
+            <div class="ticker-divider" aria-hidden="true"></div>
+            <div class="ticker-item">
+              <span class="ticker-label">EV/EBITDA</span>
+              <span class="ticker-value">5.2x</span>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /.container -->
+    </section>
+
+    <!-- ============================================================
+         SECTIONS OVERVIEW: 8 Course Sections as Cards
+         ============================================================ -->
+    <section class="section reveal" id="program" aria-label="Программа курса">
+      <div class="container">
+        <div class="section-header">
+          <h2>
+            <span class="accent-dot" aria-hidden="true"></span>
+            Программа курса
+          </h2>
+          <p class="section-subtitle">
+            8 разделов: от фундаментальных концепций к современным трендам финансовой индустрии
+          </p>
+        </div>
+
+        <div class="cards-grid cards-grid-4">
+
+          <!-- Section 1 -->
+          <article class="card card-glass card-accent-indigo reveal" aria-label="Раздел 1: Основы корпоративных финансов">
+            <div class="card-top">
+              <span class="tag">Раздел 1</span>
+            </div>
+            <h3>Основы корпоративных финансов</h3>
+            <p>Цели финансового менеджмента, агентские конфликты, временная стоимость денег (TVM), аннуитеты и перпетуитеты</p>
+            <a href="syllabus.html#section-1" class="card-link" aria-label="Подробнее о разделе 1">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 2 -->
+          <article class="card card-glass card-accent-coral reveal" aria-label="Раздел 2: Риск и доходность">
+            <div class="card-top">
+              <span class="tag">Раздел 2</span>
+            </div>
+            <h3>Риск и доходность</h3>
+            <p>Модель CAPM, бета-коэффициент, линия SML, систематический и несистематический риск, диверсификация портфеля</p>
+            <a href="syllabus.html#section-2" class="card-link" aria-label="Подробнее о разделе 2">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 3 -->
+          <article class="card card-glass card-accent-indigo reveal" aria-label="Раздел 3: Инвестиционный анализ">
+            <div class="card-top">
+              <span class="tag">Раздел 3</span>
+            </div>
+            <h3>Инвестиционный анализ</h3>
+            <p>NPV, IRR, PI, DPP — критерии оценки инвестиционных проектов, портфельный анализ, сделки M&amp;A</p>
+            <a href="syllabus.html#section-3" class="card-link" aria-label="Подробнее о разделе 3">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 4 -->
+          <article class="card card-glass card-accent-coral reveal" aria-label="Раздел 4: Структура капитала">
+            <div class="card-top">
+              <span class="tag">Раздел 4</span>
+            </div>
+            <h3>Структура капитала</h3>
+            <p>Теоремы Модильяни&ndash;Миллера, средневзвешенная стоимость капитала (WACC), оптимальный леверидж</p>
+            <a href="syllabus.html#section-4" class="card-link" aria-label="Подробнее о разделе 4">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 5 -->
+          <article class="card card-glass card-accent-indigo reveal" aria-label="Раздел 5: Дивиденды и оборотный капитал">
+            <div class="card-top">
+              <span class="tag">Раздел 5</span>
+            </div>
+            <h3>Дивиденды и оборотный капитал</h3>
+            <p>Дивидендная политика, теории иррелевантности и сигнализации, управление ликвидностью и оборотным капиталом</p>
+            <a href="syllabus.html#section-5" class="card-link" aria-label="Подробнее о разделе 5">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 6 -->
+          <article class="card card-glass card-accent-coral reveal" aria-label="Раздел 6: Оценка бизнеса">
+            <div class="card-top">
+              <span class="tag">Раздел 6</span>
+            </div>
+            <h3>Оценка бизнеса</h3>
+            <p>Метод DCF, мультипликаторы P/E и EV/EBITDA, модель Гордона, экономическая добавленная стоимость (EVA)</p>
+            <a href="syllabus.html#section-6" class="card-link" aria-label="Подробнее о разделе 6">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 7 -->
+          <article class="card card-glass card-accent-indigo reveal" aria-label="Раздел 7: Финансовый анализ">
+            <div class="card-top">
+              <span class="tag">Раздел 7</span>
+            </div>
+            <h3>Финансовый анализ</h3>
+            <p>Формула Дюпона (DuPont), Z-модель Альтмана, коэффициентный анализ рентабельности и ликвидности</p>
+            <a href="syllabus.html#section-7" class="card-link" aria-label="Подробнее о разделе 7">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Section 8 -->
+          <article class="card card-glass card-accent-coral reveal" aria-label="Раздел 8: Современные тренды">
+            <div class="card-top">
+              <span class="tag tag-new">Раздел 8</span>
+            </div>
+            <h3>Современные тренды</h3>
+            <p>ESG и устойчивые финансы, финтех и цифровые финансы, поведенческие финансы и когнитивные искажения</p>
+            <a href="syllabus.html#section-8" class="card-link" aria-label="Подробнее о разделе 8">
+              Подробнее
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+        </div><!-- /.cards-grid -->
+      </div><!-- /.container -->
+    </section>
+
+
+    <!-- ============================================================
+         TOOLS: Dark Inverted Section (.section-dark)
+         Split layout inspired by V16 Red Shift
+         ============================================================ -->
+    <section class="section section-dark reveal" id="tools" aria-label="Интерактивные инструменты">
+      <div class="container">
+        <div class="section-header">
+          <h2>
+            <span class="accent-dot accent-dot-coral" aria-hidden="true"></span>
+            Интерактивные инструменты
+          </h2>
+          <p class="section-subtitle">
+            Финансовые калькуляторы с визуализацией, пресетами реальных компаний и мгновенными расчётами
+          </p>
+        </div>
+
+        <div class="tools-split">
+
+          <!-- Left: Description + CTA -->
+          <div class="tools-description">
+            <p class="tools-lead">
+              Каждый калькулятор построен на реальных данных российских и международных компаний.
+              Изменяйте параметры и наблюдайте, как это влияет на результат.
+            </p>
+
+            <ul class="tools-features" role="list">
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+                Визуализация через интерактивные графики
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+                Пресеты: Лукойл, Газпром, Сбербанк, Apple
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+                Формулы с пошаговым объяснением
+              </li>
+              <li>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--acc)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="M22 4 12 14.01l-3-3"/></svg>
+                Анализ чувствительности параметров
+              </li>
+            </ul>
+
+            <a href="tools/" class="btn btn-primary btn-pill" aria-label="Открыть все инструменты">
+              Все инструменты
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <!-- Right: Tool list with dot indicators -->
+          <div class="tools-list" role="list" aria-label="Список калькуляторов">
+
+            <a href="tools/wacc-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-indigo" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">WACC</span>
+                <span class="tool-desc">Средневзвешенная стоимость капитала</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a href="tools/npv-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-coral" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">NPV / IRR</span>
+                <span class="tool-desc">Чистая приведённая стоимость и внутренняя норма доходности</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a href="tools/capm-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-amber" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">CAPM</span>
+                <span class="tool-desc">Модель оценки капитальных активов</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a href="tools/dcf-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-indigo" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">DCF</span>
+                <span class="tool-desc">Дисконтированные денежные потоки</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a href="tools/gordon-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-coral" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">Модель Гордона</span>
+                <span class="tool-desc">Оценка стоимости через дивиденды</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a href="tools/altman-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-amber" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">Z-score Альтмана</span>
+                <span class="tool-desc">Прогнозирование банкротства</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+            <a href="tools/dupont-calculator.html" class="tool-item" role="listitem">
+              <span class="tool-dot tool-dot-indigo" aria-hidden="true"></span>
+              <div class="tool-info">
+                <span class="tool-name">DuPont</span>
+                <span class="tool-desc">Декомпозиция рентабельности собственного капитала</span>
+              </div>
+              <span class="tool-arrow" aria-hidden="true">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </span>
+            </a>
+
+          </div><!-- /.tools-list -->
+
+        </div><!-- /.tools-split -->
+      </div><!-- /.container -->
+    </section>
+
+
+    <!-- ============================================================
+         CASES: Featured Case Studies
+         ============================================================ -->
+    <section class="section reveal" id="cases" aria-label="Реальные кейсы">
+      <div class="container">
+        <div class="section-header">
+          <h2>
+            <span class="accent-dot accent-dot-amber" aria-hidden="true"></span>
+            Реальные кейсы
+          </h2>
+          <p class="section-subtitle">
+            Пошаговый финансовый анализ на данных крупнейших компаний России и мира
+          </p>
+        </div>
+
+        <div class="cards-grid cards-grid-3">
+
+          <!-- Case: Lukoil -->
+          <article class="card card-glass card-case reveal" aria-label="Кейс: Лукойл">
+            <div class="card-top">
+              <span class="tag tag-indigo">WACC + NPV</span>
+              <span class="tag tag-subtle">M&amp;A</span>
+            </div>
+            <h3>Лукойл</h3>
+            <p>
+              Расчёт средневзвешенной стоимости капитала и оценка инвестиционного проекта
+              через NPV. Анализ структуры финансирования и чувствительность к ставке дисконтирования.
+            </p>
+            <div class="case-metrics" aria-label="Ключевые показатели кейса">
+              <span class="case-metric">
+                <span class="case-metric-label">WACC</span>
+                <span class="case-metric-value">11.8%</span>
+              </span>
+              <span class="case-metric">
+                <span class="case-metric-label">NPV</span>
+                <span class="case-metric-value case-metric-positive">+2.4 млрд</span>
+              </span>
+            </div>
+            <a href="cases/lukoil.html" class="card-link" aria-label="Открыть кейс Лукойл">
+              Разобрать кейс
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Case: Gazprom -->
+          <article class="card card-glass card-case reveal" aria-label="Кейс: Газпром">
+            <div class="card-top">
+              <span class="tag tag-coral">Дивиденды</span>
+              <span class="tag tag-subtle">Политика</span>
+            </div>
+            <h3>Газпром</h3>
+            <p>
+              Анализ дивидендной политики: история выплат, коэффициент payout ratio,
+              влияние государственного участия. Модель Гордона для оценки справедливой стоимости акции.
+            </p>
+            <div class="case-metrics" aria-label="Ключевые показатели кейса">
+              <span class="case-metric">
+                <span class="case-metric-label">Payout</span>
+                <span class="case-metric-value">50%</span>
+              </span>
+              <span class="case-metric">
+                <span class="case-metric-label">Div Yield</span>
+                <span class="case-metric-value">12.4%</span>
+              </span>
+            </div>
+            <a href="cases/gazprom.html" class="card-link" aria-label="Открыть кейс Газпром">
+              Разобрать кейс
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+          <!-- Case: Sberbank -->
+          <article class="card card-glass card-case reveal" aria-label="Кейс: Сбербанк">
+            <div class="card-top">
+              <span class="tag tag-amber">Капитал</span>
+              <span class="tag tag-subtle">DuPont</span>
+            </div>
+            <h3>Сбербанк</h3>
+            <p>
+              Анализ структуры капитала крупнейшего банка России. Декомпозиция ROE по формуле
+              Дюпона, оценка достаточности капитала и леверидж-эффект.
+            </p>
+            <div class="case-metrics" aria-label="Ключевые показатели кейса">
+              <span class="case-metric">
+                <span class="case-metric-label">ROE</span>
+                <span class="case-metric-value">24.2%</span>
+              </span>
+              <span class="case-metric">
+                <span class="case-metric-label">D/E</span>
+                <span class="case-metric-value">8.6x</span>
+              </span>
+            </div>
+            <a href="cases/sberbank.html" class="card-link" aria-label="Открыть кейс Сбербанк">
+              Разобрать кейс
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </article>
+
+        </div><!-- /.cards-grid -->
+
+        <div class="section-footer">
+          <a href="cases/" class="btn btn-outline btn-pill" aria-label="Смотреть все 15 кейсов">
+            Все 15 кейсов
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div><!-- /.container -->
+    </section>
+
+
+    <!-- ============================================================
+         CTA: Final Call-to-Action
+         Radial glow background
+         ============================================================ -->
+    <section class="section section-cta reveal" id="start" aria-label="Призыв к действию">
+      <!-- Radial glow -->
+      <div class="cta-glow cta-glow-indigo" aria-hidden="true"></div>
+      <div class="cta-glow cta-glow-coral" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">
+            Начните изучать
+            <span class="text-gradient">корпоративные финансы</span>
+          </h2>
+          <p class="cta-description">
+            18 лекций с формулами и графиками, 7 интерактивных калькуляторов,
+            15 кейсов реальных компаний и 40+ тестовых вопросов для самопроверки
+          </p>
+          <div class="cta-actions">
+            <a href="lectures/topic-11.html" class="btn btn-primary btn-pill btn-lg btn-glow" aria-label="Открыть первую лекцию курса">
+              Открыть первую лекцию
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+            <a href="syllabus.html" class="btn btn-ghost btn-pill btn-lg" aria-label="Смотреть программу курса">
+              Программа курса
+            </a>
+          </div>
+
+          <div class="cta-stats" aria-label="Краткая статистика">
+            <span class="cta-stat">
+              <strong>8</strong> разделов
+            </span>
+            <span class="cta-stat-divider" aria-hidden="true">/</span>
+            <span class="cta-stat">
+              <strong>18</strong> лекций
+            </span>
+            <span class="cta-stat-divider" aria-hidden="true">/</span>
+            <span class="cta-stat">
+              <strong>15</strong> кейсов
+            </span>
+            <span class="cta-stat-divider" aria-hidden="true">/</span>
+            <span class="cta-stat">
+              <strong>7</strong> калькуляторов
+            </span>
+          </div>
+        </div>
+      </div><!-- /.container -->
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="js/components.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/search.js"></script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 3.2. Портфельный анализ. Управление инвестиционным портфелем — Корпоративные финансы</title>
+  <meta name="description" content="Теория портфеля Марковица, эффективная граница, M&A и синергия, реальные опционы. Примеры расчётов для российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 3.2. Портфельный анализ и управление инвестиционным портфелем">
+  <meta property="og:description" content="Теория Марковица, эффективная граница, слияния и поглощения, реальные опционы — портфельный подход к корпоративным инвестициям">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-32">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 3</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 3.2</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Портфельный анализ.<br>Управление инвестиционным портфелем
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Теория Марковица, эффективная граница, слияния и поглощения (M&amp;A),
+              реальные опционы — портфельный подход к корпоративным инвестициям.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>3. Инвестиционные решения</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">ОПК-4, ОПК-5</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 2.1 (Риск и доходность), Тема 3.1 (NPV/IRR)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Теория портфеля Марковица ===== -->
+          <h2 id="s1" class="reveal">1. Теория портфеля Марковица</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Гарри Марковиц (1952)</strong> заложил основу <strong>современной портфельной теории (Modern Portfolio Theory, MPT)</strong>. Инвестор оценивает портфель по двум параметрам: ожидаемая доходность и риск.</p>
+          </div>
+
+          <p class="reveal">Ключевые идеи MPT:</p>
+          <ol class="reveal">
+            <li>Инвестор оценивает портфель по двум параметрам: <strong>ожидаемая доходность</strong> $E(r_p)$ и <strong>риск</strong> $\sigma_p$;</li>
+            <li>При одинаковой доходности инвестор выбирает портфель с меньшим риском;</li>
+            <li>При одинаковом риске — портфель с большей доходностью;</li>
+            <li><strong>Диверсификация</strong> снижает риск портфеля (если $\rho < 1$).</li>
+          </ol>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Доходность портфеля:</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$E(r_p) = \sum_{i=1}^{n} w_i \times E(r_i)$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Риск портфеля (общий случай):</strong></p>
+            <div class="math-block">$$\sigma_p = \sqrt{\sum_{i=1}^{n} \sum_{j=1}^{n} w_i w_j \sigma_i \sigma_j \rho_{ij}}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Для двух активов:</strong></p>
+            <div class="math-block">$$\sigma_p = \sqrt{w_A^2 \sigma_A^2 + w_B^2 \sigma_B^2 + 2 w_A w_B \rho_{AB} \sigma_A \sigma_B}$$</div>
+          </div>
+
+          <!-- ===== 2. Эффективная граница ===== -->
+          <h2 id="s2" class="reveal">2. Допустимое множество и эффективная граница</h2>
+
+          <p class="reveal"><strong>Допустимое множество</strong> — все возможные комбинации активов в портфеле.</p>
+
+          <div class="box-key reveal">
+            <p><strong>Эффективная граница (Efficient Frontier)</strong> — верхняя граница допустимого множества: набор портфелей, дающих максимальную доходность при каждом уровне риска.</p>
+            <p style="margin-bottom:0;">Любой портфель <strong>ниже</strong> эффективной границы — неоптимальный (можно получить бо&#769;льшую доходность при том же риске).</p>
+          </div>
+
+          <!-- ===== 3. Оптимальный портфель ===== -->
+          <h2 id="s3" class="reveal">3. Оптимальный портфель инвестора</h2>
+
+          <p class="reveal">Оптимальный портфель — точка касания <strong>кривой безразличия</strong> инвестора и <strong>эффективной границы</strong>. Кривая безразличия отражает отношение инвестора к риску:</p>
+          <ul class="reveal">
+            <li><strong>Консервативный инвестор:</strong> крутые кривые (требует высокой компенсации за риск);</li>
+            <li><strong>Агрессивный:</strong> пологие кривые (готов принять больше риска за дополнительную доходность).</li>
+          </ul>
+
+          <div class="box-info reveal">
+            <p style="margin-bottom:0;"><strong>Теорема разделения Тобина:</strong> с добавлением <strong>безрискового актива</strong> оптимальный портфель определяется как комбинация безрискового актива и <strong>касательного портфеля</strong> на эффективной границе. Оптимальный рискованный портфель одинаков для всех инвесторов — различается лишь доля безрискового актива.</p>
+          </div>
+
+          <!-- ===== 4. M&A ===== -->
+          <h2 id="s4" class="reveal">4. Слияния и поглощения (M&amp;A)</h2>
+
+          <p class="reveal"><strong>M&amp;A (Mergers and Acquisitions)</strong> — один из способов корпоративного инвестирования:</p>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th>Тип</th><th>Описание</th><th>Пример</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Горизонтальное</strong></td><td>Объединение конкурентов</td><td>Банки: слияние</td></tr>
+                <tr><td><strong>Вертикальное</strong></td><td>Объединение по цепочке поставок</td><td>Нефтяная компания + НПЗ</td></tr>
+                <tr><td><strong>Конгломератное</strong></td><td>Объединение из разных отраслей</td><td>Диверсификация бизнеса</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p class="reveal"><strong>Мотивы M&amp;A:</strong></p>
+          <ul class="reveal">
+            <li>Синергия (операционная, финансовая): $V(AB) > V(A) + V(B)$;</li>
+            <li>Экономия масштаба;</li>
+            <li>Налоговые выгоды;</li>
+            <li>Устранение конкуренции;</li>
+            <li>Диверсификация (спорный мотив — инвестор может диверсифицировать сам).</li>
+          </ul>
+
+          <div class="box-formula reveal">
+            <p><strong>Оценка синергии:</strong></p>
+            <div class="math-block">$$Synergy = V(AB) - V(A) - V(B)$$</div>
+            <p style="margin-bottom:0;"><strong>Премия за контроль</strong> — надбавка, которую покупатель платит сверх рыночной цены (обычно 20–40%).</p>
+          </div>
+
+          <!-- ===== 5. Реальные опционы ===== -->
+          <h2 id="s5" class="reveal">5. Реальные опционы</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Реальные опционы (Real Options)</strong> — возможности компании изменить параметры проекта в будущем. Они придают дополнительную стоимость проектам с высокой неопределённостью.</p>
+          </div>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th>Тип опциона</th><th>Описание</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Опцион на расширение (call)</strong></td><td>Увеличить масштаб при успехе</td></tr>
+                <tr><td><strong>Опцион на выход (put)</strong></td><td>Свернуть проект при неудаче</td></tr>
+                <tr><td><strong>Опцион ожидания</strong></td><td>Отложить решение до получения информации</td></tr>
+                <tr><td><strong>Опцион на переключение</strong></td><td>Изменить технологию/продукт</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="box-formula reveal">
+            <p>NPV занижает стоимость проектов с гибкостью. <strong>Расширенный NPV:</strong></p>
+            <div class="math-block">$$NPV_{\text{расш}} = NPV_{\text{стат}} + \text{Стоимость реальных опционов}$$</div>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. Портфель Лукойл + Сбербанк</h3>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Параметр</th><th>Лукойл</th><th>Сбербанк</th></tr></thead>
+                <tbody>
+                  <tr><td>$E(r)$</td><td class="number">20%</td><td class="number">25%</td></tr>
+                  <tr><td>$\sigma$</td><td class="number">15%</td><td class="number">22%</td></tr>
+                  <tr><td>Доля ($w$)</td><td class="number">0,60</td><td class="number">0,40</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>Корреляция: $\rho = 0{,}35$.</p>
+
+            <p><strong>Шаг 1.</strong> Доходность портфеля:</p>
+            <div class="math-block">$$E(r_p) = 0{,}60 \times 20\% + 0{,}40 \times 25\% = 12\% + 10\% = 22\%$$</div>
+
+            <p><strong>Шаг 2.</strong> Риск портфеля:</p>
+            <div class="math-block">$$\sigma_p = \sqrt{0{,}36 \times 225 + 0{,}16 \times 484 + 2 \times 0{,}6 \times 0{,}4 \times 0{,}35 \times 15 \times 22}$$</div>
+            <div class="math-block">$$= \sqrt{81 + 77{,}4 + 55{,}4} = \sqrt{213{,}8} = 14{,}6\%$$</div>
+
+            <p><strong>Интерпретация:</strong> Средневзвешенный риск: $0{,}6 \times 15 + 0{,}4 \times 22 = 17{,}8\%$. Портфельный: $14{,}6\%$.</p>
+            <p style="margin-bottom:0;"><strong>Выигрыш от диверсификации: 3,2 п.п.</strong> Диверсификация снизила риск на 3,2 процентных пункта при сохранении доходности 22%.</p>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Оценка синергии M&amp;A</h3>
+
+            <p>Компания А: $V = 50$ млрд руб. Компания Б: $V = 30$ млрд руб. Объединённая: $V(АБ) = 90$ млрд руб. Премия за контроль: 30%.</p>
+
+            <p><strong>Шаг 1.</strong> Синергия:</p>
+            <div class="math-block">$$Synergy = 90 - 50 - 30 = 10 \text{ млрд руб.}$$</div>
+
+            <p><strong>Шаг 2.</strong> Цена покупки:</p>
+            <div class="math-block">$$\text{Цена покупки Б} = 30 \times 1{,}30 = 39 \text{ млрд руб.}$$</div>
+
+            <p><strong>Шаг 3.</strong> NPV сделки:</p>
+            <div class="math-block">$$NPV_{\text{M\&A}} = Synergy - \text{Премия} = 10 - (39 - 30) = 10 - 9 = 1 \text{ млрд руб.}$$</div>
+
+            <p style="margin-bottom:0;"><strong>Вывод:</strong> Сделка создаёт стоимость (NPV > 0), но бо&#769;льшая часть синергии досталась акционерам Б (через премию).</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Портфель из двух активов</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Газпром: $E(r) = 12\%$, $\sigma = 20\%$. Яндекс: $E(r) = 28\%$, $\sigma = 35\%$. $\rho = 0{,}15$. Доля Газпрома: 70%.</p>
+              <p><strong>Рассчитайте $E(r_p)$ и $\sigma_p$.</strong></p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$E(r_p) = 0{,}7 \times 12 + 0{,}3 \times 28 = 8{,}4 + 8{,}4 = 16{,}8\%$$</div>
+              <div class="math-block">$$\sigma_p = \sqrt{0{,}49 \times 400 + 0{,}09 \times 1225 + 2 \times 0{,}7 \times 0{,}3 \times 0{,}15 \times 20 \times 35}$$</div>
+              <div class="math-block">$$= \sqrt{196 + 110{,}25 + 44{,}1} = \sqrt{350{,}35} = 18{,}7\%$$</div>
+              <p style="margin-bottom:0;">Средневзвешенный риск: $0{,}7 \times 20 + 0{,}3 \times 35 = 24{,}5\%$. Портфельный: $18{,}7\%$. <strong>Эффект диверсификации: 5,8 п.п.</strong></p>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. NPV сделки M&amp;A</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Компания-покупатель: $V = 100$ млрд. Цель: $V = 40$ млрд. Синергия оценивается в 15 млрд. Премия за контроль: 25%.</p>
+              <p><strong>Целесообразна ли сделка?</strong></p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$\text{Цена покупки} = 40 \times 1{,}25 = 50 \text{ млрд}$$</div>
+              <div class="math-block">$$NPV = Synergy - Premium = 15 - (50 - 40) = 15 - 10 = +5 \text{ млрд}$$</div>
+              <p style="margin-bottom:0;"><strong>Вывод:</strong> Сделка создаёт стоимость: NPV = +5 млрд руб. Покупатель получает 5 млрд синергии сверх уплаченной премии.</p>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Влияние корреляции на риск портфеля</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Два актива с $\sigma_A = 20\%$, $\sigma_B = 20\%$, $w_A = w_B = 0{,}5$. Рассчитайте $\sigma_p$ при $\rho = 1{,}0$; $\rho = 0{,}5$; $\rho = 0$; $\rho = -1{,}0$.</p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="data-table-wrapper">
+                <table class="data-table">
+                  <thead><tr><th>$\rho$</th><th>$\sigma_p$</th><th>Эффект</th></tr></thead>
+                  <tbody>
+                    <tr><td class="number">+1,0</td><td class="number">20,0%</td><td>Нет диверсификации</td></tr>
+                    <tr><td class="number">+0,5</td><td class="number">17,3%</td><td>Частичная диверсификация</td></tr>
+                    <tr><td class="number">0</td><td class="number">14,1%</td><td>Значительная диверсификация</td></tr>
+                    <tr><td class="number">−1,0</td><td class="number">0%</td><td>Полная элиминация риска</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin-bottom:0;"><em>Чем ниже корреляция, тем сильнее эффект диверсификации. При $\rho = -1$ риск можно полностью устранить.</em></p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Эффективная граница</strong></td><td>Множество оптимальных портфелей Марковица — максимальная доходность при каждом уровне риска</td></tr>
+                <tr><td><strong>Портфель Марковица</strong></td><td>Оптимальный портфель на эффективной границе</td></tr>
+                <tr><td><strong>M&amp;A</strong></td><td>Слияния и поглощения (Mergers and Acquisitions)</td></tr>
+                <tr><td><strong>Синергия</strong></td><td>Дополнительная стоимость от объединения: $V(AB) > V(A) + V(B)$</td></tr>
+                <tr><td><strong>Премия за контроль</strong></td><td>Надбавка к рыночной цене при поглощении (обычно 20–40%)</td></tr>
+                <tr><td><strong>Реальные опционы</strong></td><td>Гибкость управленческих решений, имеющая стоимость</td></tr>
+                <tr><td><strong>Теорема разделения Тобина</strong></td><td>Оптимальный рискованный портфель одинаков для всех инвесторов</td></tr>
+                <tr><td><strong>Кривая безразличия</strong></td><td>Комбинации $E(r)$ и $\sigma$, дающие одинаковую полезность инвестору</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Что показывает эффективная граница Марковица?',
+            options: [
+              'Все возможные портфели',
+              'Портфели с максимальной доходностью при каждом уровне риска',
+              'Портфели с минимальной доходностью',
+              'Только безрисковые активы'
+            ],
+            correct: 1,
+            explanation: 'Эффективная граница — верхняя граница допустимого множества: набор портфелей, дающих максимальную доходность при каждом уровне риска.'
+          },
+          {
+            text: 'Как рассчитывается синергия в M&A сделке?',
+            options: [
+              '$V(A) + V(B)$',
+              '$V(AB) - V(A)$',
+              '$V(AB) - V(A) - V(B)$',
+              '$V(A) \\times V(B)$'
+            ],
+            correct: 2,
+            explanation: 'Синергия — это дополнительная стоимость, созданная объединением: разница между стоимостью объединённой компании и суммой стоимостей отдельных компаний.'
+          },
+          {
+            text: 'При какой корреляции диверсификация не даёт эффекта?',
+            options: [
+              '$\\rho = -1$',
+              '$\\rho = 0$',
+              '$\\rho = 0{,}5$',
+              '$\\rho = +1$'
+            ],
+            correct: 3,
+            explanation: 'При корреляции +1 активы движутся абсолютно синхронно, поэтому диверсификация не снижает риск. Чем ниже корреляция, тем сильнее эффект.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-21.html">Тема 2.1. Риск и доходность</a> — $\sigma$ портфеля, корреляция</li>
+              <li><a href="topic-31.html">Тема 3.1. Оценка инвестиционных проектов (NPV/IRR)</a> — NPV для оценки M&amp;A</li>
+              <li><a href="topic-22.html">Тема 2.2. Модель CAPM</a> — от Марковица к CAPM</li>
+              <li><a href="topic-41.html">Тема 4.1. Структура капитала</a> — финансовая синергия в M&amp;A</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture flex justify-between items-center gap-4" aria-label="Навигация по лекциям" style="max-width: 780px; margin: 0 auto;">
+          <a href="topic-31.html" class="btn btn-ghost">&larr; Тема 3.1</a>
+          <a href="index.html" class="btn btn-ghost">Все лекции</a>
+          <a href="topic-41.html" class="btn btn-ghost">Тема 4.1 &rarr;</a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

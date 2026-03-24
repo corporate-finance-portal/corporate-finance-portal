@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 4.2. WACC — Корпоративные финансы</title>
+  <meta name="description" content="Средневзвешенная стоимость капитала (WACC): формулы, расчёт стоимости источников, оптимальная структура капитала, примеры для российских компаний">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 4.2. WACC и оптимизация структуры капитала">
+  <meta property="og:description" content="Формула WACC, стоимость источников капитала, оптимальная структура, примеры расчётов для Лукойла и условных компаний">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="topic-42">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 4</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 4.2</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              WACC и оптимизация<br>структуры капитала
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Как рассчитать средневзвешенную стоимость капитала, почему долг дешевле
+              собственного капитала и где находится точка оптимума для WACC.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>4. Структура капитала и стоимость финансирования</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">ОПК-4, ОПК-5</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 2.2 (CAPM), Тема 4.1 (теоремы ММ)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Понятие стоимости капитала ===== -->
+          <h2 id="s1" class="reveal">1. Понятие стоимости капитала</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Стоимость капитала (Cost of Capital)</strong> — ставка доходности, которую требуют поставщики капитала (акционеры и кредиторы) за предоставление финансовых ресурсов компании.</p>
+          </div>
+
+          <p class="reveal">С точки зрения компании стоимость капитала представляет собой <strong>минимальную доходность</strong>, которую должны обеспечить её инвестиции, чтобы не разрушать стоимость для акционеров. С точки зрения инвестора — это <strong>требуемая доходность</strong>, компенсирующая риск и временную стоимость денег.</p>
+
+          <p class="reveal">Стоимость капитала выполняет три ключевые функции:</p>
+          <ul class="reveal">
+            <li><strong>Ставка отсечения (hurdle rate)</strong> — проекты с доходностью ниже стоимости капитала отклоняются;</li>
+            <li><strong>Ставка дисконтирования</strong> — используется при расчёте NPV инвестиционных проектов;</li>
+            <li><strong>Критерий оптимальности</strong> — минимизация стоимости капитала максимизирует стоимость компании.</li>
+          </ul>
+
+          <!-- ===== 2. Источники капитала ===== -->
+          <h2 id="s2" class="reveal">2. Источники капитала и их стоимость</h2>
+
+          <p class="reveal">Корпорация привлекает капитал из трёх основных источников, каждый из которых имеет свою «цену»:</p>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr><th>Источник</th><th>Форма привлечения</th><th>Обозначение</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>Заёмный капитал (Debt)</td><td>Кредиты, облигации</td><td class="mono">$k_d$</td></tr>
+                <tr><td>Привилегированные акции</td><td>Фиксированные дивиденды</td><td class="mono">$k_p$</td></tr>
+                <tr><td>Собственный капитал (Equity)</td><td>Обыкновенные акции, нераспределённая прибыль</td><td class="mono">$k_e$</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 id="s2-1" class="reveal">2.1. Стоимость заёмного капитала ($k_d$)</h3>
+
+          <p class="reveal">Заёмный капитал — самый дешёвый источник финансирования по двум причинам:</p>
+          <ol class="reveal">
+            <li><strong>Приоритет в выплатах</strong> — кредиторы получают проценты до акционеров, что снижает их риск;</li>
+            <li><strong>Налоговый щит (Tax Shield)</strong> — процентные платежи уменьшают налогооблагаемую прибыль.</li>
+          </ol>
+
+          <div class="box-formula reveal">
+            <p>Стоимость заёмного капитала после налогов:</p>
+            <div class="math-block">$$k_d^{после} = k_d^{до} \times (1 - T)$$</div>
+            <p style="margin-bottom:0;">где $T$ — ставка налога на прибыль.</p>
+          </div>
+
+          <div class="box-warning reveal">
+            <p style="margin-bottom:0;"><strong>Актуально:</strong> с 01.01.2025 г. базовая ставка налога на прибыль в России повышена с 20% до <strong>25%</strong> (ФЗ от 12.07.2024 № 176-ФЗ). Это увеличивает налоговый щит и делает заёмный капитал ещё дешевле.</p>
+          </div>
+
+          <p class="reveal"><em>Пример:</em> ставка по кредиту 16%, налог 25%:</p>
+          <div class="math-block reveal">$$k_d = 16\% \times (1 - 0{,}25) = 16\% \times 0{,}75 = 12{,}0\%$$</div>
+          <p class="reveal">Для сравнения, при старой ставке 20%: $k_d = 16\% \times 0{,}80 = 12{,}8\%$. Экономия: 0,8 п.п. на каждый рубль долга.</p>
+
+          <h3 id="s2-2" class="reveal">2.2. Стоимость привилегированных акций ($k_p$)</h3>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$k_p = \frac{D_p}{P_0}$$</div>
+            <p style="margin-bottom:0;">$D_p$ — фиксированный дивиденд, $P_0$ — рыночная цена акции. Налоговый щит <strong>не применяется</strong> — дивиденды выплачиваются из чистой прибыли.</p>
+          </div>
+
+          <p class="reveal"><em>Пример:</em> дивиденд 120 руб., цена акции 1 000 руб.: $k_p = 120 / 1\,000 = 12{,}0\%$.</p>
+
+          <h3 id="s2-3" class="reveal">2.3. Стоимость собственного капитала ($k_e$)</h3>
+
+          <p class="reveal">Это наиболее сложный и наиболее дорогой компонент. Три основных метода оценки:</p>
+
+          <div class="box-formula reveal">
+            <p><strong>Метод 1 — CAPM:</strong></p>
+            <div class="math-block">$$k_e = r_f + \beta \times (r_m - r_f)$$</div>
+            <p>$r_f$ — безрисковая ставка (доходность 10-летних ОФЗ: ~14,6%), $\beta$ — бета-коэффициент акции, $(r_m - r_f)$ — рыночная премия (~5-7% для России). Наиболее распространённый метод.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Метод 2 — Модель Гордона (DDM):</strong></p>
+            <div class="math-block">$$k_e = \frac{D_1}{P_0} + g$$</div>
+            <p style="margin-bottom:0;">$D_1$ — ожидаемый дивиденд, $P_0$ — текущая цена, $g$ — темп роста дивидендов.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Метод 3 — «Доходность облигаций + премия»:</strong></p>
+            <div class="math-block">$$k_e = k_d + \text{Премия за риск акций}$$</div>
+            <p style="margin-bottom:0;">Обычно премия 3-5 п.п. Применяется, когда CAPM затруднён.</p>
+          </div>
+
+          <!-- ===== 3. Формула WACC ===== -->
+          <h2 id="s3" class="reveal">3. Формула WACC</h2>
+
+          <div class="box-key reveal">
+            <p><strong>WACC (Weighted Average Cost of Capital)</strong> — средневзвешенная стоимость капитала. Показывает минимальную доходность, которую компания должна обеспечить всем поставщикам капитала.</p>
+          </div>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <div class="math-block" style="font-size: var(--text-xl);">$$WACC = w_d \times k_d \times (1 - T) + w_p \times k_p + w_e \times k_e$$</div>
+            <p>$w_d$, $w_p$, $w_e$ — доли заёмного, привилегированного и собственного капитала ($w_d + w_p + w_e = 1$).</p>
+            <p>$k_d$, $k_p$, $k_e$ — стоимость соответствующих источников. $T$ — ставка налога на прибыль.</p>
+          </div>
+
+          <div class="box-warning reveal">
+            <p style="margin-bottom:0;"><strong>Критически важно:</strong> веса ($w$) определяются по <strong>рыночной стоимости</strong>, а не по балансовой! Балансовая стоимость отражает исторические затраты и может существенно отличаться от текущей рыночной оценки.</p>
+          </div>
+
+          <p class="reveal">Упрощённая формула (без привилегированных акций):</p>
+          <div class="math-block reveal">$$WACC = w_d \times k_d \times (1 - T) + w_e \times k_e$$</div>
+
+          <!-- ===== 4. Правила применения ===== -->
+          <h2 id="s4" class="reveal">4. Правила применения WACC</h2>
+
+          <ul class="reveal">
+            <li><strong>WACC как ставка дисконтирования:</strong> применяется при расчёте NPV проектов со средним уровнем риска компании;</li>
+            <li><strong>WACC как ставка отсечения:</strong> проект принимается, если $IRR > WACC$;</li>
+            <li><strong>Ограничение:</strong> WACC <strong>не применяется</strong> для проектов, риск которых существенно отличается от среднего риска компании (для них корректируется ставка).</li>
+          </ul>
+
+          <!-- ===== 5. Оптимальная структура ===== -->
+          <h2 id="s5" class="reveal">5. Оптимальная структура капитала</h2>
+
+          <p class="reveal">Увеличение доли долга оказывает два противоположных эффекта:</p>
+          <ul class="reveal">
+            <li><strong>Положительный:</strong> долг дешевле собственного капитала — WACC снижается;</li>
+            <li><strong>Отрицательный:</strong> рост финансового риска — акционеры и кредиторы требуют большую доходность — WACC растёт.</li>
+          </ul>
+
+          <p class="reveal">В результате существует <strong>оптимальная структура капитала</strong>, при которой WACC минимален, а стоимость компании максимальна. Это центральная идея <strong>компромиссной теории (Trade-off Theory)</strong>.</p>
+
+          <figure class="reveal" style="margin: var(--space-8) 0; padding: var(--space-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);">
+            <pre class="font-mono text-sm" style="color: var(--text-secondary); line-height: 1.6; overflow-x: auto;">
+       WACC
+        |
+высокий |*
+        |  *
+        |    *
+низкий  |      *___*___*
+        |              *
+высокий |                  *
+        |________________________
+        0   20%  40%  60%  80%  Доля долга (D/V)
+                    ^
+              оптимум WACC</pre>
+            <figcaption class="text-sm text-muted" style="margin-top: var(--space-3); text-align: center;">U-образная кривая WACC: минимум соответствует оптимальной структуре капитала</figcaption>
+          </figure>
+
+          <!-- ===== 6. MCC ===== -->
+          <h2 id="s6" class="reveal">6. Предельные издержки капитала (MCC)</h2>
+
+          <div class="box-key reveal">
+            <p><strong>MCC (Marginal Cost of Capital)</strong> — стоимость каждой дополнительной единицы привлекаемого капитала. При наращивании объёма финансирования стоимость может возрастать скачками — <strong>точка разрыва (Break Point)</strong>.</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p>Точка разрыва:</p>
+            <div class="math-block">$$BP_i = \frac{S_i}{w_i}$$</div>
+            <p style="margin-bottom:0;">$S_i$ — максимальная сумма ресурса $i$ по текущей ставке, $w_i$ — доля этого ресурса в структуре капитала.</p>
+          </div>
+
+          <p class="reveal"><strong>Пересечение графиков MCC и IOS</strong> (Investment Opportunity Schedule) определяет <strong>оптимальный бюджет капиталовложений</strong> — объём инвестиций, максимизирующий стоимость компании.</p>
+
+          <!-- ===== 7. Россия ===== -->
+          <h2 id="s7" class="reveal">7. Особенности для российских компаний</h2>
+
+          <div class="box-info reveal">
+            <div class="data-table-wrapper">
+              <table class="data-table">
+                <thead>
+                  <tr><th style="width: 30%;">Параметр</th><th>Комментарий</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>Безрисковая ставка</strong></td><td>Доходность 10-летних ОФЗ (~14,6% на конец 2025 г.). Источник: cbr.ru, moex.com</td></tr>
+                  <tr><td><strong>Бета-коэффициент</strong></td><td>Рассчитывается по MOEX (мин. 2 года). Справочно: $\beta_{\text{Лукойл}} \approx 0{,}95$; $\beta_{\text{Газпром}} \approx 0{,}51$</td></tr>
+                  <tr><td><strong>Налог на прибыль</strong></td><td>С 01.01.2025 — <strong>25%</strong> (ФЗ № 176-ФЗ)</td></tr>
+                  <tr><td><strong>Страновой риск</strong></td><td>Учитывается при работе с зарубежными данными (CDS-спред или рейтинговый подход)</td></tr>
+                  <tr><td><strong>Балансовые веса</strong></td><td>Многие российские компании используют балансовые веса из-за ограниченной ликвидности рынка</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. WACC для ПАО «Лукойл»</h3>
+
+            <p>Исходные данные (условные, на основе публичной отчётности):</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Параметр</th><th>Значение</th></tr></thead>
+                <tbody>
+                  <tr><td>Рыночная капитализация (E)</td><td class="number">4 500 млрд руб.</td></tr>
+                  <tr><td>Рыночная стоимость долга (D)</td><td class="number">500 млрд руб.</td></tr>
+                  <tr><td>Ставка по долгу ($k_d^{до}$)</td><td class="number">14%</td></tr>
+                  <tr><td>Бета ($\beta$)</td><td class="number">0,95</td></tr>
+                  <tr><td>Безрисковая ставка ($r_f$)</td><td class="number">14,6%</td></tr>
+                  <tr><td>Рыночная премия ($r_m - r_f$)</td><td class="number">6%</td></tr>
+                  <tr><td>Налог ($T$)</td><td class="number">25%</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p><strong>Шаг 1.</strong> Стоимость собственного капитала (CAPM):</p>
+            <div class="math-block">$$k_e = 14{,}6\% + 0{,}95 \times 6\% = 14{,}6\% + 5{,}7\% = 20{,}3\%$$</div>
+
+            <p><strong>Шаг 2.</strong> Стоимость заёмного капитала (после налогов):</p>
+            <div class="math-block">$$k_d = 14\% \times (1 - 0{,}25) = 10{,}5\%$$</div>
+
+            <p><strong>Шаг 3.</strong> Доли в структуре капитала:</p>
+            <div class="math-block">$$V = 4\,500 + 500 = 5\,000; \quad w_e = 0{,}90; \quad w_d = 0{,}10$$</div>
+
+            <p><strong>Шаг 4.</strong> WACC:</p>
+            <div class="math-block">$$WACC = 0{,}10 \times 10{,}5\% + 0{,}90 \times 20{,}3\% = 1{,}05\% + 18{,}27\% = 19{,}32\%$$</div>
+
+            <p><strong>Интерпретация:</strong> Лукойл должен обеспечивать не менее 19,32% доходности на вложенный капитал. Любой проект с $IRR > 19{,}32\%$ создаёт стоимость.</p>
+            <p style="margin-bottom:0;"><em>Замечание:</em> очень низкая доля долга (~10%) характерна для российских нефтегазовых компаний с высоким FCF.</p>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. WACC с привилегированными акциями</h3>
+
+            <p>Исходные данные (условная компания «БетаКорп»):</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Источник</th><th>Рыночная стоимость</th><th>Стоимость</th></tr></thead>
+                <tbody>
+                  <tr><td>Кредит</td><td class="number">3 000 000 руб.</td><td>15% (до налогов)</td></tr>
+                  <tr><td>Облигации</td><td class="number">2 000 000 руб.</td><td>13% (до налогов)</td></tr>
+                  <tr><td>Привилег. акции</td><td class="number">1 000 000 руб.</td><td>Дивиденд 120 руб., цена 1 000 руб.</td></tr>
+                  <tr><td>Обыкн. акции</td><td class="number">4 000 000 руб.</td><td>$r_f$ = 14%, $\beta$ = 1,3, премия = 6%</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p>Ставка налога: 20%.</p>
+
+            <p><strong>Шаг 1.</strong> Стоимость каждого источника:</p>
+            <ul>
+              <li>Кредит: $15\% \times (1 - 0{,}20) = 12{,}0\%$</li>
+              <li>Облигации: $13\% \times (1 - 0{,}20) = 10{,}4\%$</li>
+              <li>Привилег. акции: $120 / 1\,000 = 12{,}0\%$</li>
+              <li>Обыкн. акции (CAPM): $14\% + 1{,}3 \times 6\% = 21{,}8\%$</li>
+            </ul>
+
+            <p><strong>Шаг 2.</strong> Веса и итог (итого = 10 000 000 руб.):</p>
+
+            <div class="data-table-wrapper" style="margin-bottom: var(--space-5);">
+              <table class="data-table">
+                <thead><tr><th>Источник</th><th>Вес</th><th>Стоимость</th><th>Взвешенная</th></tr></thead>
+                <tbody>
+                  <tr><td>Кредит</td><td class="number">0,30</td><td class="number">12,0%</td><td class="number">3,60%</td></tr>
+                  <tr><td>Облигации</td><td class="number">0,20</td><td class="number">10,4%</td><td class="number">2,08%</td></tr>
+                  <tr><td>Привилег. акции</td><td class="number">0,10</td><td class="number">12,0%</td><td class="number">1,20%</td></tr>
+                  <tr><td>Обыкн. акции</td><td class="number">0,40</td><td class="number">21,8%</td><td class="number">8,72%</td></tr>
+                  <tr style="background: var(--acc-subtle); font-weight: 600;"><td><strong>WACC</strong></td><td></td><td></td><td class="number"><strong>15,60%</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. Влияние изменения структуры капитала на WACC</h3>
+
+            <p>Используем данные «БетаКорп» из примера 2. Что будет, если компания увеличит долю долга с 50% до 65%?</p>
+
+            <p><strong>Предположение:</strong> при росте левериджа стоимость собственного капитала вырастет с 21,8% до 26% (из-за возросшего финансового риска).</p>
+
+            <p>Средневзвешенная стоимость долга (кредит + облигации, 3:2):</p>
+            <div class="math-block">$$k_d^{средн.} = \frac{3}{5} \times 12\% + \frac{2}{5} \times 10{,}4\% = 7{,}2\% + 4{,}16\% = 11{,}36\%$$</div>
+
+            <p>Новый WACC:</p>
+            <div class="math-block">$$WACC = 0{,}65 \times 11{,}36\% + 0{,}35 \times 26\% = 7{,}38\% + 9{,}10\% = 16{,}48\%$$</div>
+
+            <div class="box-warning" style="margin-top: var(--space-5);">
+              <p style="margin-bottom:0;"><strong>Вывод:</strong> несмотря на увеличение доли более дешёвого долга, WACC <strong>вырос</strong> с 15,60% до 16,48%. Рост стоимости собственного капитала (с 21,8% до 26%) перевесил выгоду от дешёвого долга. Это иллюстрирует <strong>компромиссную теорию</strong>: чрезмерный леверидж увеличивает финансовый риск.</p>
+            </div>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. Базовый расчёт WACC</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Структура капитала компании: долг 30% ($k_d^{до}$ = 12%), собственный капитал 70% ($k_e$ = 18%). Налог = 25%.</p>
+              <p><strong>Рассчитайте WACC.</strong></p>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$WACC = 0{,}30 \times 12\% \times (1 - 0{,}25) + 0{,}70 \times 18\%$$</div>
+              <div class="math-block">$$= 0{,}30 \times 9\% + 0{,}70 \times 18\% = 2{,}70\% + 12{,}60\% = \mathbf{15{,}30\%}$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. Определение $k_e$ и WACC</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Данные компании:</p>
+              <ul>
+                <li>Долг: 40%, ставка 14% до налогов</li>
+                <li>Собственный капитал: 60%, $\beta$ = 1,1, $r_f$ = 15%, рыночная премия = 5,5%</li>
+                <li>Налог: 25%</li>
+              </ul>
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$k_e = 15\% + 1{,}1 \times 5{,}5\% = 15\% + 6{,}05\% = 21{,}05\%$$</div>
+              <div class="math-block">$$k_d = 14\% \times (1 - 0{,}25) = 10{,}5\%$$</div>
+              <div class="math-block">$$WACC = 0{,}40 \times 10{,}5\% + 0{,}60 \times 21{,}05\% = 4{,}20\% + 12{,}63\% = \mathbf{16{,}83\%}$$</div>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Принятие инвестиционного решения</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Компания с WACC = 16,83% рассматривает три проекта:</p>
+              <div class="data-table-wrapper" style="margin-bottom: var(--space-4);">
+                <table class="data-table">
+                  <thead><tr><th>Проект</th><th>IRR</th><th>Решение</th></tr></thead>
+                  <tbody>
+                    <tr><td>А</td><td class="number">19,0%</td><td style="color: var(--success);"><strong>Принять</strong> (IRR &gt; WACC)</td></tr>
+                    <tr><td>Б</td><td class="number">15,5%</td><td style="color: var(--error);"><strong>Отклонить</strong> (IRR &lt; WACC)</td></tr>
+                    <tr><td>В</td><td class="number">16,9%</td><td style="color: var(--amber);"><strong>Принять</strong> (запас 0,07 п.п.)</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p style="margin-bottom:0;"><em>Проект В формально проходит, но минимальный запас прочности требует дополнительного анализа рисков.</em></p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>WACC</strong></td><td>Средневзвешенная стоимость капитала — минимальная доходность, которую компания должна обеспечить инвесторам</td></tr>
+                <tr><td><strong>Стоимость капитала</strong></td><td>Ставка доходности, требуемая поставщиками финансовых ресурсов</td></tr>
+                <tr><td><strong>Налоговый щит</strong></td><td>Экономия на налогах за счёт вычета процентных платежей из налогооблагаемой базы</td></tr>
+                <tr><td><strong>$k_d$</strong></td><td>Эффективная ставка по заёмным средствам с учётом налогового щита</td></tr>
+                <tr><td><strong>$k_e$</strong></td><td>Требуемая доходность обыкновенных акций (через CAPM, DDM или метод «облигации + премия»)</td></tr>
+                <tr><td><strong>MCC</strong></td><td>Предельные издержки капитала — стоимость каждой дополнительной единицы привлекаемого капитала</td></tr>
+                <tr><td><strong>Точка разрыва</strong></td><td>Объём финансирования, при превышении которого стоимость источника возрастает</td></tr>
+                <tr><td><strong>IOS</strong></td><td>График инвестиционных возможностей — ранжирование проектов по убыванию IRR</td></tr>
+                <tr><td><strong>Оптимальная структура</strong></td><td>Соотношение D/E, при котором WACC минимален</td></tr>
+                <tr><td><strong>Hurdle Rate</strong></td><td>Ставка отсечения — минимальная доходность, ниже которой проект отклоняется (обычно = WACC)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Почему заёмный капитал дешевле собственного?',
+            options: [
+              'Кредиторы имеют приоритет + налоговый щит',
+              'У кредиторов нет права голоса',
+              'Ставка ЦБ низкая',
+              'Облигации легче продать'
+            ],
+            correct: 0,
+            explanation: 'Кредиторы получают деньги до акционеров (меньше риск \u2192 меньше ставка), а проценты уменьшают налогооблагаемую прибыль (налоговый щит).'
+          },
+          {
+            text: 'Какие веса используются в формуле WACC?',
+            options: [
+              'Балансовые',
+              'Рыночные',
+              'Номинальные',
+              'Средние за 5 лет'
+            ],
+            correct: 1,
+            explanation: 'Веса определяются по рыночной стоимости, а не балансовой, так как рыночная стоимость отражает текущую оценку инвесторами.'
+          },
+          {
+            text: 'При каком условии проект создаёт стоимость?',
+            options: [
+              'IRR < WACC',
+              'NPV < 0',
+              'IRR > WACC',
+              'PI < 1'
+            ],
+            correct: 2,
+            explanation: 'Проект создаёт стоимость когда его доходность (IRR) превышает стоимость капитала (WACC), что эквивалентно NPV > 0.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-22.html">Тема 2.2. Модель CAPM</a> — расчёт $k_e$ через бета-коэффициент</li>
+              <li><a href="topic-41.html">Тема 4.1. Структура капитала и теоремы ММ</a> — теоретическая база влияния структуры на стоимость</li>
+              <li><a href="topic-31.html">Тема 3.1. Оценка инвестиционных проектов (NPV)</a> — WACC как ставка дисконтирования</li>
+              <li><a href="topic-51.html">Тема 5.1. Дивидендная политика</a> — влияние дивидендов на $k_e$</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture flex justify-between items-center gap-4" aria-label="Навигация по лекциям" style="max-width: 780px; margin: 0 auto;">
+          <a href="topic-41.html" class="btn btn-ghost">&larr; Тема 4.1</a>
+          <a href="index.html" class="btn btn-ghost">Все лекции</a>
+          <a href="topic-51.html" class="btn btn-ghost">Тема 5.1 &rarr;</a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

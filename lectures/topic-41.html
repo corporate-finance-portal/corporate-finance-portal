@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тема 4.1. Структура капитала. Теории Модильяни–Миллера — Корпоративные финансы</title>
+  <meta name="description" content="Структура капитала, финансовый леверидж, теоремы Модильяни–Миллера, Trade-off Theory, Pecking Order, формула Хамады, агентские издержки долга">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Тема 4.1. Структура капитала и теории Модильяни–Миллера">
+  <meta property="og:description" content="Финансовый леверидж, теоремы ММ без налогов и с налогами, компромиссная теория, теория иерархии, формула Хамады, агентские издержки">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts: Space Grotesk, Inter, JetBrains Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+</head>
+<body data-depth="1" data-page="lecture-topic-41">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO: Lecture Header
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок лекции">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Breadcrumb + Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="index.html" style="color: var(--text-muted);">Лекции</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Раздел 4</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Тема 4.1</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Структура капитала.<br>Теории Модильяни–Миллера
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Как соотношение собственного и заёмного капитала влияет на стоимость компании.
+              Теоремы ММ, компромиссная теория, теория иерархии и агентские издержки.
+            </p>
+          </div>
+
+          <!-- Right: Metadata Card -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Раздел</td><td><strong>4. Структура капитала и стоимость финансирования</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Лекции</td><td>2 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Практика</td><td>4 часа</td></tr>
+                <tr><td style="color: var(--text-muted);">Сам. работа</td><td>6 часов</td></tr>
+                <tr><td style="color: var(--text-muted);">Компетенции</td><td><span class="font-mono text-xs" style="color: var(--acc);">ОПК-1, ОПК-3</span></td></tr>
+                <tr><td style="color: var(--text-muted);">Пререквизиты</td><td>Тема 1.1 (D/E, леверидж), Тема 2.2 (CAPM, β)</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+
+          <!-- ===== 1. Понятие структуры капитала ===== -->
+          <h2 id="s1" class="reveal">1. Понятие структуры капитала</h2>
+
+          <div class="box-key reveal">
+            <p><strong>Структура капитала (Capital Structure)</strong> — соотношение собственного (E) и заёмного (D) капитала в финансировании компании.</p>
+            <p style="margin-bottom:0;">Ключевой вопрос: <strong>существует ли оптимальная структура, максимизирующая стоимость компании?</strong></p>
+          </div>
+
+          <!-- ===== 2. Финансовый леверидж ===== -->
+          <h2 id="s2" class="reveal">2. Финансовый рычаг (леверидж)</h2>
+
+          <p class="reveal"><strong>Финансовый леверидж</strong> — использование заёмного капитала для увеличения доходности собственного.</p>
+
+          <p class="reveal"><strong>Эффект финансового рычага:</strong> если доходность активов ($r_A$) выше ставки по долгу ($r_d$), то рост левериджа увеличивает ROE. Если $r_A < r_d$ — разрушает.</p>
+
+          <div class="box-formula reveal">
+            <p><strong>Степень финансового левериджа (DFL — Degree of Financial Leverage):</strong></p>
+            <div class="math-block">$$DFL = \frac{EBIT}{EBIT - I}$$</div>
+            <p style="margin-bottom:0;">$I$ — процентные платежи. DFL показывает, на сколько процентов изменится EPS при изменении EBIT на 1%.</p>
+          </div>
+
+          <!-- ===== 3. Теоремы ММ ===== -->
+          <h2 id="s3" class="reveal">3. Теоремы Модильяни–Миллера</h2>
+
+          <p class="reveal">Франко Модильяни и Мертон Миллер (1958, 1963) сформулировали фундаментальные теоремы о влиянии структуры капитала на стоимость компании.</p>
+
+          <!-- Мир без налогов -->
+          <h3 id="s3-1" class="reveal">3.1. Мир без налогов (1958)</h3>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Теорема ММ I:</strong> Стоимость компании не зависит от структуры капитала.</p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$V_L = V_U$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Теорема ММ II:</strong> Стоимость собственного капитала растёт пропорционально левериджу.</p>
+            <div class="math-block">$$r_e = r_0 + (r_0 - r_d) \times \frac{D}{E}$$</div>
+            <p style="margin-bottom:0;">$r_0$ — стоимость капитала нелевериджированной компании.</p>
+          </div>
+
+          <div class="box-warning reveal">
+            <p><strong>Предпосылки (нереалистичные):</strong></p>
+            <ul style="margin-bottom:0;">
+              <li>Совершенный рынок капитала;</li>
+              <li>Нет налогов;</li>
+              <li>Нет издержек банкротства;</li>
+              <li>Нет транзакционных издержек;</li>
+              <li>Однородные ожидания инвесторов.</li>
+            </ul>
+          </div>
+
+          <div class="box-info reveal">
+            <p style="margin-bottom:0;"><strong>Суть:</strong> дешёвый долг компенсируется удорожанием собственного капитала — WACC не меняется — стоимость компании не меняется.</p>
+          </div>
+
+          <!-- Мир с налогами -->
+          <h3 id="s3-2" class="reveal">3.2. Мир с налогами (1963)</h3>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <p><strong>Теорема ММ I (с налогами):</strong></p>
+            <div class="math-block" style="font-size: var(--text-xl);">$$V_L = V_U + T \times D$$</div>
+            <p style="margin-bottom:0;">Стоимость левериджированной компании <strong>выше</strong> на величину PV налогового щита ($T \times D$). Следствие: чем больше долга — тем выше стоимость (парадокс 100% долга).</p>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Теорема ММ II (с налогами):</strong></p>
+            <div class="math-block">$$r_e = r_0 + (r_0 - r_d) \times (1 - T) \times \frac{D}{E}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <p><strong>Формула Хамады</strong> (связь $\beta$ с левериджем):</p>
+            <div class="math-block">$$\beta_L = \beta_U \times \left[1 + (1 - T) \times \frac{D}{E}\right]$$</div>
+            <p style="margin-bottom:0;">$\beta_U$ — бета нелевериджированной компании, $\beta_L$ — бета левериджированной.</p>
+          </div>
+
+          <!-- ===== 4. Trade-off Theory ===== -->
+          <h2 id="s4" class="reveal">4. Теория компромисса (Trade-off Theory)</h2>
+
+          <p class="reveal">Разрешает парадокс ММ с налогами: 100% долга нереально, потому что существуют <strong>издержки финансовых затруднений (Financial Distress Costs)</strong>:</p>
+          <ul class="reveal">
+            <li><strong>Прямые:</strong> юридические расходы на банкротство;</li>
+            <li><strong>Косвенные:</strong> потеря клиентов, поставщиков, ключевых сотрудников; ухудшение условий контрактов.</li>
+          </ul>
+
+          <div class="box-formula reveal" style="background: var(--acc-subtle); border-left-width: 4px;">
+            <div class="math-block" style="font-size: var(--text-xl);">$$V_L = V_U + PV(\text{налоговый щит}) - PV(\text{издержки банкротства})$$</div>
+          </div>
+
+          <div class="box-key reveal">
+            <p style="margin-bottom:0;"><strong>Оптимальная структура</strong> — баланс между налоговыми выгодами долга и ростом вероятности банкротства. В точке оптимума предельный налоговый щит равен предельным издержкам финансовых затруднений.</p>
+          </div>
+
+          <!-- ===== 5. Pecking Order ===== -->
+          <h2 id="s5" class="reveal">5. Теория иерархии (Pecking Order Theory)</h2>
+
+          <p class="reveal">Майерс и Мэйлаф (1984): компания предпочитает источники финансирования в следующем порядке:</p>
+          <ol class="reveal">
+            <li><strong>Внутренние средства</strong> (нераспределённая прибыль) — самый дешёвый источник;</li>
+            <li><strong>Долг</strong> — если внутренних средств не хватает;</li>
+            <li><strong>Выпуск акций</strong> — крайняя мера (сигнал о переоценке).</li>
+          </ol>
+
+          <div class="box-info reveal">
+            <p style="margin-bottom:0;"><strong>Причина:</strong> информационная асимметрия — менеджеры знают о компании больше, чем рынок. Выпуск акций воспринимается как негативный сигнал (менеджеры считают акции переоценёнными).</p>
+          </div>
+
+          <!-- ===== 6. Сигнальные теории ===== -->
+          <h2 id="s6" class="reveal">6. Сигнальные теории</h2>
+
+          <p class="reveal">Решения о финансировании содержат информационные сигналы для рынка:</p>
+          <ul class="reveal">
+            <li><strong>Рост долга</strong> — позитивный сигнал (менеджмент уверен в будущих потоках);</li>
+            <li><strong>Выпуск акций</strong> — негативный сигнал (акции переоценены);</li>
+            <li><strong>Рост дивидендов</strong> — позитивный сигнал (устойчивые потоки).</li>
+          </ul>
+
+          <!-- ===== 7. Агентские издержки ===== -->
+          <h2 id="s7" class="reveal">7. Агентские издержки долга</h2>
+
+          <p class="reveal">Конфликт интересов между акционерами и кредиторами порождает агентские издержки:</p>
+          <ul class="reveal">
+            <li><strong>Переключение активов (Asset Substitution)</strong> — акционеры инвестируют в рискованные проекты, перекладывая риск на кредиторов;</li>
+            <li><strong>Недоинвестирование (Underinvestment)</strong> — акционеры отвергают прибыльные проекты, если бо&#769;льшая часть выгоды достанется кредиторам.</li>
+          </ul>
+
+          <div class="box-key reveal">
+            <p style="margin-bottom:0;"><strong>Защита кредиторов:</strong> ковенанты (ограничения в кредитных договорах), залог, мониторинг.</p>
+          </div>
+
+          <!-- ============================================================
+               ФОРМУЛЫ (СВОДКА)
+               ============================================================ -->
+          <h2 id="formulas" class="reveal">Сводка формул</h2>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$DFL = \frac{EBIT}{EBIT - I}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$V_L = V_U \quad \text{(ММ I без налогов)}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$r_e = r_0 + (r_0 - r_d) \times \frac{D}{E} \quad \text{(ММ II без налогов)}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$V_L = V_U + T \times D \quad \text{(ММ I с налогами)}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$r_e = r_0 + (r_0 - r_d) \times (1-T) \times \frac{D}{E} \quad \text{(ММ II с налогами)}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$\beta_L = \beta_U \times \left[1 + (1-T) \times \frac{D}{E}\right] \quad \text{(формула Хамады)}$$</div>
+          </div>
+
+          <div class="box-formula reveal">
+            <div class="math-block">$$TS = D \times r_d \times T \quad \text{(ежегодный налоговый щит)}$$</div>
+          </div>
+
+          <!-- ============================================================
+               ПРИМЕРЫ РАСЧЁТОВ
+               ============================================================ -->
+          <h2 id="examples" class="reveal">Примеры расчётов</h2>
+
+          <!-- Пример 1 -->
+          <div class="box-example reveal" id="ex1">
+            <h3>Пример 1. Степень финансового левериджа (DFL)</h3>
+
+            <p>EBIT = 10 000 000 руб., процентные платежи $I$ = 2 000 000 руб.</p>
+
+            <div class="math-block">$$DFL = \frac{10\,000\,000}{10\,000\,000 - 2\,000\,000} = \frac{10}{8} = 1{,}25$$</div>
+
+            <p style="margin-bottom:0;"><strong>Интерпретация:</strong> если EBIT вырастет на 10%, EPS вырастет на $10\% \times 1{,}25 = 12{,}5\%$. Леверидж усиливает как рост, так и падение.</p>
+          </div>
+
+          <!-- Пример 2 -->
+          <div class="box-example reveal" id="ex2">
+            <h3>Пример 2. Теорема ММ с налогами</h3>
+
+            <p>Нелевериджированная компания: $V_U = 100$ млрд руб. Долг $D = 40$ млрд руб., налог $T = 25\%$.</p>
+
+            <div class="math-block">$$V_L = 100 + 0{,}25 \times 40 = 100 + 10 = 110 \text{ млрд руб.}$$</div>
+
+            <p style="margin-bottom:0;"><strong>Интерпретация:</strong> налоговый щит добавил 10 млрд к стоимости компании. Экономия на налогах за счёт вычета процентов создаёт дополнительную стоимость.</p>
+          </div>
+
+          <!-- Пример 3 -->
+          <div class="box-example reveal" id="ex3">
+            <h3>Пример 3. Формула Хамады</h3>
+
+            <p>$\beta_U = 0{,}80$ (нелевериджированная $\beta$). $D/E = 0{,}5$. $T = 25\%$.</p>
+
+            <div class="math-block">$$\beta_L = 0{,}80 \times [1 + (1-0{,}25) \times 0{,}5] = 0{,}80 \times [1 + 0{,}375] = 0{,}80 \times 1{,}375 = 1{,}10$$</div>
+
+            <p style="margin-bottom:0;"><strong>Интерпретация:</strong> леверидж увеличил $\beta$ с 0,80 до 1,10 — выше систематический риск для акционеров. Финансовый рычаг усиливает чувствительность акций к рыночным колебаниям.</p>
+          </div>
+
+          <!-- ============================================================
+               ПРАКТИЧЕСКИЕ ЗАДАНИЯ
+               ============================================================ -->
+          <h2 id="practice" class="reveal">Практические задания</h2>
+
+          <!-- Задание 1 -->
+          <details class="box-example reveal" id="task1">
+            <summary><strong>Задание 1. DFL и его влияние</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Компания А: EBIT = 20 млн, $I = 0$ (без долга). Компания Б: EBIT = 20 млн, $I = 8$ млн.</p>
+              <p><strong>Рассчитайте DFL. Что произойдёт с EPS, если EBIT упадёт на 20%?</strong></p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$DFL_A = \frac{20}{20} = 1{,}0; \quad DFL_Б = \frac{20}{20-8} = 1{,}67$$</div>
+              <p>При падении EBIT на 20%:</p>
+              <ul>
+                <li>А: EPS упадёт на $20\% \times 1{,}0 = 20\%$</li>
+                <li>Б: EPS упадёт на $20\% \times 1{,}67 = 33{,}3\%$ — финансовый рычаг усиливает падение</li>
+              </ul>
+            </div>
+          </details>
+
+          <!-- Задание 2 -->
+          <details class="box-example reveal" id="task2">
+            <summary><strong>Задание 2. Налоговый щит</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Долг = 50 млрд руб., ставка 12%, налог 25%. <strong>Какой ежегодный налоговый щит?</strong></p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$TS = 50 \times 0{,}12 \times 0{,}25 = 1{,}5 \text{ млрд руб./год}$$</div>
+              <p style="margin-bottom:0;">Компания экономит 1,5 млрд руб. ежегодно на налогах за счёт вычета процентных платежей.</p>
+            </div>
+          </details>
+
+          <!-- Задание 3 -->
+          <details class="box-example reveal" id="task3">
+            <summary><strong>Задание 3. Формула Хамады и стоимость компании</strong></summary>
+            <div style="padding-top: var(--space-4);">
+              <p>Нелевериджированная компания: $V_U = 200$ млрд, $\beta_U = 0{,}70$, $T = 25\%$. Компания берёт долг $D = 80$ млрд.</p>
+              <p><strong>Рассчитайте $V_L$, $\beta_L$ и ежегодный налоговый щит (при $r_d = 10\%$).</strong></p>
+
+              <hr style="margin: var(--space-4) 0; border-color: var(--border);">
+              <p><strong>Решение:</strong></p>
+              <div class="math-block">$$V_L = 200 + 0{,}25 \times 80 = 200 + 20 = 220 \text{ млрд руб.}$$</div>
+              <div class="math-block">$$E = V_L - D = 220 - 80 = 140 \text{ млрд руб.}$$</div>
+              <div class="math-block">$$\beta_L = 0{,}70 \times [1 + (1-0{,}25) \times \frac{80}{140}] = 0{,}70 \times [1 + 0{,}429] = 0{,}70 \times 1{,}429 = 1{,}00$$</div>
+              <div class="math-block">$$TS = 80 \times 0{,}10 \times 0{,}25 = 2{,}0 \text{ млрд руб./год}$$</div>
+              <p style="margin-bottom:0;">Долг увеличил стоимость на 20 млрд (налоговый щит), но $\beta$ выросла с 0,70 до 1,00.</p>
+            </div>
+          </details>
+
+          <!-- ============================================================
+               КЛЮЧЕВЫЕ ПОНЯТИЯ
+               ============================================================ -->
+          <h2 id="glossary" class="reveal">Ключевые понятия</h2>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead><tr><th style="width: 35%;">Термин</th><th>Определение</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Структура капитала</strong></td><td>Соотношение собственного и заёмного капитала в финансировании компании</td></tr>
+                <tr><td><strong>Финансовый леверидж (DFL)</strong></td><td>Мультипликатор влияния EBIT на EPS; показывает усиление доходности и риска</td></tr>
+                <tr><td><strong>Теоремы ММ</strong></td><td>Фундаментальные теоремы о влиянии структуры капитала на стоимость компании</td></tr>
+                <tr><td><strong>Налоговый щит (Tax Shield)</strong></td><td>Экономия на налогах за счёт вычета процентов из налогооблагаемой базы</td></tr>
+                <tr><td><strong>Trade-off Theory</strong></td><td>Оптимум = налоговый щит − издержки банкротства</td></tr>
+                <tr><td><strong>Pecking Order</strong></td><td>Иерархия источников: внутренние средства → долг → акции</td></tr>
+                <tr><td><strong>Формула Хамады</strong></td><td>Связь бета-коэффициента с левериджем: $\beta_L = \beta_U \times [1 + (1-T) \times D/E]$</td></tr>
+                <tr><td><strong>Агентские издержки долга</strong></td><td>Переключение активов и недоинвестирование из-за конфликта акционеры/кредиторы</td></tr>
+                <tr><td><strong>Ковенанты (Covenants)</strong></td><td>Ограничения в кредитных договорах для защиты кредиторов</td></tr>
+                <tr><td><strong>EBIT</strong></td><td>Прибыль до вычета процентов и налогов</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div><!-- /.lecture-content -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         MINI-QUIZ
+         ============================================================ -->
+    <section class="section" id="mini-quiz">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Проверь себя</h2>
+          <div id="quiz-container"></div>
+          <div id="quiz-score" class="score-box">
+            <span class="score-num"></span>
+            <span class="score-msg"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.CFUtils) {
+        CFUtils.renderQuiz('quiz-container', [
+          {
+            text: 'Согласно теореме ММ I (без налогов), стоимость компании:',
+            options: [
+              'Растёт с увеличением долга',
+              'Не зависит от структуры капитала',
+              'Максимальна при 50% долга',
+              'Падает с увеличением долга'
+            ],
+            correct: 1,
+            explanation: 'В мире без налогов и издержек банкротства стоимость компании не зависит от структуры капитала (V_L = V_U). Дешёвый долг компенсируется удорожанием собственного капитала.'
+          },
+          {
+            text: 'Почему «парадокс 100% долга» ММ с налогами не реализуется?',
+            options: [
+              'Закон запрещает 100% долга',
+              'Существуют издержки финансовых затруднений',
+              'Кредиторы не дают столько денег',
+              'Акционеры не согласны'
+            ],
+            correct: 1,
+            explanation: 'Теория компромисса (Trade-off) объясняет: рост долга увеличивает вероятность банкротства и связанные с ним издержки, которые перевешивают налоговые выгоды.'
+          },
+          {
+            text: 'Согласно Pecking Order Theory, что компания использует в последнюю очередь?',
+            options: [
+              'Нераспределённую прибыль',
+              'Банковский кредит',
+              'Выпуск облигаций',
+              'Выпуск акций'
+            ],
+            correct: 3,
+            explanation: 'Теория иерархии: внутренние средства → долг → выпуск акций. Акции — крайняя мера, так как их выпуск воспринимается рынком как негативный сигнал.'
+          }
+        ], 'quiz-score');
+      }
+    });
+    </script>
+
+    <!-- ============================================================
+         RELATED TOPICS
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content">
+          <div class="box-info reveal">
+            <h3 style="margin-top: 0;">Связанные темы</h3>
+            <ul>
+              <li><a href="topic-11.html">Тема 1.1. Введение в корпоративные финансы</a> — базовое понятие левериджа (D/E)</li>
+              <li><a href="topic-22.html">Тема 2.2. Модель CAPM</a> — $\beta$ с учётом левериджа (формула Хамады)</li>
+              <li><a href="topic-42.html">Тема 4.2. WACC</a> — WACC зависит от структуры капитала</li>
+              <li><a href="topic-51.html">Тема 5.1. Дивидендная политика</a> — ММ о нерелевантности дивидендов</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         LECTURE NAVIGATION
+         ============================================================ -->
+    <section class="section" style="padding-bottom: var(--space-16);">
+      <div class="container">
+        <nav class="nav-lecture flex justify-between items-center gap-4" aria-label="Навигация по лекциям" style="max-width: 780px; margin: 0 auto;">
+          <a href="topic-32.html" class="btn btn-ghost">&larr; Тема 3.2</a>
+          <a href="index.html" class="btn btn-ghost">Все лекции</a>
+          <a href="topic-42.html" class="btn btn-ghost">Тема 4.2 &rarr;</a>
+        </nav>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+</body>
+</html>

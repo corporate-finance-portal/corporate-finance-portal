@@ -1,0 +1,293 @@
+[
+  {
+    "title": "Главная",
+    "url": "index.html",
+    "type": "page",
+    "section": "",
+    "keywords": "корпоративные финансы главная портал образовательный"
+  },
+
+  {
+    "title": "Каталог лекций",
+    "url": "lectures/index.html",
+    "type": "page",
+    "section": "",
+    "keywords": "лекции каталог список все разделы программа"
+  },
+  {
+    "title": "1.1 Введение в корпоративные финансы",
+    "url": "lectures/topic-11.html",
+    "type": "lecture",
+    "section": "Раздел 1",
+    "keywords": "введение цели финансовый менеджмент агентская проблема корпоративное управление"
+  },
+  {
+    "title": "1.2 Временная стоимость денег",
+    "url": "lectures/topic-12.html",
+    "type": "lecture",
+    "section": "Раздел 1",
+    "keywords": "временная стоимость денег дисконтирование PV FV аннуитет сложные проценты"
+  },
+  {
+    "title": "2.1 Концепция риска и доходности",
+    "url": "lectures/topic-21.html",
+    "type": "lecture",
+    "section": "Раздел 2",
+    "keywords": "риск доходность волатильность стандартное отклонение диверсификация портфель"
+  },
+  {
+    "title": "2.2 Модель CAPM",
+    "url": "lectures/topic-22.html",
+    "type": "lecture",
+    "section": "Раздел 2",
+    "keywords": "CAPM бета коэффициент рыночная премия безрисковая ставка SML CML систематический риск"
+  },
+  {
+    "title": "3.1 Оценка инвестиционных проектов: NPV, IRR, PI, DPP",
+    "url": "lectures/topic-31.html",
+    "type": "lecture",
+    "section": "Раздел 3",
+    "keywords": "NPV IRR PI DPP чистая приведённая стоимость внутренняя норма доходности индекс прибыльности срок окупаемости"
+  },
+  {
+    "title": "3.2 Портфельный анализ и управление портфелем",
+    "url": "lectures/topic-32.html",
+    "type": "lecture",
+    "section": "Раздел 3",
+    "keywords": "портфель Марковиц эффективная граница оптимизация корреляция ковариация"
+  },
+  {
+    "title": "4.1 Структура капитала. Теории Модильяни–Миллера",
+    "url": "lectures/topic-41.html",
+    "type": "lecture",
+    "section": "Раздел 4",
+    "keywords": "структура капитала Модильяни Миллер MM теорема собственный заёмный финансовый рычаг леверидж"
+  },
+  {
+    "title": "4.2 WACC — Средневзвешенная стоимость капитала",
+    "url": "lectures/topic-42.html",
+    "type": "lecture",
+    "section": "Раздел 4",
+    "keywords": "WACC средневзвешенная стоимость капитала стоимость собственного заёмного капитала налоговый щит"
+  },
+  {
+    "title": "5.1 Дивидендная политика",
+    "url": "lectures/topic-51.html",
+    "type": "lecture",
+    "section": "Раздел 5",
+    "keywords": "дивиденды дивидендная политика выплаты акционерам байбэк buyback payout"
+  },
+  {
+    "title": "5.2 Оборотный капитал и бюджетирование",
+    "url": "lectures/topic-52.html",
+    "type": "lecture",
+    "section": "Раздел 5",
+    "keywords": "оборотный капитал бюджетирование cash management ликвидность запасы дебиторская задолженность"
+  },
+  {
+    "title": "6.1 Оценка стоимости компании",
+    "url": "lectures/topic-61.html",
+    "type": "lecture",
+    "section": "Раздел 6",
+    "keywords": "оценка стоимости компании DCF мультипликаторы EV EBITDA сравнительный доходный"
+  },
+  {
+    "title": "7.1 Финансовый анализ отчётности",
+    "url": "lectures/topic-71.html",
+    "type": "lecture",
+    "section": "Раздел 7",
+    "keywords": "финансовый анализ отчётность баланс P&L рентабельность ROE ROA коэффициенты Дюпон"
+  },
+
+  {
+    "title": "Каталог инструментов",
+    "url": "tools/index.html",
+    "type": "page",
+    "section": "",
+    "keywords": "инструменты калькуляторы формулы расчёты"
+  },
+  {
+    "title": "Калькулятор NPV",
+    "url": "tools/npv-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "NPV чистая приведённая стоимость дисконтирование денежные потоки расчёт"
+  },
+  {
+    "title": "Калькулятор WACC",
+    "url": "tools/wacc-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "WACC средневзвешенная стоимость капитала собственный заёмный налоговый щит"
+  },
+  {
+    "title": "Калькулятор CAPM",
+    "url": "tools/capm-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "CAPM бета безрисковая ставка рыночная премия стоимость собственного капитала"
+  },
+  {
+    "title": "Калькулятор DCF",
+    "url": "tools/dcf-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "DCF дисконтированные денежные потоки терминальная стоимость оценка бизнеса"
+  },
+  {
+    "title": "Калькулятор модели Гордона",
+    "url": "tools/gordon-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "Гордон модель дивиденды темп роста стоимость акции DDM"
+  },
+  {
+    "title": "Калькулятор Z-score Альтмана",
+    "url": "tools/altman-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "Альтман Z-score банкротство финансовая устойчивость прогнозирование"
+  },
+  {
+    "title": "Калькулятор Дюпона",
+    "url": "tools/dupont-calculator.html",
+    "type": "tool",
+    "section": "Калькуляторы",
+    "keywords": "Дюпон DuPont ROE декомпозиция маржа оборачиваемость рычаг"
+  },
+  {
+    "title": "Все формулы курса",
+    "url": "tools/formulas.html",
+    "type": "tool",
+    "section": "Справочник",
+    "keywords": "формулы шпаргалка справочник все расчёты сводка"
+  },
+  {
+    "title": "Excel-практикумы",
+    "url": "tools/excel-labs.html",
+    "type": "tool",
+    "section": "Практикумы",
+    "keywords": "Excel таблицы практикум лабораторные шаблоны скачать"
+  },
+
+  {
+    "title": "Каталог кейсов",
+    "url": "cases/index.html",
+    "type": "page",
+    "section": "",
+    "keywords": "кейсы практика компании анализ реальные примеры"
+  },
+  {
+    "title": "Лукойл — WACC и NPV",
+    "url": "cases/lukoil.html",
+    "type": "case",
+    "section": "Российские компании",
+    "keywords": "Лукойл LUKOIL нефть WACC NPV инвестиционный проект"
+  },
+  {
+    "title": "Газпром — Дивидендная политика",
+    "url": "cases/gazprom.html",
+    "type": "case",
+    "section": "Российские компании",
+    "keywords": "Газпром дивиденды газ государственная компания выплаты акционерам"
+  },
+  {
+    "title": "Сбербанк — Структура капитала и ROE",
+    "url": "cases/sberbank.html",
+    "type": "case",
+    "section": "Российские компании",
+    "keywords": "Сбербанк банк капитал ROE рентабельность Дюпон"
+  },
+  {
+    "title": "Норникель — Дивидендное соглашение",
+    "url": "cases/nornickel.html",
+    "type": "case",
+    "section": "Российские компании",
+    "keywords": "Норникель никель палладий дивиденды акционерное соглашение Потанин Дерипаска"
+  },
+  {
+    "title": "Роснефть / ТНК-BP — Крупнейшая M&A сделка России",
+    "url": "cases/rosneft-tnkbp.html",
+    "type": "case",
+    "section": "M&A",
+    "keywords": "Роснефть ТНК-BP слияние поглощение M&A нефтяная отрасль"
+  },
+  {
+    "title": "Магнит / Дикси — M&A в ритейле",
+    "url": "cases/magnit-dixy.html",
+    "type": "case",
+    "section": "M&A",
+    "keywords": "Магнит Дикси ритейл розничная торговля M&A поглощение синергия"
+  },
+  {
+    "title": "Яндекс — Разделение и выход из России",
+    "url": "cases/yandex-split.html",
+    "type": "case",
+    "section": "Реструктуризация",
+    "keywords": "Яндекс Yandex разделение реструктуризация технологическая компания"
+  },
+  {
+    "title": "Ozon IPO на Nasdaq и делистинг 2022",
+    "url": "cases/ozon-ipo.html",
+    "type": "case",
+    "section": "IPO",
+    "keywords": "Ozon IPO Nasdaq делистинг e-commerce маркетплейс размещение акций"
+  },
+  {
+    "title": "Disney / 21st Century Fox — Стратегическое M&A",
+    "url": "cases/disney-fox.html",
+    "type": "case",
+    "section": "M&A",
+    "keywords": "Disney Fox слияние медиа стриминг 71 миллиард контент"
+  },
+  {
+    "title": "Twitter / Elon Musk — LBO и going private",
+    "url": "cases/twitter-musk.html",
+    "type": "case",
+    "section": "LBO",
+    "keywords": "Twitter Musk LBO выкуп leveraged buyout соцсеть 44 миллиарда"
+  },
+  {
+    "title": "FTX — Крах криптоимперии",
+    "url": "cases/ftx-collapse.html",
+    "type": "case",
+    "section": "Банкротство",
+    "keywords": "FTX криптовалюта банкротство крах мошенничество Bankman-Fried"
+  },
+  {
+    "title": "Silicon Valley Bank — Банковский кризис 2023",
+    "url": "cases/svb-collapse.html",
+    "type": "case",
+    "section": "Банкротство",
+    "keywords": "SVB Silicon Valley Bank банковский кризис процентный риск ликвидность"
+  },
+  {
+    "title": "Apple — Управление денежными средствами и buyback",
+    "url": "cases/apple.html",
+    "type": "case",
+    "section": "Корпоративное управление",
+    "keywords": "Apple байбэк buyback денежные средства cash management капитал"
+  },
+
+  {
+    "title": "Тест: Разделы 1–2",
+    "url": "assessment/quiz-sections-1-2.html",
+    "type": "quiz",
+    "section": "Разделы 1–2",
+    "keywords": "тест квиз проверка знаний введение временная стоимость риск CAPM"
+  },
+  {
+    "title": "Тест: Разделы 3–4",
+    "url": "assessment/quiz-sections-3-4.html",
+    "type": "quiz",
+    "section": "Разделы 3–4",
+    "keywords": "тест квиз проверка знаний NPV IRR структура капитала WACC"
+  },
+  {
+    "title": "Тест: WACC",
+    "url": "assessment/quiz-wacc.html",
+    "type": "quiz",
+    "section": "WACC",
+    "keywords": "тест квиз WACC средневзвешенная стоимость капитала проверка"
+  }
+]

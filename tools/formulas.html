@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Все формулы курса — Корпоративные финансы</title>
+  <meta name="description" content="Полный справочник формул курса «Корпоративные финансы»: 59 формул по 7 разделам с пояснениями и ссылками на лекции">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Все формулы курса — Корпоративные финансы">
+  <meta property="og:description" content="59 формул по 7 разделам: TVM, CAPM, NPV, WACC, дивиденды, оборотный капитал — с KaTeX-рендерингом">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:site_name" content="Корпоративные финансы">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- Formulas Reference Page --- */
+
+    .formulas-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .formulas-layout {
+        grid-template-columns: 1fr;
+      }
+      .formulas-sidebar {
+        display: none;
+      }
+    }
+
+    /* Sticky sidebar TOC */
+    .formulas-sidebar {
+      position: sticky;
+      top: calc(var(--nav-h, 64px) + var(--space-4));
+      max-height: calc(100vh - var(--nav-h, 64px) - var(--space-8));
+      overflow-y: auto;
+      padding: var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .formulas-sidebar h3 {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: var(--space-3);
+    }
+
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .toc-list li {
+      margin-bottom: var(--space-1);
+    }
+
+    .toc-list a {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-1) var(--space-2);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      transition: all var(--transition);
+    }
+
+    .toc-list a:hover {
+      color: var(--acc);
+      background: var(--acc-subtle);
+    }
+
+    .toc-list a.active {
+      color: var(--acc);
+      background: var(--acc-subtle);
+      font-weight: var(--fw-medium);
+    }
+
+    .toc-count {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-left: auto;
+    }
+
+    /* Search bar */
+    .formula-search {
+      position: relative;
+      margin-bottom: var(--space-6);
+    }
+
+    .formula-search input {
+      width: 100%;
+      padding: var(--space-3) var(--space-4) var(--space-3) var(--space-10);
+      font-family: var(--ff-body);
+      font-size: var(--text-base);
+      color: var(--text-primary);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .formula-search input:focus {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 3px var(--acc-subtle);
+    }
+
+    .formula-search input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .formula-search-icon {
+      position: absolute;
+      left: var(--space-3);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .formula-search-count {
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      color: var(--text-muted);
+      margin-top: var(--space-2);
+    }
+
+    /* Section headers */
+    .formula-section-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-bottom: var(--space-5);
+      padding-bottom: var(--space-3);
+      border-bottom: 2px solid var(--border);
+    }
+
+    .formula-section-header .section-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      background: var(--acc);
+      color: var(--bg);
+      font-family: var(--ff-mono);
+      font-weight: var(--fw-bold);
+      font-size: var(--text-sm);
+      border-radius: var(--radius-sm);
+      flex-shrink: 0;
+    }
+
+    .formula-section-header h2 {
+      font-size: var(--text-xl);
+      margin: 0;
+    }
+
+    /* Formula card */
+    .formula-card {
+      margin-bottom: var(--space-4);
+    }
+
+    .formula-card .box-formula {
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .formula-card .box-formula:hover {
+      border-color: var(--acc);
+      box-shadow: 0 0 0 1px var(--acc-subtle);
+    }
+
+    .formula-card h4 {
+      margin-bottom: var(--space-2);
+      font-size: var(--text-base);
+    }
+
+    .formula-card .formula-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      margin-top: var(--space-3);
+      padding-top: var(--space-2);
+      border-top: 1px solid var(--border);
+      font-size: var(--text-sm);
+    }
+
+    .formula-card .formula-meta a {
+      color: var(--acc);
+      text-decoration: none;
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+    }
+
+    .formula-card .formula-meta a:hover {
+      text-decoration: underline;
+    }
+
+    .formula-explanation {
+      color: var(--text-secondary);
+      font-size: var(--text-sm);
+      margin-top: var(--space-2);
+      line-height: 1.6;
+    }
+
+    /* Hero tags */
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: var(--space-1) var(--space-3);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--acc);
+      background: var(--acc-subtle);
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Download button */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      text-decoration: none;
+      transition: all var(--transition);
+      cursor: pointer;
+    }
+
+    .btn-download:hover {
+      border-color: var(--acc);
+      color: var(--acc);
+    }
+
+    /* Hidden by search filter */
+    .formula-card.hidden {
+      display: none;
+    }
+
+    .formula-section.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-formulas">
+
+  <!-- Navigation (injected by components.js) -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero-split" aria-label="Заголовок страницы">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: Title -->
+          <div>
+            <nav class="flex items-center gap-2 text-sm text-muted" style="margin-bottom: var(--space-5);" aria-label="Хлебные крошки">
+              <a href="../index.html" style="color: var(--text-muted);">Главная</a>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--text-secondary);">Инструменты</span>
+              <span aria-hidden="true">/</span>
+              <span style="color: var(--acc);">Формулы</span>
+            </nav>
+
+            <h1 class="text-4xl font-bold" style="margin-bottom: var(--space-5); line-height: 1.15;">
+              Все формулы курса
+            </h1>
+
+            <p class="text-lg" style="color: var(--text-secondary); max-width: 540px; line-height: 1.7;">
+              Полный справочник из <strong>59 формул</strong> по 7 разделам курса
+              «Корпоративные финансы» с пояснениями и ссылками на лекции.
+            </p>
+
+            <div class="hero-tags">
+              <span class="hero-tag">TVM</span>
+              <span class="hero-tag">CAPM</span>
+              <span class="hero-tag">NPV / IRR</span>
+              <span class="hero-tag">WACC</span>
+              <span class="hero-tag">MM</span>
+              <span class="hero-tag">Дивиденды</span>
+              <span class="hero-tag">Оборотный капитал</span>
+            </div>
+          </div>
+
+          <!-- Right: Quick info -->
+          <div class="box-info" style="margin: 0;">
+            <table class="data-table" style="font-size: var(--text-sm);">
+              <tbody>
+                <tr><td style="color: var(--text-muted); white-space: nowrap;">Формул</td><td><strong>59</strong></td></tr>
+                <tr><td style="color: var(--text-muted);">Разделов</td><td>7</td></tr>
+                <tr><td style="color: var(--text-muted);">Тем</td><td>12</td></tr>
+                <tr><td style="color: var(--text-muted);">Формат</td><td>KaTeX (LaTeX)</td></tr>
+                <tr><td style="color: var(--text-muted);">Обновлено</td><td><span class="font-mono text-xs" style="color: var(--acc);">2026-03-24</span></td></tr>
+              </tbody>
+            </table>
+            <div style="margin-top: var(--space-4);">
+              <a href="#" class="btn-download" onclick="return false;" title="PDF-версия готовится">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Скачать PDF
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FORMULAS CONTENT
+         ============================================================ -->
+    <section class="section">
+      <div class="container">
+
+        <!-- Search -->
+        <div class="formula-search">
+          <svg class="formula-search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" id="formulaSearchInput" placeholder="Поиск по формулам: NPV, WACC, бета..." autocomplete="off">
+          <div class="formula-search-count" id="formulaSearchCount">Показано формул: 59 из 59</div>
+        </div>
+
+        <div class="formulas-layout">
+
+          <!-- Sidebar TOC -->
+          <aside class="formulas-sidebar" id="formulasTOC">
+            <h3>Содержание</h3>
+            <ul class="toc-list">
+              <li><a href="#s1" data-section="s1">Раздел 1. Основы<span class="toc-count">13</span></a></li>
+              <li><a href="#s2" data-section="s2">Раздел 2. Риск и доходность<span class="toc-count">11</span></a></li>
+              <li><a href="#s3" data-section="s3">Раздел 3. Инвестиции<span class="toc-count">7</span></a></li>
+              <li><a href="#s4" data-section="s4">Раздел 4. Структура капитала<span class="toc-count">14</span></a></li>
+              <li><a href="#s5-1" data-section="s5-1">Раздел 5.1. Дивиденды<span class="toc-count">5</span></a></li>
+              <li><a href="#s5-2" data-section="s5-2">Раздел 5.2. Оборотный капитал<span class="toc-count">9</span></a></li>
+            </ul>
+          </aside>
+
+          <!-- Main formulas area -->
+          <div class="formulas-main" id="formulasMain">
+
+            <!-- ===== РАЗДЕЛ 1. Основы корпоративных финансов ===== -->
+            <div class="formula-section" id="s1" data-section="1">
+              <div class="formula-section-header">
+                <span class="section-num">1</span>
+                <h2>Основы корпоративных финансов</h2>
+              </div>
+
+              <!-- 1.1 Введение -->
+              <div class="formula-card" data-keywords="roe рентабельность собственный капитал return equity">
+                <div class="box-formula">
+                  <h4>Рентабельность собственного капитала (ROE)</h4>
+                  <div class="math-block">$$ROE = \frac{\text{Чистая прибыль}}{\text{Собственный капитал}} \times 100\%$$</div>
+                  <p class="formula-explanation">Показывает доходность вложений акционеров. Чем выше ROE, тем эффективнее компания использует собственный капитал.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="roa рентабельность активы return assets">
+                <div class="box-formula">
+                  <h4>Рентабельность активов (ROA)</h4>
+                  <div class="math-block">$$ROA = \frac{\text{Чистая прибыль}}{\text{Активы}} \times 100\%$$</div>
+                  <p class="formula-explanation">Доходность всех активов компании, независимо от источника финансирования.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="дюпон dupont маржа оборачиваемость леверидж">
+                <div class="box-formula">
+                  <h4>Формула Дюпона (3-факторная)</h4>
+                  <div class="math-block">$$ROE = \underbrace{\frac{NI}{Sales}}_{\text{маржа}} \times \underbrace{\frac{Sales}{Assets}}_{\text{оборачив.}} \times \underbrace{\frac{Assets}{Equity}}_{\text{леверидж}}$$</div>
+                  <p class="formula-explanation">Декомпозиция ROE на три драйвера: рентабельность продаж, оборачиваемость активов и финансовый рычаг.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="долг капитал d/e debt equity leverage леверидж">
+                <div class="box-formula">
+                  <h4>Коэффициент "долг/капитал" (D/E)</h4>
+                  <div class="math-block">$$D/E = \frac{\text{Заёмный капитал}}{\text{Собственный капитал}}$$</div>
+                  <p class="formula-explanation">Мера финансового рычага. D/E > 1 означает, что заёмный капитал превышает собственный.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 1.2 Временная стоимость денег -->
+              <div class="formula-card" data-keywords="будущая стоимость fv future value сложный процент">
+                <div class="box-formula">
+                  <h4>Будущая стоимость (FV)</h4>
+                  <div class="math-block">$$FV = PV \times (1 + r)^n$$</div>
+                  <p class="formula-explanation">Стоимость текущей суммы через $n$ периодов при ставке $r$. Основа всех финансовых расчётов.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="приведённая стоимость pv present value дисконтирование">
+                <div class="box-formula">
+                  <h4>Приведённая стоимость (PV)</h4>
+                  <div class="math-block">$$PV = \frac{FV}{(1 + r)^n}$$</div>
+                  <p class="formula-explanation">Сегодняшний эквивалент будущего денежного потока. Чем выше $r$ или $n$, тем меньше PV.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="аннуитет annuity pv обычный платёж">
+                <div class="box-formula">
+                  <h4>PV обычного аннуитета</h4>
+                  <div class="math-block">$$PV_{\text{ann}} = PMT \times \frac{1 - (1 + r)^{-n}}{r}$$</div>
+                  <p class="formula-explanation">Текущая стоимость серии равных платежей, совершаемых в конце каждого периода.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="аннуитет annuity fv будущая стоимость накопление">
+                <div class="box-formula">
+                  <h4>FV обычного аннуитета</h4>
+                  <div class="math-block">$$FV_{\text{ann}} = PMT \times \frac{(1 + r)^n - 1}{r}$$</div>
+                  <p class="formula-explanation">Накопленная сумма серии равных платежей к концу периода.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="авансовый аннуитет annuity due пренумерандо">
+                <div class="box-formula">
+                  <h4>PV авансового аннуитета</h4>
+                  <div class="math-block">$$PV_{\text{due}} = PMT \times \frac{1 - (1 + r)^{-n}}{r} \times (1 + r)$$</div>
+                  <p class="formula-explanation">Аннуитет пренумерандо: платежи в начале каждого периода. PV выше обычного аннуитета на множитель $(1+r)$.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="перпетуитет perpetuity бессрочный аннуитет">
+                <div class="box-formula">
+                  <h4>PV перпетуитета (бессрочного аннуитета)</h4>
+                  <div class="math-block">$$PV = \frac{PMT}{r}$$</div>
+                  <p class="formula-explanation">Бесконечная серия одинаковых платежей. Используется для оценки привилегированных акций и консолей.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="растущий перпетуитет growing perpetuity гордон">
+                <div class="box-formula">
+                  <h4>PV растущего перпетуитета</h4>
+                  <div class="math-block">$$PV = \frac{PMT}{r - g}, \quad r > g$$</div>
+                  <p class="formula-explanation">Бессрочный поток, растущий с темпом $g$. Основа модели Гордона для оценки акций.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="фишер fisher номинальная реальная ставка инфляция">
+                <div class="box-formula">
+                  <h4>Формула Фишера</h4>
+                  <div class="math-block">$$(1 + r_{\text{ном}}) = (1 + r_{\text{реал}}) \times (1 + \pi)$$</div>
+                  <p class="formula-explanation">Связь номинальной и реальной ставок через инфляцию $\pi$. Приближённо: $r_{\text{реал}} \approx r_{\text{ном}} - \pi$.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="ear эффективная ставка капитализация начисление">
+                <div class="box-formula">
+                  <h4>Эффективная годовая ставка (EAR)</h4>
+                  <div class="math-block">$$EAR = \left(1 + \frac{r_{\text{ном}}}{m}\right)^m - 1$$</div>
+                  <p class="formula-explanation">Реальная годовая доходность с учётом частоты начисления $m$ раз в год. EAR > номинальной ставки при $m > 1$.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 1.2</a>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /section 1 -->
+
+            <!-- ===== РАЗДЕЛ 2. Риск и доходность ===== -->
+            <div class="formula-section" id="s2" data-section="2">
+              <div class="formula-section-header">
+                <span class="section-num">2</span>
+                <h2>Риск и доходность</h2>
+              </div>
+
+              <div class="formula-card" data-keywords="ожидаемая доходность expected return сценарий вероятность">
+                <div class="box-formula">
+                  <h4>Ожидаемая доходность (по сценариям)</h4>
+                  <div class="math-block">$$E(r) = \sum_{i=1}^{n} p_i \times r_i$$</div>
+                  <p class="formula-explanation">Средневзвешенная доходность по всем сценариям с вероятностями $p_i$.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="дисперсия variance риск">
+                <div class="box-formula">
+                  <h4>Дисперсия доходности</h4>
+                  <div class="math-block">$$\sigma^2 = \sum_{i=1}^{n} p_i \times (r_i - E(r))^2$$</div>
+                  <p class="formula-explanation">Мера разброса доходности вокруг ожидаемого значения. Чем больше дисперсия, тем выше риск.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="стандартное отклонение standard deviation сигма риск">
+                <div class="box-formula">
+                  <h4>Стандартное отклонение</h4>
+                  <div class="math-block">$$\sigma = \sqrt{\sigma^2}$$</div>
+                  <p class="formula-explanation">Корень из дисперсии, выражен в тех же единицах, что и доходность (проценты).</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="коэффициент вариации cv coefficient variation">
+                <div class="box-formula">
+                  <h4>Коэффициент вариации</h4>
+                  <div class="math-block">$$CV = \frac{\sigma}{E(r)}$$</div>
+                  <p class="formula-explanation">Риск на единицу доходности. Позволяет сравнивать активы с разным уровнем доходности.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="ковариация covariance совместное движение">
+                <div class="box-formula">
+                  <h4>Ковариация</h4>
+                  <div class="math-block">$$Cov(r_A, r_B) = \sum_{i=1}^{n} p_i \times (r_{A,i} - E(r_A)) \times (r_{B,i} - E(r_B))$$</div>
+                  <p class="formula-explanation">Мера совместного движения доходностей двух активов. Положительная ковариация означает однонаправленное движение.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="корреляция correlation rho связь">
+                <div class="box-formula">
+                  <h4>Корреляция</h4>
+                  <div class="math-block">$$\rho_{AB} = \frac{Cov(r_A, r_B)}{\sigma_A \times \sigma_B}, \quad -1 \leq \rho \leq +1$$</div>
+                  <p class="formula-explanation">Нормированная ковариация от $-1$ (обратная связь) до $+1$ (прямая связь). $\rho = 0$ означает отсутствие линейной связи.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="портфель portfolio доходность weighted return">
+                <div class="box-formula">
+                  <h4>Доходность портфеля из двух активов</h4>
+                  <div class="math-block">$$E(r_p) = w_A \times E(r_A) + w_B \times E(r_B)$$</div>
+                  <p class="formula-explanation">Средневзвешенная доходность по долям $w_A$ и $w_B$. Диверсификация не влияет на ожидаемую доходность.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="портфель portfolio риск диверсификация">
+                <div class="box-formula">
+                  <h4>Риск портфеля из двух активов</h4>
+                  <div class="math-block">$$\sigma_p = \sqrt{w_A^2 \sigma_A^2 + w_B^2 \sigma_B^2 + 2 w_A w_B \rho_{AB} \sigma_A \sigma_B}$$</div>
+                  <p class="formula-explanation">Риск портфеля зависит от корреляции: при $\rho < 1$ диверсификация снижает общий риск.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="capm капм модель ценообразования активы рыночная линия">
+                <div class="box-formula">
+                  <h4>CAPM (модель ценообразования капитальных активов)</h4>
+                  <div class="math-block">$$E(r_i) = r_f + \beta_i \times (E(r_m) - r_f)$$</div>
+                  <p class="formula-explanation">Ожидаемая доходность актива: безрисковая ставка + бета-коэффициент, умноженный на рыночную премию за риск.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="бета beta коэффициент систематический риск">
+                <div class="box-formula">
+                  <h4>Бета-коэффициент</h4>
+                  <div class="math-block">$$\beta_i = \frac{Cov(r_i, r_m)}{Var(r_m)} = \frac{\rho_{i,m} \times \sigma_i}{\sigma_m}$$</div>
+                  <p class="formula-explanation">Мера систематического (рыночного) риска. $\beta > 1$ — актив рискованнее рынка, $\beta < 1$ — менее рискован.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="альфа дженсен jensen alpha избыточная доходность">
+                <div class="box-formula">
+                  <h4>Альфа Дженсена</h4>
+                  <div class="math-block">$$\alpha_i = r_i^{\text{факт}} - [r_f + \beta_i \times (r_m - r_f)]$$</div>
+                  <p class="formula-explanation">Избыточная доходность сверх того, что предсказывает CAPM. $\alpha > 0$ говорит об умелом управлении.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 2.2</a>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /section 2 -->
+
+            <!-- ===== РАЗДЕЛ 3. Инвестиционные решения ===== -->
+            <div class="formula-section" id="s3" data-section="3">
+              <div class="formula-section-header">
+                <span class="section-num">3</span>
+                <h2>Инвестиционные решения</h2>
+              </div>
+
+              <div class="formula-card" data-keywords="npv чистая приведённая стоимость net present value инвестиционный проект">
+                <div class="box-formula">
+                  <h4>NPV (чистая приведённая стоимость)</h4>
+                  <div class="math-block">$$NPV = \sum_{t=1}^{n} \frac{CF_t}{(1 + r)^t} - IC$$</div>
+                  <p class="formula-explanation">Разница между PV денежных потоков и инвестицией. NPV > 0 означает создание стоимости, проект принимается.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="irr внутренняя норма доходности internal rate return">
+                <div class="box-formula">
+                  <h4>IRR (внутренняя норма доходности)</h4>
+                  <div class="math-block">$$\sum_{t=1}^{n} \frac{CF_t}{(1 + IRR)^t} = IC$$</div>
+                  <p class="formula-explanation">Ставка, при которой NPV = 0. Если IRR > WACC, проект создаёт стоимость.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="irr интерполяция линейная приближение">
+                <div class="box-formula">
+                  <h4>IRR методом линейной интерполяции</h4>
+                  <div class="math-block">$$IRR \approx r_1 + \frac{NPV_1}{NPV_1 - NPV_2} \times (r_2 - r_1)$$</div>
+                  <p class="formula-explanation">Приближённый расчёт IRR по двум ставкам: $r_1$ (NPV > 0) и $r_2$ (NPV < 0).</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="pi индекс рентабельности profitability index">
+                <div class="box-formula">
+                  <h4>PI (индекс рентабельности)</h4>
+                  <div class="math-block">$$PI = \frac{\sum_{t=1}^{n} \frac{CF_t}{(1 + r)^t}}{IC}$$</div>
+                  <p class="formula-explanation">Сколько рублей PV приходится на рубль инвестиций. PI > 1 эквивалентно NPV > 0.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="dpp дисконтированный срок окупаемости discounted payback">
+                <div class="box-formula">
+                  <h4>DPP (дисконтированный срок окупаемости)</h4>
+                  <div class="math-block">$$DPP = t^* + \frac{IC - \sum_{t=1}^{t^*} PV_t}{PV_{t^*+1}}$$</div>
+                  <p class="formula-explanation">Момент, когда накопленный дисконтированный поток покрывает инвестицию. $t^*$ — последний год с отрицательным кумулятивным PV.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="mirr модифицированная irr modified internal rate return">
+                <div class="box-formula">
+                  <h4>MIRR (модифицированная IRR)</h4>
+                  <div class="math-block">$$MIRR = \left(\frac{\sum_{t=1}^{n} CF_t^{+} \times (1+r)^{n-t}}{\sum_{t=0}^{n} \frac{|CF_t^{-}|}{(1+r)^t}}\right)^{1/n} - 1$$</div>
+                  <p class="formula-explanation">Устраняет проблему множественных IRR: положительные потоки реинвестируются по WACC, отрицательные дисконтируются.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="синергия synergy m&a слияние поглощение">
+                <div class="box-formula">
+                  <h4>Синергетический эффект в M&A</h4>
+                  <div class="math-block">$$Synergy = V(AB) - V(A) - V(B)$$</div>
+                  <p class="formula-explanation">Дополнительная стоимость от объединения компаний. Положительная синергия оправдывает премию при поглощении.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 3.2</a>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /section 3 -->
+
+            <!-- ===== РАЗДЕЛ 4. Структура капитала и стоимость финансирования ===== -->
+            <div class="formula-section" id="s4" data-section="4">
+              <div class="formula-section-header">
+                <span class="section-num">4</span>
+                <h2>Структура капитала и стоимость финансирования</h2>
+              </div>
+
+              <!-- 4.1 Теории ММ -->
+              <div class="formula-card" data-keywords="dfl финансовый леверидж степень leverage">
+                <div class="box-formula">
+                  <h4>Степень финансового левериджа (DFL)</h4>
+                  <div class="math-block">$$DFL = \frac{EBIT}{EBIT - I}$$</div>
+                  <p class="formula-explanation">Показывает, во сколько раз изменение EPS превышает изменение EBIT. $I$ — процентные расходы.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="модильяни миллер mm теорема стоимость без налогов">
+                <div class="box-formula">
+                  <h4>Теорема ММ I (без налогов)</h4>
+                  <div class="math-block">$$V_L = V_U$$</div>
+                  <p class="formula-explanation">В мире без налогов и транзакционных издержек структура капитала не влияет на стоимость фирмы.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="модильяни миллер mm стоимость собственного капитала без налогов">
+                <div class="box-formula">
+                  <h4>Теорема ММ II (без налогов)</h4>
+                  <div class="math-block">$$r_e = r_0 + (r_0 - r_d) \times \frac{D}{E}$$</div>
+                  <p class="formula-explanation">Стоимость собственного капитала растёт линейно с увеличением D/E, компенсируя выгоду от дешёвого долга.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="модильяни миллер mm налоги налоговый щит">
+                <div class="box-formula">
+                  <h4>Теорема ММ I (с налогами)</h4>
+                  <div class="math-block">$$V_L = V_U + T \times D$$</div>
+                  <p class="formula-explanation">Стоимость фирмы с долгом выше на величину PV налогового щита $T \times D$.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="модильяни миллер mm налоги стоимость собственного">
+                <div class="box-formula">
+                  <h4>Теорема ММ II (с налогами)</h4>
+                  <div class="math-block">$$r_e = r_0 + (r_0 - r_d) \times (1 - T) \times \frac{D}{E}$$</div>
+                  <p class="formula-explanation">С налогами рост $r_e$ от левериджа замедляется на множитель $(1-T)$, благодаря налоговому щиту.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-11.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="хамада hamada бета леверидж unlever relever">
+                <div class="box-formula">
+                  <h4>Формула Хамады (бета с левериджем)</h4>
+                  <div class="math-block">$$\beta_L = \beta_U \times \left[1 + (1 - T) \times \frac{D}{E}\right]$$</div>
+                  <p class="formula-explanation">Связь между бетой без долга ($\beta_U$) и бетой с долгом ($\beta_L$). Позволяет перелевериджить бету аналогов.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="налоговый щит tax shield проценты">
+                <div class="box-formula">
+                  <h4>Налоговый щит (ежегодный)</h4>
+                  <div class="math-block">$$TS = D \times r_d \times T$$</div>
+                  <p class="formula-explanation">Экономия на налогах за счёт вычета процентных расходов из налогооблагаемой прибыли.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="pv налоговый щит постоянный долг">
+                <div class="box-formula">
+                  <h4>PV налогового щита (при постоянном долге)</h4>
+                  <div class="math-block">$$PV(TS) = T \times D$$</div>
+                  <p class="formula-explanation">Если долг постоянный (перпетуитет), PV щита = ставка налога, умноженная на величину долга.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4.2 WACC -->
+              <div class="formula-card" data-keywords="wacc средневзвешенная стоимость капитала weighted average cost">
+                <div class="box-formula" style="background: var(--acc-subtle); border-left-width: 4px;">
+                  <h4>WACC (полная формула)</h4>
+                  <div class="math-block" style="font-size: var(--text-xl);">$$WACC = w_d \times k_d \times (1 - T) + w_p \times k_p + w_e \times k_e$$</div>
+                  <p class="formula-explanation">Средневзвешенная стоимость всех источников капитала. Ставка дисконтирования для оценки компании методом DCF.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.2</a>
+                    <a href="wacc-calculator.html">Калькулятор WACC</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="kd стоимость заёмного капитала долг после налогов">
+                <div class="box-formula">
+                  <h4>Стоимость заёмного капитала (после налогов)</h4>
+                  <div class="math-block">$$k_d^{\text{после}} = k_d^{\text{до}} \times (1 - T)$$</div>
+                  <p class="formula-explanation">Процентные расходы снижают налогооблагаемую базу, поэтому эффективная стоимость долга ниже номинальной ставки.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="kp стоимость привилегированных акций preferred stock">
+                <div class="box-formula">
+                  <h4>Стоимость привилегированных акций</h4>
+                  <div class="math-block">$$k_p = \frac{D_p}{P_0}$$</div>
+                  <p class="formula-explanation">$D_p$ — фиксированный дивиденд, $P_0$ — рыночная цена. Налоговый щит не применяется.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="ke стоимость собственного капитала capm equity">
+                <div class="box-formula">
+                  <h4>Стоимость собственного капитала (CAPM)</h4>
+                  <div class="math-block">$$k_e = r_f + \beta \times (r_m - r_f)$$</div>
+                  <p class="formula-explanation">Наиболее распространённый метод. Требует оценки безрисковой ставки, беты и рыночной премии.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="ke стоимость собственного гордон gordon dividend growth">
+                <div class="box-formula">
+                  <h4>Стоимость собственного капитала (модель Гордона)</h4>
+                  <div class="math-block">$$k_e = \frac{D_1}{P_0} + g$$</div>
+                  <p class="formula-explanation">Дивидендная доходность плюс ожидаемый темп роста дивидендов. Применима для стабильных дивидендных компаний.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="точка разрыва breakpoint mcc предельная стоимость">
+                <div class="box-formula">
+                  <h4>Точка разрыва MCC</h4>
+                  <div class="math-block">$$BP_i = \frac{S_i}{w_i}$$</div>
+                  <p class="formula-explanation">Объём финансирования, при котором стоимость $i$-го источника возрастает. $S_i$ — лимит дешёвого источника, $w_i$ — его доля.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-42.html">Тема 4.2</a>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /section 4 -->
+
+            <!-- ===== РАЗДЕЛ 5.1. Дивидендная политика ===== -->
+            <div class="formula-section" id="s5-1" data-section="5.1">
+              <div class="formula-section-header">
+                <span class="section-num">5</span>
+                <h2>Дивидендная политика</h2>
+              </div>
+
+              <div class="formula-card" data-keywords="дивиденд акция dps dividend per share">
+                <div class="box-formula">
+                  <h4>Дивиденд на акцию (DPS)</h4>
+                  <div class="math-block">$$DPS = \frac{\text{Общая сумма дивидендов}}{\text{Количество акций}}$$</div>
+                  <p class="formula-explanation">Сумма дивидендов, приходящаяся на одну обыкновенную акцию.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="коэффициент выплат dpr payout ratio">
+                <div class="box-formula">
+                  <h4>Коэффициент выплат (DPR)</h4>
+                  <div class="math-block">$$DPR = \frac{DPS}{EPS} \times 100\%$$</div>
+                  <p class="formula-explanation">Доля чистой прибыли, направляемая на дивиденды. $1 - DPR$ = коэффициент удержания.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="дивидендная доходность dividend yield dy">
+                <div class="box-formula">
+                  <h4>Дивидендная доходность (Dividend Yield)</h4>
+                  <div class="math-block">$$DY = \frac{DPS}{P_0} \times 100\%$$</div>
+                  <p class="formula-explanation">Текущая доходность дивидендов относительно рыночной цены акции.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="гордон gordon модель цена акции дивиденд рост">
+                <div class="box-formula">
+                  <h4>Модель Гордона (цена акции)</h4>
+                  <div class="math-block">$$P_0 = \frac{D_1}{k_e - g}$$</div>
+                  <p class="formula-explanation">Справедливая цена акции для компании с постоянным темпом роста дивидендов $g$.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.1</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="остаточная модель residual dividend инвестиции">
+                <div class="box-formula">
+                  <h4>Остаточная модель дивидендов</h4>
+                  <div class="math-block">$$\text{Дивиденды} = \text{Чистая прибыль} - \text{Нераспред. прибыль на инвестиции}$$</div>
+                  <p class="formula-explanation">Дивиденды выплачиваются только после финансирования всех проектов с положительным NPV.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.1</a>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /section 5.1 -->
+
+            <!-- ===== РАЗДЕЛ 5.2. Управление оборотным капиталом ===== -->
+            <div class="formula-section" id="s5-2" data-section="5.2">
+              <div class="formula-section-header">
+                <span class="section-num">5</span>
+                <h2>Управление оборотным капиталом</h2>
+              </div>
+
+              <div class="formula-card" data-keywords="nwc чистый оборотный капитал net working capital">
+                <div class="box-formula">
+                  <h4>Чистый оборотный капитал (NWC)</h4>
+                  <div class="math-block">$$NWC = \text{Оборотные активы} - \text{Краткосрочные обязательства}$$</div>
+                  <p class="formula-explanation">Положительный NWC означает, что компания способна покрыть краткосрочные обязательства текущими активами.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="период оборота запасы inventory turnover days">
+                <div class="box-formula">
+                  <h4>Период оборота запасов</h4>
+                  <div class="math-block">$$T_{\text{зап}} = \frac{\text{Средние запасы}}{\text{Себестоимость} / 365}$$</div>
+                  <p class="formula-explanation">Среднее число дней от закупки до продажи запасов.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="период оборота дебиторская задолженность receivable days">
+                <div class="box-formula">
+                  <h4>Период оборота дебиторской задолженности</h4>
+                  <div class="math-block">$$T_{\text{ДЗ}} = \frac{\text{Средняя ДЗ}}{\text{Выручка} / 365}$$</div>
+                  <p class="formula-explanation">Среднее число дней от продажи до получения оплаты от покупателя.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="период оборота кредиторская задолженность payable days">
+                <div class="box-formula">
+                  <h4>Период оборота кредиторской задолженности</h4>
+                  <div class="math-block">$$T_{\text{КЗ}} = \frac{\text{Средняя КЗ}}{\text{Себестоимость} / 365}$$</div>
+                  <p class="formula-explanation">Среднее число дней отсрочки платежей поставщикам.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="операционный цикл operating cycle">
+                <div class="box-formula">
+                  <h4>Операционный цикл</h4>
+                  <div class="math-block">$$OC = T_{\text{зап}} + T_{\text{ДЗ}}$$</div>
+                  <p class="formula-explanation">Время от закупки запасов до получения денег от покупателей.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="финансовый цикл ccc cash conversion cycle денежный">
+                <div class="box-formula">
+                  <h4>Финансовый цикл (Cash Conversion Cycle)</h4>
+                  <div class="math-block">$$CCC = T_{\text{зап}} + T_{\text{ДЗ}} - T_{\text{КЗ}}$$</div>
+                  <p class="formula-explanation">Период, в течение которого компании нужно финансировать оборотный капитал из собственных средств. Чем короче CCC, тем лучше.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="eoq оптимальный заказ economic order quantity запасы">
+                <div class="box-formula">
+                  <h4>Модель EOQ (оптимальный размер заказа)</h4>
+                  <div class="math-block">$$Q^* = \sqrt{\frac{2 \times D \times S}{H}}$$</div>
+                  <p class="formula-explanation">$D$ — годовой спрос, $S$ — стоимость одного заказа, $H$ — стоимость хранения единицы в год. Минимизирует суммарные затраты.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="баумоль baumol остаток денежные средства cash optimal">
+                <div class="box-formula">
+                  <h4>Модель Баумоля (оптимальный остаток денежных средств)</h4>
+                  <div class="math-block">$$C^* = \sqrt{\frac{2 \times F \times T}{k}}$$</div>
+                  <p class="formula-explanation">$F$ — фиксированные издержки конвертации, $T$ — потребность в деньгах за период, $k$ — альтернативные издержки (ставка).</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+              <div class="formula-card" data-keywords="efn потребность внешнее финансирование external financing needed рост">
+                <div class="box-formula">
+                  <h4>Потребность во внешнем финансировании (EFN)</h4>
+                  <div class="math-block">$$EFN = \frac{A^*}{S_0} \times \Delta S - \frac{L^*}{S_0} \times \Delta S - PM \times S_1 \times (1 - d)$$</div>
+                  <p class="formula-explanation">$A^*/S_0$ — доля активов, растущих с продажами; $L^*/S_0$ — доля спонтанных обязательств; $PM$ — маржа чистой прибыли; $d$ — коэффициент выплаты дивидендов.</p>
+                  <div class="formula-meta">
+                    <a href="../lectures/topic-51.html">Тема 5.2</a>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /section 5.2 -->
+
+          </div><!-- /formulas-main -->
+
+        </div><!-- /formulas-layout -->
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer (injected by components.js) -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+
+    // --- Formula search filter ---
+    var searchInput = document.getElementById('formulaSearchInput');
+    var searchCount = document.getElementById('formulaSearchCount');
+    var cards = document.querySelectorAll('.formula-card');
+    var sections = document.querySelectorAll('.formula-section');
+    var totalCount = cards.length;
+
+    searchInput.addEventListener('input', function() {
+      var query = this.value.toLowerCase().trim();
+      var visibleCount = 0;
+
+      cards.forEach(function(card) {
+        var text = card.textContent.toLowerCase();
+        var keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+        var match = !query || text.indexOf(query) !== -1 || keywords.indexOf(query) !== -1;
+
+        if (match) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Hide sections with no visible cards
+      sections.forEach(function(section) {
+        var visibleCards = section.querySelectorAll('.formula-card:not(.hidden)');
+        if (visibleCards.length === 0) {
+          section.classList.add('hidden');
+        } else {
+          section.classList.remove('hidden');
+        }
+      });
+
+      searchCount.textContent = 'Показано формул: ' + visibleCount + ' из ' + totalCount;
+    });
+
+    // --- Sticky TOC active state ---
+    var tocLinks = document.querySelectorAll('.toc-list a');
+    var sectionEls = document.querySelectorAll('.formula-section');
+
+    function updateActiveTOC() {
+      var scrollPos = window.scrollY + 100;
+
+      sectionEls.forEach(function(section) {
+        var top = section.offsetTop;
+        var bottom = top + section.offsetHeight;
+        var id = section.id;
+
+        tocLinks.forEach(function(link) {
+          if (link.getAttribute('data-section') === id) {
+            if (scrollPos >= top && scrollPos < bottom) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          }
+        });
+      });
+    }
+
+    window.addEventListener('scroll', updateActiveTOC);
+    updateActiveTOC();
+  });
+  </script>
+
+</body>
+</html>
