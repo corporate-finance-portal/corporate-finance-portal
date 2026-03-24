@@ -178,11 +178,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js';
       autoRender.onload = function () {
         if (typeof renderMathInElement === 'function') {
-          // Protect currency "$42", "$209B" etc. from being matched as
-          // KaTeX inline-math delimiters.  Walk text nodes that contain
-          // "$<digit>" but NO LaTeX commands (\, {, }, ^, _) and wrap
-          // every "$" in a <span> — this breaks the text node so KaTeX
-          // can never pair two "$" signs across span boundaries.
+          // Protect currency "$42", "$209B" etc. from KaTeX.
+          // Replace ASCII $ (U+0024) with fullwidth ＄ (U+FF04) in text
+          // nodes that contain "$<digit>" but no LaTeX commands.
+          // KaTeX only matches U+0024 as delimiter; U+FF04 looks identical.
           (function () {
             var w = document.createTreeWalker(
               document.body, NodeFilter.SHOW_TEXT, null, false
@@ -197,19 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
               if (/\$\d/.test(t) && !/[\\{}^_]/.test(t)) fix.push(n);
             }
             fix.forEach(function (node) {
-              var parts = node.textContent.split(/(\$)/);
-              if (parts.length < 3) return;
-              var frag = document.createDocumentFragment();
-              parts.forEach(function (part) {
-                if (part === '$') {
-                  var s = document.createElement('span');
-                  s.textContent = '$';
-                  frag.appendChild(s);
-                } else {
-                  frag.appendChild(document.createTextNode(part));
-                }
-              });
-              node.parentNode.replaceChild(frag, node);
+              node.textContent = node.textContent.replace(/\$/g, '\uFF04');
             });
           })();
 
