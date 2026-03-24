@@ -273,6 +273,159 @@
 
 
           <!-- ============================================================
+               LBO RETURNS MODEL
+               ============================================================ -->
+          <h2 id="lbo-model" class="reveal">Модель LBO-доходности</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Смоделируйте сценарий: при какой оценке X инвесторы выходят в плюс?</p>
+
+          <div class="card-static reveal" style="padding: var(--space-6); margin: var(--space-6) 0;">
+
+            <!-- Sliders -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--space-6);" id="lbo-sliders"></div>
+
+            <!-- Results grid -->
+            <div id="lbo-results" style="margin-top: var(--space-5);"></div>
+
+            <!-- Interpretation -->
+            <div id="lbo-interpretation" style="margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius-sm); text-align: center; font-weight: 600; font-size: var(--text-base); transition: background var(--transition), color var(--transition);"></div>
+          </div>
+
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            /* ---- helpers from CFTools ---- */
+            var fmt  = (typeof CFTools !== 'undefined' && CFTools.formatNumber) ? CFTools.formatNumber : function (n, d) { return Number(n).toFixed(d != null ? d : 2); };
+            var fmtP = (typeof CFTools !== 'undefined' && CFTools.formatPercent) ? CFTools.formatPercent : function (n, d) { return (n * 100).toFixed(d != null ? d : 2) + '%'; };
+
+            /* ---- slider definitions ---- */
+            var defs = [
+              { id: 'lbo-purchase',   label: 'Цена покупки',            min: 30,  max: 60,  step: 1,   value: 44,  unit: '&#36; млрд' },
+              { id: 'lbo-debt-share', label: 'Доля долга',              min: 20,  max: 60,  step: 5,   value: 30,  unit: '%' },
+              { id: 'lbo-debt-rate',  label: 'Ставка по долгу',         min: 5,   max: 15,  step: 0.5, value: 11,  unit: '%' },
+              { id: 'lbo-rev-growth', label: 'Рост выручки',            min: -30, max: 30,  step: 5,   value: -10, unit: '%' },
+              { id: 'lbo-ebitda-m',   label: 'EBITDA маржа',            min: 5,   max: 35,  step: 1,   value: 15,  unit: '%' },
+              { id: 'lbo-horizon',    label: 'Горизонт (лет)',          min: 3,   max: 7,   step: 1,   value: 5,   unit: 'лет' },
+              { id: 'lbo-exit-mult',  label: 'Exit мультипликатор EV/EBITDA', min: 5, max: 20, step: 0.5, value: 10, unit: 'x' }
+            ];
+
+            var slidersRoot = document.getElementById('lbo-sliders');
+            var controls = {};
+
+            defs.forEach(function (d) {
+              /* wrapper div for CFTools.createSlider — it needs an element with the given id */
+              var host = document.createElement('div');
+              host.id = d.id;
+              slidersRoot.appendChild(host);
+
+              controls[d.id] = CFTools.createSlider(d.id, {
+                label:    d.label,
+                min:      d.min,
+                max:      d.max,
+                step:     d.step,
+                value:    d.value,
+                unit:     d.unit,
+                onChange: recalc
+              });
+            });
+
+            /* ---- calculation ---- */
+            var INITIAL_REVENUE = 5; /* $5 B — Twitter 2021 revenue */
+
+            function val(id) { return controls[id].getValue(); }
+
+            function recalc() {
+              var purchase   = val('lbo-purchase');
+              var debtShare  = val('lbo-debt-share') / 100;
+              var debtRate   = val('lbo-debt-rate')  / 100;
+              var revGrowth  = val('lbo-rev-growth') / 100;
+              var ebitdaM    = val('lbo-ebitda-m')   / 100;
+              var horizon    = val('lbo-horizon');
+              var exitMult   = val('lbo-exit-mult');
+
+              var revenueN   = INITIAL_REVENUE * Math.pow(1 + revGrowth, horizon);
+              var ebitdaN    = revenueN * ebitdaM;
+              var exitEV     = ebitdaN * exitMult;
+
+              var totalDebt  = purchase * debtShare;
+              var interestYr = totalDebt * debtRate;
+              var remainDebt = totalDebt * 0.80; /* 20 % repaid over the period */
+
+              var equityInv  = purchase * (1 - debtShare);
+              var equityExit = exitEV - remainDebt;
+              var moic       = equityExit / equityInv;
+
+              /* IRR = (equityExit / equityInv)^(1/N) - 1, only valid when equityExit > 0 */
+              var irr;
+              if (equityExit > 0) {
+                irr = Math.pow(equityExit / equityInv, 1 / horizon) - 1;
+              } else {
+                irr = -1; /* total loss */
+              }
+
+              /* Breakeven exit multiple: Exit EV = remaining debt + equityInv  ⇒  mult = (remainDebt + equityInv) / ebitdaN */
+              var breakevenMult = ebitdaN > 0 ? (remainDebt + equityInv) / ebitdaN : Infinity;
+
+              /* ---- color helpers ---- */
+              function irrColor(v) {
+                if (v > 0.15) return 'var(--acc)';
+                if (v >= 0)   return '#FBBF24';
+                return 'var(--coral)';
+              }
+
+              /* ---- render results ---- */
+              var resultsEl = document.getElementById('lbo-results');
+              resultsEl.innerHTML = '';
+
+              var grid = document.createElement('div');
+              grid.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--space-4);';
+
+              var cards = [
+                { label: 'Equity IRR',           value: fmtP(irr, 1),                      color: irrColor(irr) },
+                { label: 'MOIC',                  value: fmt(moic, 2) + 'x',                color: moic >= 1 ? 'var(--acc)' : 'var(--coral)' },
+                { label: 'Exit EV',               value: '&#36;' + fmt(exitEV, 1) + ' млрд', color: 'var(--text-primary)' },
+                { label: 'Equity invested',       value: '&#36;' + fmt(equityInv, 1) + ' млрд', color: 'var(--text-primary)' },
+                { label: 'Долг при выходе',       value: '&#36;' + fmt(remainDebt, 1) + ' млрд', color: 'var(--text-secondary)' },
+                { label: 'Breakeven EV/EBITDA',   value: breakevenMult === Infinity ? 'n/a' : fmt(breakevenMult, 1) + 'x', color: 'var(--text-secondary)' }
+              ];
+
+              cards.forEach(function (c) {
+                var cell = document.createElement('div');
+                cell.style.cssText = 'background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:var(--space-3) var(--space-4);';
+                cell.innerHTML =
+                  '<div style="font-size:var(--text-xs);color:var(--text-muted);margin-bottom:var(--space-1);">' + c.label + '</div>' +
+                  '<div style="font-family:var(--ff-heading);font-size:var(--text-lg);font-weight:700;color:' + c.color + ';">' + c.value + '</div>';
+                grid.appendChild(cell);
+              });
+
+              resultsEl.appendChild(grid);
+
+              /* ---- interpretation ---- */
+              var interpEl = document.getElementById('lbo-interpretation');
+              var msg, bg, fg;
+              if (irr > 0.20) {
+                msg = 'Отличная инвестиция';
+                bg  = 'rgba(52, 211, 153, 0.12)'; fg = '#34D399';
+              } else if (irr >= 0.10) {
+                msg = 'Приемлемая доходность';
+                bg  = 'rgba(251, 191, 36, 0.12)'; fg = '#FBBF24';
+              } else if (irr >= 0) {
+                msg = 'Ниже рыночных ожиданий';
+                bg  = 'rgba(251, 191, 36, 0.10)'; fg = '#FBBF24';
+              } else {
+                msg = 'Уничтожение стоимости \u2014 инвесторы теряют деньги';
+                bg  = 'var(--coral-subtle)'; fg = 'var(--coral)';
+              }
+              interpEl.textContent = msg;
+              interpEl.style.background = bg;
+              interpEl.style.color = fg;
+            }
+
+            /* initial run */
+            recalc();
+          });
+          </script>
+
+
+          <!-- ============================================================
                CONCLUSIONS
                ============================================================ -->
           <h2>Выводы</h2>
@@ -381,6 +534,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 

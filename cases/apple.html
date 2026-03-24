@@ -299,6 +299,197 @@
 
 
           <!-- ============================================================
+               BUYBACK vs DIVIDEND SIMULATOR
+               ============================================================ -->
+          <h2 id="buyback-sim" class="reveal">Симулятор: Buyback vs Дивиденды</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Распределите бюджет возврата капитала между buyback и дивидендами.</p>
+
+          <div class="card-static reveal" style="padding: var(--space-6); margin: var(--space-6) 0;">
+
+            <!-- Sliders -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5) var(--space-8); margin-bottom: var(--space-6);">
+              <div id="bs-slider-budget"></div>
+              <div id="bs-slider-buyback-pct"></div>
+              <div id="bs-slider-price"></div>
+              <div id="bs-slider-net-income"></div>
+              <div id="bs-slider-shares" style="grid-column: 1 / -1; max-width: 50%;"></div>
+            </div>
+
+            <!-- Results Grid -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-bottom: var(--space-6);">
+
+              <!-- Row 1: Buyback results -->
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--acc);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Выкуплено акций</div>
+                <div id="bs-res-repurchased" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--acc);">—</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">млрд шт.</div>
+              </div>
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--acc);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Акций после выкупа</div>
+                <div id="bs-res-shares-after" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--acc);">—</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">млрд шт.</div>
+              </div>
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--acc);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">EPS до / после</div>
+                <div id="bs-res-eps" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--acc);">—</div>
+              </div>
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--success);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">EPS accretion</div>
+                <div id="bs-res-accretion" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--success);">—</div>
+              </div>
+
+              <!-- Row 2: Dividend results -->
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--success);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">DPS</div>
+                <div id="bs-res-dps" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--success);">—</div>
+              </div>
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--success);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Дивидендная доходность</div>
+                <div id="bs-res-div-yield" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--success);">—</div>
+              </div>
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); border-left: 3px solid var(--amber);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Payout ratio</div>
+                <div id="bs-res-payout" style="font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; color: var(--amber);">—</div>
+              </div>
+
+              <!-- Donut chart cell -->
+              <div style="background: var(--surface); border-radius: 8px; padding: var(--space-4); display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div id="bs-donut" style="width: 90px; height: 90px; border-radius: 50%; position: relative; margin-bottom: var(--space-2);"></div>
+                <div style="display: flex; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-muted);">
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--acc);margin-right:4px;"></span>Buyback</span>
+                  <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);margin-right:4px;"></span>Дивиденды</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interpretation -->
+            <div id="bs-interpretation" style="padding: var(--space-4); border-radius: 8px; background: var(--acc-subtle); font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6;"></div>
+
+          </div>
+
+          <!-- Buyback Simulator Script -->
+          <script>
+            (function () {
+              'use strict';
+
+              function boot() {
+                var fmt = window.CFTools.formatNumber;
+
+                /* ---------- Sliders ---------- */
+                var sBudget = window.CFTools.createSlider('bs-slider-budget', {
+                  label: 'Бюджет возврата капитала',
+                  min: 50, max: 150, step: 5, value: 110,
+                  unit: '\u0024 млрд/год',
+                  onChange: recalc
+                });
+
+                var sBuybackPct = window.CFTools.createSlider('bs-slider-buyback-pct', {
+                  label: 'Доля buyback',
+                  min: 0, max: 100, step: 5, value: 85,
+                  unit: '%',
+                  onChange: recalc
+                });
+
+                var sPrice = window.CFTools.createSlider('bs-slider-price', {
+                  label: 'Цена акции',
+                  min: 100, max: 300, step: 5, value: 200,
+                  unit: '\u0024',
+                  onChange: recalc
+                });
+
+                var sNetIncome = window.CFTools.createSlider('bs-slider-net-income', {
+                  label: 'Net Income',
+                  min: 80, max: 120, step: 5, value: 97,
+                  unit: '\u0024 млрд',
+                  onChange: recalc
+                });
+
+                var sShares = window.CFTools.createSlider('bs-slider-shares', {
+                  label: 'Текущие акции',
+                  min: 14, max: 17, step: 0.1, value: 15.2,
+                  unit: 'млрд шт.',
+                  onChange: recalc
+                });
+
+                /* ---------- DOM refs ---------- */
+                var elRepurchased   = document.getElementById('bs-res-repurchased');
+                var elSharesAfter   = document.getElementById('bs-res-shares-after');
+                var elEps           = document.getElementById('bs-res-eps');
+                var elAccretion     = document.getElementById('bs-res-accretion');
+                var elDps           = document.getElementById('bs-res-dps');
+                var elDivYield      = document.getElementById('bs-res-div-yield');
+                var elPayout        = document.getElementById('bs-res-payout');
+                var elDonut         = document.getElementById('bs-donut');
+                var elInterp        = document.getElementById('bs-interpretation');
+
+                /* ---------- Calculation ---------- */
+                function recalc() {
+                  var budget      = sBudget.getValue();
+                  var buybackPct  = sBuybackPct.getValue() / 100;
+                  var price       = sPrice.getValue();
+                  var netIncome   = sNetIncome.getValue();
+                  var curShares   = sShares.getValue();
+
+                  var buybackBudget  = budget * buybackPct;
+                  var dividendBudget = budget * (1 - buybackPct);
+
+                  var repurchased = buybackBudget / price;
+                  var sharesAfter = curShares - repurchased;
+                  if (sharesAfter < 0.01) sharesAfter = 0.01;
+
+                  var epsBefore   = netIncome / curShares;
+                  var epsAfter    = netIncome / sharesAfter;
+                  var epsAccr     = (epsAfter - epsBefore) / epsBefore * 100;
+
+                  var dps         = dividendBudget / sharesAfter;
+                  var divYield    = (dps / price) * 100;
+                  var payoutRatio = (budget / netIncome) * 100;
+
+                  /* Update results */
+                  elRepurchased.textContent = fmt(repurchased, 2);
+                  elSharesAfter.textContent = fmt(sharesAfter, 2);
+                  elEps.textContent = '\u0024' + fmt(epsBefore, 2) + ' \u2192 \u0024' + fmt(epsAfter, 2);
+                  elAccretion.textContent = '+' + fmt(epsAccr, 1) + '%';
+                  elDps.textContent = '\u0024' + fmt(dps, 2);
+                  elDivYield.textContent = fmt(divYield, 2) + '%';
+                  elPayout.textContent = fmt(payoutRatio, 1) + '%';
+
+                  /* Donut via conic-gradient */
+                  var bPct = buybackPct * 100;
+                  elDonut.style.background =
+                    'conic-gradient(var(--acc) 0% ' + bPct + '%, var(--success) ' + bPct + '% 100%)';
+                  elDonut.style.webkitMask =
+                    'radial-gradient(circle at center, transparent 55%, black 56%)';
+                  elDonut.style.mask =
+                    'radial-gradient(circle at center, transparent 55%, black 56%)';
+
+                  /* Interpretation */
+                  if (bPct > 80) {
+                    elInterp.textContent = 'Apple-стиль: максимальный рост EPS через buyback. При доле выкупа ' + fmt(bPct, 0) + '% EPS растёт на ' + fmt(epsAccr, 1) + '%, а дивидендная доходность составляет лишь ' + fmt(divYield, 2) + '%.';
+                    elInterp.style.background = 'var(--acc-subtle)';
+                  } else if (bPct >= 50) {
+                    elInterp.textContent = 'Сбалансированный подход: рост EPS + стабильные дивиденды. Buyback обеспечивает +' + fmt(epsAccr, 1) + '% к EPS, а дивидендная доходность достигает ' + fmt(divYield, 2) + '%.';
+                    elInterp.style.background = 'var(--amber-subtle)';
+                  } else {
+                    elInterp.textContent = 'Дивидендный фокус: высокая доходность (' + fmt(divYield, 2) + '%), но меньший рост EPS (+' + fmt(epsAccr, 1) + '%). Payout ratio: ' + fmt(payoutRatio, 1) + '%.';
+                    elInterp.style.background = 'rgba(52, 211, 153, 0.1)';
+                  }
+                }
+
+                /* Initial run */
+                recalc();
+              }
+
+              if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', boot);
+              } else {
+                boot();
+              }
+            })();
+          </script>
+
+
+          <!-- ============================================================
                CONCLUSIONS
                ============================================================ -->
           <h2>Выводы</h2>
@@ -407,6 +598,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 

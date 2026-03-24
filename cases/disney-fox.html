@@ -276,6 +276,162 @@
           <!-- ============================================================
                CONCLUSIONS
                ============================================================ -->
+          <!-- ============================================================
+               SYNERGY CALCULATOR
+               ============================================================ -->
+          <h2 id="synergy-calc" class="reveal">Калькулятор синергии</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Измените параметры — увидите, как синергия влияет на стоимость сделки.</p>
+
+          <div class="reveal" id="synergy-calculator" style="margin: var(--space-6) 0;">
+
+            <!-- Slider: S1 -->
+            <div style="margin-bottom: var(--space-5);">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                <label for="slider-s1" style="font-family: var(--ff-mono); font-size: var(--text-sm); color: var(--text-secondary);">
+                  S&#8321; (годовая синергия)
+                </label>
+                <span id="val-s1" style="font-family: var(--ff-mono); font-size: var(--text-sm); font-weight: 600; color: var(--acc);">&#36;2.0 млрд</span>
+              </div>
+              <input type="range" id="slider-s1" min="0.5" max="5.0" step="0.1" value="2.0"
+                     style="width: 100%; accent-color: var(--acc); height: 6px; cursor: pointer;">
+              <div style="display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1);">
+                <span>&#36;0.5 млрд</span><span>&#36;5.0 млрд</span>
+              </div>
+            </div>
+
+            <!-- Slider: WACC -->
+            <div style="margin-bottom: var(--space-5);">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                <label for="slider-wacc" style="font-family: var(--ff-mono); font-size: var(--text-sm); color: var(--text-secondary);">
+                  WACC (ставка дисконтирования)
+                </label>
+                <span id="val-wacc" style="font-family: var(--ff-mono); font-size: var(--text-sm); font-weight: 600; color: var(--acc);">8.0%</span>
+              </div>
+              <input type="range" id="slider-wacc" min="5" max="15" step="0.5" value="8"
+                     style="width: 100%; accent-color: var(--acc); height: 6px; cursor: pointer;">
+              <div style="display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1);">
+                <span>5%</span><span>15%</span>
+              </div>
+            </div>
+
+            <!-- Slider: g -->
+            <div style="margin-bottom: var(--space-6);">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-2);">
+                <label for="slider-g" style="font-family: var(--ff-mono); font-size: var(--text-sm); color: var(--text-secondary);">
+                  g (темп роста синергии)
+                </label>
+                <span id="val-g" style="font-family: var(--ff-mono); font-size: var(--text-sm); font-weight: 600; color: var(--acc);">2.0%</span>
+              </div>
+              <input type="range" id="slider-g" min="0" max="5" step="0.5" value="2"
+                     style="width: 100%; accent-color: var(--acc); height: 6px; cursor: pointer;">
+              <div style="display: flex; justify-content: space-between; font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-1);">
+                <span>0%</span><span>5%</span>
+              </div>
+            </div>
+
+            <!-- Warning -->
+            <div id="synergy-warning" style="display: none; background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.4); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); margin-bottom: var(--space-5); color: var(--amber); font-size: var(--text-sm); font-weight: 500;">
+              WACC должен быть выше темпа роста g
+            </div>
+
+            <!-- Results: 2x2 grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+
+              <!-- Card 1: PV synergy -->
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-5); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-2);">PV синергии</div>
+                <div id="res-pv" style="font-family: var(--ff-heading); font-size: var(--text-2xl); font-weight: 700; color: var(--acc);">&#36;33.3 млрд</div>
+              </div>
+
+              <!-- Card 2: EV/EBITDA without synergy (static) -->
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-5); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-2);">EV/EBITDA без синергии</div>
+                <div style="font-family: var(--ff-heading); font-size: var(--text-2xl); font-weight: 700; color: var(--text-muted);">11.3x</div>
+              </div>
+
+              <!-- Card 3: EV/EBITDA with synergy -->
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-5); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-2);">EV/EBITDA с синергией</div>
+                <div id="res-evmult" style="font-family: var(--ff-heading); font-size: var(--text-2xl); font-weight: 700;">9.0x</div>
+              </div>
+
+              <!-- Card 4: Synergy share in price -->
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-5); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: var(--space-2);">Доля синергии в цене</div>
+                <div id="res-share" style="font-family: var(--ff-heading); font-size: var(--text-2xl); font-weight: 700; color: var(--text-primary);">39.2%</div>
+              </div>
+
+            </div>
+          </div>
+
+          <script>
+            document.addEventListener('DOMContentLoaded', function () {
+              var EV = 85.1;
+              var EBITDA_BASE = 7.5;
+
+              var sliderS1   = document.getElementById('slider-s1');
+              var sliderWACC = document.getElementById('slider-wacc');
+              var sliderG    = document.getElementById('slider-g');
+
+              var valS1   = document.getElementById('val-s1');
+              var valWACC = document.getElementById('val-wacc');
+              var valG    = document.getElementById('val-g');
+
+              var resPV     = document.getElementById('res-pv');
+              var resEvMult = document.getElementById('res-evmult');
+              var resShare  = document.getElementById('res-share');
+              var warning   = document.getElementById('synergy-warning');
+
+              var fmt = (window.CFTools && typeof window.CFTools.formatNumber === 'function')
+                ? window.CFTools.formatNumber
+                : function (n, d) { return n.toFixed(d !== undefined ? d : 1); };
+
+              function update() {
+                var s1   = parseFloat(sliderS1.value);
+                var wacc = parseFloat(sliderWACC.value) / 100;
+                var g    = parseFloat(sliderG.value) / 100;
+
+                valS1.textContent   = '\u0024' + fmt(s1, 1) + ' \u043C\u043B\u0440\u0434';
+                valWACC.textContent = fmt(wacc * 100, 1) + '%';
+                valG.textContent    = fmt(g * 100, 1) + '%';
+
+                if (wacc <= g) {
+                  warning.style.display = 'block';
+                  resPV.textContent     = '\u2014';
+                  resEvMult.textContent = '\u2014';
+                  resEvMult.style.color = 'var(--text-muted)';
+                  resShare.textContent  = '\u2014';
+                  return;
+                }
+
+                warning.style.display = 'none';
+
+                var pv = s1 / (wacc - g);
+                var evMultAdj = EV / (EBITDA_BASE + s1);
+                var share = (pv / EV) * 100;
+
+                resPV.textContent    = '\u0024' + fmt(pv, 1) + ' \u043C\u043B\u0440\u0434';
+                resEvMult.textContent = fmt(evMultAdj, 1) + 'x';
+                resShare.textContent  = fmt(share, 1) + '%';
+
+                if (evMultAdj < 10) {
+                  resEvMult.style.color = 'var(--green, #34D399)';
+                } else if (evMultAdj <= 12) {
+                  resEvMult.style.color = 'var(--amber, #FBBF24)';
+                } else {
+                  resEvMult.style.color = 'var(--red, #FB7185)';
+                }
+              }
+
+              sliderS1.addEventListener('input', update);
+              sliderWACC.addEventListener('input', update);
+              sliderG.addEventListener('input', update);
+
+              update();
+            });
+          </script>
+
+
           <h2>Выводы</h2>
 
           <div class="box-key reveal">
@@ -382,6 +538,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 

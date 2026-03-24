@@ -267,6 +267,226 @@
 
 
           <!-- ============================================================
+               DURATION RISK SIMULATOR
+               ============================================================ -->
+          <h2 id="duration-sim" class="reveal">Симулятор процентного риска</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Измените дюрацию и процентную ставку — увидите, как это влияет на капитал банка.</p>
+
+          <div class="card-static reveal" id="duration-sim-panel" style="padding: var(--space-6); margin: var(--space-6) 0;">
+
+            <!-- Sliders -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5) var(--space-8);">
+
+              <!-- Портфель HTM -->
+              <div>
+                <label for="sim-portfolio" style="display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                  <span>Портфель HTM (&#36; млрд)</span>
+                  <span id="sim-portfolio-val" style="font-family: var(--ff-mono); color: var(--acc); font-weight: 600;">91</span>
+                </label>
+                <input id="sim-portfolio" type="range" min="50" max="150" step="5" value="91" style="width: 100%; accent-color: var(--acc);">
+              </div>
+
+              <!-- Средняя дюрация -->
+              <div>
+                <label for="sim-duration" style="display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                  <span>Средняя дюрация (лет)</span>
+                  <span id="sim-duration-val" style="font-family: var(--ff-mono); color: var(--acc); font-weight: 600;">6.0</span>
+                </label>
+                <input id="sim-duration" type="range" min="2" max="10" step="0.5" value="6" style="width: 100%; accent-color: var(--acc);">
+              </div>
+
+              <!-- Изменение ставки -->
+              <div>
+                <label for="sim-rate" style="display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                  <span>Изменение ставки (п.п.)</span>
+                  <span id="sim-rate-val" style="font-family: var(--ff-mono); color: var(--acc); font-weight: 600;">4.25</span>
+                </label>
+                <input id="sim-rate" type="range" min="0" max="6" step="0.25" value="4.25" style="width: 100%; accent-color: var(--acc);">
+              </div>
+
+              <!-- Собственный капитал -->
+              <div>
+                <label for="sim-equity" style="display: flex; justify-content: space-between; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">
+                  <span>Собственный капитал (&#36; млрд)</span>
+                  <span id="sim-equity-val" style="font-family: var(--ff-mono); color: var(--acc); font-weight: 600;">16</span>
+                </label>
+                <input id="sim-equity" type="range" min="5" max="30" step="1" value="16" style="width: 100%; accent-color: var(--acc);">
+              </div>
+            </div>
+
+            <!-- Balance Sheet Bars -->
+            <div style="margin-top: var(--space-6);">
+              <div style="font-family: var(--ff-heading); font-size: var(--text-sm); font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--space-3);">Баланс банка</div>
+
+              <!-- Bar 1: Before -->
+              <div style="margin-bottom: var(--space-3);">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">До шока</div>
+                <div id="bar-before" style="display: flex; height: 40px; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-2);">
+                  <div id="bar-before-equity" style="background: var(--success); transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 600; color: #0F172A; white-space: nowrap; overflow: hidden;"></div>
+                  <div id="bar-before-portfolio" style="background: var(--acc); transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 600; color: #0F172A; white-space: nowrap; overflow: hidden;"></div>
+                </div>
+              </div>
+
+              <!-- Bar 2: After -->
+              <div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">После шока</div>
+                <div id="bar-after" style="display: flex; height: 40px; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-2); position: relative;">
+                  <div id="bar-after-equity" style="background: var(--success); transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 600; color: #0F172A; white-space: nowrap; overflow: hidden;"></div>
+                  <div id="bar-after-loss" style="background: var(--error); transition: width 0.4s ease; display: flex; align-items: center; justify-content: center; font-size: var(--text-xs); font-weight: 600; color: #0F172A; white-space: nowrap; overflow: hidden;"></div>
+                  <div id="bar-insolvency-label" style="display: none; position: absolute; inset: 0; background: var(--error); border-radius: var(--radius-sm); color: #fff; font-weight: 700; font-size: var(--text-sm); letter-spacing: 0.05em; justify-content: center; align-items: center;">НЕПЛАТЁЖЕСПОСОБНОСТЬ</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Results Grid -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); margin-top: var(--space-6);">
+              <div class="card-static" style="padding: var(--space-4); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Нереализованные убытки</div>
+                <div id="res-loss" style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700; color: var(--error);">—</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">&#36; млрд</div>
+              </div>
+              <div class="card-static" style="padding: var(--space-4); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Капитал после убытков</div>
+                <div id="res-capital" style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700;">—</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">&#36; млрд</div>
+              </div>
+              <div class="card-static" style="padding: var(--space-4); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Буфер капитала</div>
+                <div id="res-buffer" style="font-family: var(--ff-heading); font-size: var(--text-xl); font-weight: 700;">—</div>
+                <div style="font-size: var(--text-xs); color: var(--text-muted);">%</div>
+              </div>
+              <div class="card-static" style="padding: var(--space-4); text-align: center;">
+                <div style="font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-1);">Статус</div>
+                <div id="res-status" style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 700;">—</div>
+              </div>
+            </div>
+
+            <!-- Dynamic Warning -->
+            <div id="sim-warning" class="box-warning" style="margin-top: var(--space-5); display: none;"></div>
+
+          </div>
+
+          <!-- Duration Sim: Inline Script -->
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            var elPortfolio = document.getElementById('sim-portfolio');
+            var elDuration  = document.getElementById('sim-duration');
+            var elRate      = document.getElementById('sim-rate');
+            var elEquity    = document.getElementById('sim-equity');
+
+            if (!elPortfolio || !elDuration || !elRate || !elEquity) return;
+
+            function fmt(n, d) {
+              return n.toFixed(d === undefined ? 1 : d);
+            }
+
+            function update() {
+              var portfolio = parseFloat(elPortfolio.value);
+              var duration  = parseFloat(elDuration.value);
+              var rate      = parseFloat(elRate.value);
+              var equity    = parseFloat(elEquity.value);
+
+              // Display current slider values
+              document.getElementById('sim-portfolio-val').textContent = portfolio;
+              document.getElementById('sim-duration-val').textContent  = fmt(duration, 1);
+              document.getElementById('sim-rate-val').textContent      = fmt(rate, 2);
+              document.getElementById('sim-equity-val').textContent    = equity;
+
+              // Calculations
+              var loss          = duration * (rate / 100) * portfolio;          // ΔP (positive = loss amount)
+              var capitalAfter  = equity - loss;
+              var buffer        = loss > 0 ? (equity / loss) * 100 : Infinity;
+              var durationGap   = duration - 0.83 * 0.5;
+
+              // Results
+              document.getElementById('res-loss').textContent = fmt(loss, 1);
+
+              var capEl = document.getElementById('res-capital');
+              capEl.textContent = fmt(capitalAfter, 1);
+              capEl.style.color = capitalAfter > 0 ? 'var(--success)' : 'var(--error)';
+
+              var bufEl = document.getElementById('res-buffer');
+              if (loss <= 0) {
+                bufEl.textContent = '\u221E';
+                bufEl.style.color = 'var(--success)';
+              } else {
+                bufEl.textContent = fmt(buffer, 0);
+                if (buffer >= 100) {
+                  bufEl.style.color = 'var(--success)';
+                } else if (buffer >= 50) {
+                  bufEl.style.color = 'var(--warning)';
+                } else {
+                  bufEl.style.color = 'var(--error)';
+                }
+              }
+
+              var statusEl = document.getElementById('res-status');
+              if (capitalAfter <= 0) {
+                statusEl.textContent = '\u0422\u0435\u0445\u043D\u0438\u0447\u0435\u0441\u043A\u0438\u0439 \u0434\u0435\u0444\u043E\u043B\u0442';
+                statusEl.style.color = 'var(--error)';
+              } else if (buffer < 100) {
+                statusEl.textContent = '\u0417\u043E\u043D\u0430 \u0440\u0438\u0441\u043A\u0430';
+                statusEl.style.color = 'var(--warning)';
+              } else {
+                statusEl.textContent = '\u041F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u0435\u043D';
+                statusEl.style.color = 'var(--success)';
+              }
+
+              // Balance sheet bars
+              var total = portfolio + equity;
+              var eqPct  = (equity / total) * 100;
+              var ptfPct = (portfolio / total) * 100;
+
+              document.getElementById('bar-before-equity').style.width    = eqPct + '%';
+              document.getElementById('bar-before-equity').textContent    = '\u041A\u0430\u043F\u0438\u0442\u0430\u043B ' + equity + ' \u043C\u043B\u0440\u0434';
+              document.getElementById('bar-before-portfolio').style.width = ptfPct + '%';
+              document.getElementById('bar-before-portfolio').textContent = 'HTM ' + portfolio + ' \u043C\u043B\u0440\u0434';
+
+              var insolvencyLabel = document.getElementById('bar-insolvency-label');
+              var barAfterEquity  = document.getElementById('bar-after-equity');
+              var barAfterLoss    = document.getElementById('bar-after-loss');
+
+              if (capitalAfter <= 0) {
+                barAfterEquity.style.width = '0%';
+                barAfterEquity.textContent = '';
+                barAfterLoss.style.width   = '0%';
+                barAfterLoss.textContent   = '';
+                insolvencyLabel.style.display = 'flex';
+              } else {
+                insolvencyLabel.style.display = 'none';
+                var afterCapPct  = (capitalAfter / total) * 100;
+                var afterLossPct = (loss / total) * 100;
+                barAfterEquity.style.width = afterCapPct + '%';
+                barAfterEquity.textContent = afterCapPct > 8 ? fmt(capitalAfter, 1) + ' \u043C\u043B\u0440\u0434' : '';
+                barAfterLoss.style.width   = afterLossPct + '%';
+                barAfterLoss.textContent   = afterLossPct > 8 ? '\u2212' + fmt(loss, 1) + ' \u043C\u043B\u0440\u0434' : '';
+              }
+
+              // Warning text
+              var warnEl = document.getElementById('sim-warning');
+              if (rate === 0 || loss <= 0) {
+                warnEl.style.display = 'none';
+              } else if (capitalAfter <= 0) {
+                warnEl.style.display = 'block';
+                warnEl.innerHTML = '<strong>\u041D\u0435\u043F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u043D\u043E\u0441\u0442\u044C!</strong> \u041D\u0435\u0440\u0435\u0430\u043B\u0438\u0437\u043E\u0432\u0430\u043D\u043D\u044B\u0435 \u0443\u0431\u044B\u0442\u043A\u0438 (&#36;' + fmt(loss, 1) + ' \u043C\u043B\u0440\u0434) \u043F\u0440\u0435\u0432\u044B\u0448\u0430\u044E\u0442 \u043A\u0430\u043F\u0438\u0442\u0430\u043B (&#36;' + equity + ' \u043C\u043B\u0440\u0434) \u2014 \u0431\u0430\u043D\u043A \u0442\u0435\u0445\u043D\u0438\u0447\u0435\u0441\u043A\u0438 \u043D\u0435\u043F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u0435\u043D! Duration\u00A0Gap\u00A0=\u00A0' + fmt(durationGap, 1) + ' \u043B\u0435\u0442.';
+              } else {
+                warnEl.style.display = 'block';
+                var absorbPct = fmt((loss / equity) * 100, 0);
+                warnEl.innerHTML = '\u0423\u0431\u044B\u0442\u043A\u0438 \u043F\u043E\u0433\u043B\u043E\u0449\u0430\u044E\u0442 <strong>' + absorbPct + '%</strong> \u043A\u0430\u043F\u0438\u0442\u0430\u043B\u0430 \u2014 \u0431\u0430\u043D\u043A \u0444\u043E\u0440\u043C\u0430\u043B\u044C\u043D\u043E \u043F\u043B\u0430\u0442\u0451\u0436\u0435\u0441\u043F\u043E\u0441\u043E\u0431\u0435\u043D, \u043D\u043E \u0443\u044F\u0437\u0432\u0438\u043C. Duration\u00A0Gap\u00A0=\u00A0' + fmt(durationGap, 1) + ' \u043B\u0435\u0442.';
+              }
+            }
+
+            elPortfolio.addEventListener('input', update);
+            elDuration.addEventListener('input', update);
+            elRate.addEventListener('input', update);
+            elEquity.addEventListener('input', update);
+
+            update();
+          });
+          </script>
+
+
+          <!-- ============================================================
                CONCLUSIONS
                ============================================================ -->
           <h2>Выводы</h2>
@@ -375,6 +595,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 

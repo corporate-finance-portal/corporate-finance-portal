@@ -324,6 +324,252 @@
 
 
           <!-- ============================================================
+               IPO PRICING SIMULATOR
+               ============================================================ -->
+          <h2 id="ipo-sim" class="reveal">Симулятор ценообразования IPO</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Измените цену размещения — увидите underpricing и &laquo;деньги на столе&raquo;.</p>
+
+          <div class="card-static reveal" id="ipo-sim-wrapper" style="padding: var(--space-6); margin: var(--space-6) 0;">
+
+            <!-- Sliders -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-5); margin-bottom: var(--space-6);" id="ipo-sim-sliders-grid">
+              <div id="ipo-sim-slider-price"></div>
+              <div id="ipo-sim-slider-close"></div>
+              <div id="ipo-sim-slider-shares"></div>
+            </div>
+
+            <!-- Result Cards -->
+            <div id="ipo-sim-results" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-6);"></div>
+
+            <!-- Interpretation -->
+            <div id="ipo-sim-interpretation" style="padding: var(--space-4); border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); margin-bottom: var(--space-6);">
+            </div>
+
+            <!-- Peer Comparison Bar Chart (CSS-only) -->
+            <div style="font-family: var(--ff-heading); font-size: var(--text-base); font-weight: 600; margin-bottom: var(--space-4); color: var(--text-primary);">
+              Сравнение underpricing с аналогами
+            </div>
+            <div id="ipo-sim-peers" style="display: flex; flex-direction: column; gap: var(--space-3);"></div>
+          </div>
+
+          <style>
+            #ipo-sim-sliders-grid { }
+            @media (max-width: 640px) {
+              #ipo-sim-sliders-grid { grid-template-columns: 1fr !important; }
+            }
+
+            .ipo-peer-row {
+              display: grid;
+              grid-template-columns: 120px 1fr 60px;
+              align-items: center;
+              gap: var(--space-3);
+              font-size: var(--text-sm);
+            }
+            .ipo-peer-row__name {
+              color: var(--text-secondary);
+              font-weight: 500;
+              white-space: nowrap;
+            }
+            .ipo-peer-row__track {
+              height: 24px;
+              background: var(--surface-2);
+              border-radius: var(--radius-sm);
+              overflow: hidden;
+              position: relative;
+            }
+            .ipo-peer-row__bar {
+              height: 100%;
+              border-radius: var(--radius-sm);
+              transition: width 0.4s ease;
+              min-width: 2px;
+            }
+            .ipo-peer-row__pct {
+              font-family: var(--ff-mono);
+              font-weight: 600;
+              font-size: var(--text-sm);
+              text-align: right;
+              white-space: nowrap;
+            }
+
+            .ipo-sim-card {
+              background: var(--surface);
+              border: 1px solid var(--border);
+              border-radius: var(--radius-sm);
+              padding: var(--space-4);
+              display: flex;
+              flex-direction: column;
+              gap: var(--space-1);
+            }
+            .ipo-sim-card__label {
+              font-size: var(--text-xs);
+              color: var(--text-muted);
+            }
+            .ipo-sim-card__value {
+              font-family: var(--ff-heading);
+              font-size: var(--text-xl);
+              font-weight: 700;
+            }
+          </style>
+
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            /* ---- Constants ---- */
+            var TOTAL_ADS = 207; /* million total ADS equivalent */
+            var UNDERWRITER_FEE = 0.07;
+
+            var peers = [
+              { name: 'Coupang', pct: 41, color: 'var(--amber)' },
+              { name: 'Allegro', pct: 51, color: 'var(--amber)' },
+              { name: 'JD.com',  pct: 6,  color: 'var(--amber)' }
+            ];
+
+            /* ---- Formatting ---- */
+            var fmt = (typeof CFTools !== 'undefined' && CFTools.formatNumber)
+              ? CFTools.formatNumber
+              : function (n, d) {
+                  d = typeof d === 'number' ? d : 2;
+                  return Number(n).toLocaleString('ru-RU', {
+                    minimumFractionDigits: d,
+                    maximumFractionDigits: d
+                  });
+                };
+
+            /* ---- Sliders ---- */
+            var sPrice, sClose, sShares;
+
+            if (typeof CFTools !== 'undefined' && CFTools.createSlider) {
+              sPrice  = CFTools.createSlider('ipo-sim-slider-price',  { label: 'Цена IPO ($/ADS)',              min: 15, max: 50, step: 0.5, value: 30, unit: '$', onChange: recalc });
+              sClose  = CFTools.createSlider('ipo-sim-slider-close',  { label: 'Цена закрытия 1-го дня ($/ADS)', min: 25, max: 80, step: 0.5, value: 42, unit: '$', onChange: recalc });
+              sShares = CFTools.createSlider('ipo-sim-slider-shares', { label: 'Количество ADS (млн)',           min: 20, max: 50, step: 1,   value: 33, unit: 'млн', onChange: recalc });
+            } else {
+              /* Fallback: build sliders manually */
+              buildFallbackSlider('ipo-sim-slider-price',  'Цена IPO ($/ADS)',              15, 50, 0.5, 30, '$');
+              buildFallbackSlider('ipo-sim-slider-close',  'Цена закрытия 1-го дня ($/ADS)', 25, 80, 0.5, 42, '$');
+              buildFallbackSlider('ipo-sim-slider-shares', 'Количество ADS (млн)',           20, 50, 1,   33, 'млн');
+            }
+
+            function buildFallbackSlider(id, label, min, max, step, val, unit) {
+              var el = document.getElementById(id);
+              if (!el) return;
+              el.innerHTML =
+                '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">' +
+                  '<span style="font-size:.9rem;color:var(--text-secondary);">' + label + '</span>' +
+                  '<span class="fb-val" style="font-weight:600;color:var(--acc);font-size:.95rem;">' + fmt(val, step < 1 ? 1 : 0) + ' ' + unit + '</span>' +
+                '</div>' +
+                '<input type="range" min="' + min + '" max="' + max + '" step="' + step + '" value="' + val + '" ' +
+                'aria-label="' + label + '" style="width:100%;accent-color:var(--acc);">';
+              el.querySelector('input').addEventListener('input', function () {
+                var v = parseFloat(this.value);
+                var decimals = step < 1 ? 1 : 0;
+                el.querySelector('.fb-val').textContent = fmt(v, decimals) + ' ' + unit;
+                recalc();
+              });
+            }
+
+            function getVal(sliderId, cfSlider) {
+              if (cfSlider) return cfSlider.getValue();
+              var inp = document.querySelector('#' + sliderId + ' input[type=range]');
+              return inp ? parseFloat(inp.value) : 0;
+            }
+
+            /* ---- Recalculation ---- */
+            function recalc() {
+              var pIpo    = getVal('ipo-sim-slider-price',  sPrice);
+              var pClose  = getVal('ipo-sim-slider-close',  sClose);
+              var shares  = getVal('ipo-sim-slider-shares', sShares);
+
+              var underpricing    = (pClose - pIpo) / pIpo * 100;
+              var moneyOnTable    = (pClose - pIpo) * shares;          /* $ millions */
+              var raised          = pIpo * shares;                     /* $ millions */
+              var mcapIpo         = (pIpo * TOTAL_ADS) / 1000;        /* $ billions */
+              var mcapClose       = (pClose * TOTAL_ADS) / 1000;      /* $ billions */
+              var underwriterFee  = pIpo * shares * UNDERWRITER_FEE;  /* $ millions */
+
+              /* ---- Result Cards ---- */
+              var resultsEl = document.getElementById('ipo-sim-results');
+              resultsEl.innerHTML = '';
+
+              var cards = [
+                { label: 'Underpricing',              value: fmt(underpricing, 1) + '%',                   color: 'var(--acc)' },
+                { label: 'Деньги на столе',           value: '&#36;' + fmt(moneyOnTable, 1) + ' млн',     color: 'var(--error)' },
+                { label: 'Привлечено',                value: '&#36;' + fmt(raised, 1) + ' млн',           color: 'var(--success)' },
+                { label: 'Market cap (IPO)',           value: '&#36;' + fmt(mcapIpo, 2) + ' млрд',        color: 'var(--text-primary)' },
+                { label: 'Market cap (закрытие)',      value: '&#36;' + fmt(mcapClose, 2) + ' млрд',      color: 'var(--text-primary)' },
+                { label: 'Комиссия андеррайтеров (7%)', value: '&#36;' + fmt(underwriterFee, 1) + ' млн', color: 'var(--amber)' }
+              ];
+
+              cards.forEach(function (c) {
+                var div = document.createElement('div');
+                div.className = 'ipo-sim-card';
+                div.innerHTML =
+                  '<span class="ipo-sim-card__label">' + c.label + '</span>' +
+                  '<span class="ipo-sim-card__value" style="color:' + c.color + ';">' + c.value + '</span>';
+                resultsEl.appendChild(div);
+              });
+
+              /* ---- Interpretation ---- */
+              var interpEl = document.getElementById('ipo-sim-interpretation');
+              var msg, msgColor;
+              if (underpricing > 30) {
+                msg = 'Высокий underpricing — значительные деньги оставлены на столе';
+                msgColor = 'var(--error)';
+              } else if (underpricing >= 10) {
+                msg = 'Умеренный underpricing — типичный для tech-IPO';
+                msgColor = 'var(--amber)';
+              } else if (underpricing >= 0) {
+                msg = 'Низкий underpricing — эффективное ценообразование';
+                msgColor = 'var(--success)';
+              } else {
+                msg = 'Акции торгуются ниже цены IPO (overpricing)';
+                msgColor = 'var(--coral)';
+              }
+              interpEl.innerHTML =
+                '<span style="font-size:var(--text-sm);color:' + msgColor + ';font-weight:600;">' + msg + '</span>';
+
+              /* ---- Peer Bars ---- */
+              renderPeers(underpricing);
+            }
+
+            /* ---- Peer Comparison Bars (CSS-only) ---- */
+            function renderPeers(ozonPct) {
+              var peersEl = document.getElementById('ipo-sim-peers');
+              peersEl.innerHTML = '';
+
+              var allPcts = [Math.abs(ozonPct)].concat(peers.map(function (p) { return p.pct; }));
+              var maxPct = Math.max.apply(null, allPcts);
+              if (maxPct === 0) maxPct = 1;
+
+              /* Ozon row (dynamic) */
+              var ozonColor = ozonPct < 0 ? 'var(--coral)' : 'var(--acc)';
+              var ozonWidth = Math.abs(ozonPct) / maxPct * 100;
+              addPeerRow(peersEl, 'Ozon', ozonPct, ozonWidth, ozonColor);
+
+              /* Static peers */
+              peers.forEach(function (p) {
+                var w = p.pct / maxPct * 100;
+                addPeerRow(peersEl, p.name, p.pct, w, p.color);
+              });
+            }
+
+            function addPeerRow(parent, name, pct, widthPct, barColor) {
+              var row = document.createElement('div');
+              row.className = 'ipo-peer-row';
+              row.innerHTML =
+                '<span class="ipo-peer-row__name">' + name + '</span>' +
+                '<div class="ipo-peer-row__track">' +
+                  '<div class="ipo-peer-row__bar" style="width:' + Math.max(widthPct, 0.5) + '%;background:' + barColor + ';"></div>' +
+                '</div>' +
+                '<span class="ipo-peer-row__pct" style="color:' + barColor + ';">' + fmt(pct, 1) + '%</span>';
+              parent.appendChild(row);
+            }
+
+            /* ---- Initial render ---- */
+            recalc();
+          });
+          </script>
+
+
+          <!-- ============================================================
                CONCLUSIONS
                ============================================================ -->
           <h2>Выводы</h2>
@@ -442,6 +688,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 
