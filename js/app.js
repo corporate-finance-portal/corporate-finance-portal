@@ -178,6 +178,41 @@ document.addEventListener('DOMContentLoaded', () => {
         'https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js';
       autoRender.onload = function () {
         if (typeof renderMathInElement === 'function') {
+          // Protect currency "$42", "$209B" etc. from being matched as
+          // KaTeX inline-math delimiters.  Walk text nodes that contain
+          // "$<digit>" but NO LaTeX commands (\, {, }, ^, _) and wrap
+          // every "$" in a <span> — this breaks the text node so KaTeX
+          // can never pair two "$" signs across span boundaries.
+          (function () {
+            var w = document.createTreeWalker(
+              document.body, NodeFilter.SHOW_TEXT, null, false
+            );
+            var fix = [];
+            while (w.nextNode()) {
+              var n = w.currentNode;
+              var p = n.parentElement;
+              if (!p) continue;
+              if (/^(script|style|code|pre|textarea|annotation)$/i.test(p.tagName)) continue;
+              var t = n.textContent;
+              if (/\$\d/.test(t) && !/[\\{}^_]/.test(t)) fix.push(n);
+            }
+            fix.forEach(function (node) {
+              var parts = node.textContent.split(/(\$)/);
+              if (parts.length < 3) return;
+              var frag = document.createDocumentFragment();
+              parts.forEach(function (part) {
+                if (part === '$') {
+                  var s = document.createElement('span');
+                  s.textContent = '$';
+                  frag.appendChild(s);
+                } else {
+                  frag.appendChild(document.createTextNode(part));
+                }
+              });
+              node.parentNode.replaceChild(frag, node);
+            });
+          })();
+
           renderMathInElement(document.body, {
             delimiters: [
               { left: '$$', right: '$$', display: true },
