@@ -374,6 +374,24 @@
 
 
           <!-- ============================================================
+               DIVIDEND SIMULATOR
+               ============================================================ -->
+          <div class="box-example reveal" id="dividend-tool">
+            <h4>Дивидендный симулятор</h4>
+            <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
+              Что если бы Газпром стабильно выплачивал фиксированный процент прибыли?
+            </p>
+
+            <div style="margin-bottom: var(--space-4);">
+              <div id="slider-payout"></div>
+            </div>
+
+            <div id="dividend-comparison" style="margin-bottom: var(--space-4);"></div>
+            <div id="dividend-summary"></div>
+          </div>
+
+
+          <!-- ============================================================
                DISCUSSION QUESTIONS
                ============================================================ -->
           <h2>Вопросы для обсуждения</h2>
@@ -469,6 +487,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 
@@ -574,6 +593,157 @@
         });
       }
     });
+  </script>
+
+  <!-- Page-specific: Dividend Simulator -->
+  <script>
+    (function () {
+      'use strict';
+
+      // Wait for CFTools to be available (loaded via interactive-tools.js)
+      function boot() {
+        if (!window.CFTools) {
+          setTimeout(boot, 50);
+          return;
+        }
+        initDividendSimulator();
+      }
+
+      function initDividendSimulator() {
+        var fmt = window.CFTools.formatNumber;
+
+        // Gazprom data from case table (2018-2024)
+        // Net profit in trillions of rubles; actual dividend per share in rubles
+        // Total shares: 23.67 billion (from Step 5 in the case)
+        var TOTAL_SHARES = 23.67; // billions
+        var data = [
+          { year: 2018, netProfit: 1.456, actualDiv: 16.61 },
+          { year: 2019, netProfit: 1.203, actualDiv: 15.24 },
+          { year: 2020, netProfit: 0.162, actualDiv: 12.55 },
+          { year: 2021, netProfit: 2.160, actualDiv: 0.00  },
+          { year: 2022, netProfit: -0.629, actualDiv: 0.00 },
+          { year: 2023, netProfit: 0.724, actualDiv: 0.00  },
+          { year: 2024, netProfit: 1.219, actualDiv: 0.00  }
+        ];
+
+        // Create payout ratio slider (0-100%, step 5, default 50)
+        var slider = window.CFTools.createSlider('slider-payout', {
+          label: 'Коэффициент выплат (Payout Ratio)',
+          min: 0,
+          max: 100,
+          step: 5,
+          value: 50,
+          unit: '%',
+          onChange: function (val) {
+            render(val);
+          }
+        });
+
+        // Initial render
+        render(50);
+
+        function render(payoutPercent) {
+          var ratio = payoutPercent / 100;
+          renderTable(ratio);
+          renderSummary(ratio);
+        }
+
+        function calcHypothetical(row, ratio) {
+          // No dividends on losses
+          if (row.netProfit <= 0) return 0;
+          // Hypothetical dividend per share = (netProfit * ratio) / totalShares
+          // netProfit is in trillions, totalShares is in billions => result is in thousands of rubles
+          // 1 trillion / 1 billion = 1000 rubles
+          return (row.netProfit * ratio * 1000) / TOTAL_SHARES;
+        }
+
+        function renderTable(ratio) {
+          var container = document.getElementById('dividend-comparison');
+          if (!container) return;
+
+          var html = '<div class="data-table-wrapper">' +
+            '<table class="data-table">' +
+            '<thead><tr>' +
+            '<th>Год</th>' +
+            '<th style="text-align:right;">Чистая прибыль (трлн руб.)</th>' +
+            '<th style="text-align:right;">Факт. дивиденд (руб./акцию)</th>' +
+            '<th style="text-align:right;">Гипотет. дивиденд (руб./акцию)</th>' +
+            '<th style="text-align:right;">Разница (руб.)</th>' +
+            '</tr></thead><tbody>';
+
+          data.forEach(function (row) {
+            var hyp = calcHypothetical(row, ratio);
+            var diff = hyp - row.actualDiv;
+            var diffColor = diff > 0.005
+              ? 'var(--success)'
+              : diff < -0.005
+                ? 'var(--error)'
+                : 'var(--text-secondary)';
+            var diffSign = diff > 0.005 ? '+' : '';
+
+            html += '<tr>' +
+              '<td>' + row.year + '</td>' +
+              '<td class="number">' + fmt(row.netProfit, 3) + '</td>' +
+              '<td class="number">' + fmt(row.actualDiv, 2) + '</td>' +
+              '<td class="number" style="color:var(--acc);font-weight:600;">' +
+                fmt(hyp, 2) + '</td>' +
+              '<td class="number" style="color:' + diffColor + ';font-weight:600;">' +
+                diffSign + fmt(diff, 2) + '</td>' +
+              '</tr>';
+          });
+
+          html += '</tbody></table></div>';
+          container.innerHTML = html;
+        }
+
+        function renderSummary(ratio) {
+          var totalActual = 0;
+          var totalHyp = 0;
+          var missedYears = 0;
+
+          data.forEach(function (row) {
+            totalActual += row.actualDiv;
+            var hyp = calcHypothetical(row, ratio);
+            totalHyp += hyp;
+            // A year where hypothetical > 0 but actual = 0 counts as "missed"
+            if (hyp > 0.01 && row.actualDiv < 0.01) {
+              missedYears++;
+            }
+          });
+
+          var totalDiff = totalHyp - totalActual;
+
+          var items = [
+            {
+              label: 'Сумма факт. дивидендов (руб./акцию)',
+              value: fmt(totalActual, 2) + ' руб.'
+            },
+            {
+              label: 'Сумма гипотет. дивидендов (руб./акцию)',
+              value: fmt(totalHyp, 2) + ' руб.',
+              highlight: true
+            },
+            {
+              label: 'Разница за 7 лет',
+              value: (totalDiff >= 0 ? '+' : '') + fmt(totalDiff, 2) + ' руб.'
+            },
+            {
+              label: 'Пропущенных выплат',
+              value: missedYears + ' из 7 лет'
+            }
+          ];
+
+          window.CFTools.createResultCard('dividend-summary', items);
+        }
+      }
+
+      // Boot when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else {
+        boot();
+      }
+    })();
   </script>
 
 </body>

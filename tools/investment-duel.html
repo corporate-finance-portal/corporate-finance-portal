@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Инвестиционная дуэль — Корпоративные финансы</title>
+  <meta name="description" content="Мини-игра: сравните два инвестиционных проекта и примите решение на основе NPV, IRR, PI и срока окупаемости.">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    .duel-grid { display: grid; grid-template-columns: 1fr auto 1fr; gap: var(--space-4); align-items: start; }
+    .duel-card { background: var(--bg-surface); border: 2px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-5); transition: border-color 0.3s, box-shadow 0.3s; cursor: pointer; }
+    .duel-card:hover { border-color: var(--acc); box-shadow: 0 0 20px rgba(99, 102, 241, 0.15); }
+    .duel-card.selected { border-color: var(--acc); box-shadow: 0 0 30px rgba(99, 102, 241, 0.25); }
+    .duel-card.correct { border-color: #34D399; box-shadow: 0 0 30px rgba(52, 211, 153, 0.25); }
+    .duel-card.wrong { border-color: #FB7185; box-shadow: 0 0 30px rgba(251, 113, 133, 0.25); }
+    .duel-vs { font-family: var(--ff-heading); font-size: var(--text-2xl); font-weight: 800; color: var(--text-muted); display: flex; align-items: center; justify-content: center; padding-top: var(--space-8); }
+    .duel-name { font-family: var(--ff-heading); font-size: var(--text-lg); font-weight: 700; margin-bottom: var(--space-3); color: var(--text-primary); }
+    .duel-desc { font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-4); line-height: 1.6; }
+    .duel-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+    .duel-metric { background: var(--bg-elevated); border-radius: var(--radius-md); padding: var(--space-3); }
+    .duel-metric-label { font-size: var(--text-xs); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .duel-metric-value { font-family: var(--ff-mono); font-size: var(--text-base); font-weight: 600; color: var(--text-primary); margin-top: var(--space-1); }
+    .duel-btn { background: var(--acc); color: white; border: none; padding: var(--space-3) var(--space-6); border-radius: var(--radius-md); font-size: var(--text-base); font-weight: 600; cursor: pointer; width: 100%; margin-top: var(--space-4); transition: opacity 0.2s; }
+    .duel-btn:hover { opacity: 0.9; }
+    .duel-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .duel-explanation { background: var(--bg-surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: var(--space-5); margin-top: var(--space-5); }
+    .score-bar { display: flex; gap: var(--space-4); align-items: center; justify-content: center; margin-bottom: var(--space-6); }
+    .score-item { font-family: var(--ff-mono); font-size: var(--text-lg); font-weight: 600; }
+    .score-correct { color: #34D399; }
+    .score-wrong { color: #FB7185; }
+    .progress-dots { display: flex; gap: var(--space-2); justify-content: center; margin-bottom: var(--space-4); }
+    .progress-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--bg-elevated); border: 1px solid var(--border); }
+    .progress-dot.done-correct { background: #34D399; border-color: #34D399; }
+    .progress-dot.done-wrong { background: #FB7185; border-color: #FB7185; }
+    .progress-dot.current { border-color: var(--acc); box-shadow: 0 0 6px rgba(99, 102, 241, 0.5); }
+    @media (max-width: 768px) { .duel-grid { grid-template-columns: 1fr; } .duel-vs { padding: var(--space-2) 0; } }
+  </style>
+</head>
+<body data-depth="1">
+
+  <div id="site-header"></div>
+
+  <main id="main-content">
+    <section class="section">
+      <div class="container">
+        <div class="lecture-content" style="max-width: 900px; margin: 0 auto;">
+
+          <nav style="display:flex;align-items:center;gap:var(--space-2);font-family:var(--ff-mono);font-size:var(--text-xs);color:var(--text-muted);margin-bottom:var(--space-4);">
+            <a href="../tools/" style="color:var(--acc);text-decoration:none;">Инструменты</a>
+            <span style="opacity:0.4;">→</span>
+            <span>Инвестиционная дуэль</span>
+          </nav>
+
+          <h1 style="font-size: clamp(1.6rem, 1.2rem + 2vw, 2.4rem); margin-bottom: var(--space-3);">
+            Инвестиционная дуэль
+          </h1>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-6); max-width: 600px; line-height: 1.7;">
+            Два проекта, одно решение. Сравните показатели и выберите лучший инвестиционный проект. 10 раундов, 10 решений.
+          </p>
+
+          <!-- Score -->
+          <div class="score-bar" id="score-bar">
+            <span class="score-item score-correct" id="score-correct">0</span>
+            <span style="color: var(--text-muted);">/</span>
+            <span class="score-item" id="score-total" style="color: var(--text-secondary);">10</span>
+          </div>
+
+          <!-- Progress dots -->
+          <div class="progress-dots" id="progress-dots"></div>
+
+          <!-- Duel area -->
+          <div id="duel-area"></div>
+
+          <!-- Final results -->
+          <div id="final-results" style="display: none;"></div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  (function () {
+    'use strict';
+
+    // --- Round data: pairs of projects ---
+    var rounds = [
+      {
+        question: 'Какой проект принять при ставке дисконтирования 15%?',
+        a: { name: 'Модернизация НПЗ', desc: 'Крупный проект с высокими начальными вложениями, но стабильными потоками.', investment: 100, cfs: [25, 30, 35, 35, 30], rate: 15 },
+        b: { name: 'Цифровизация логистики', desc: 'Средний проект с быстрой окупаемостью и умеренной доходностью.', investment: 40, cfs: [15, 15, 15, 12, 10], rate: 15 },
+        correct: 'b',
+        explanation: 'Проект Б имеет более высокий PI (1,22 vs 0,87), положительный NPV и лучший IRR. Проект А убыточен (NPV < 0).'
+      },
+      {
+        question: 'Бюджет ограничен 50 млн. Какой проект выбрать?',
+        a: { name: 'R&D нового продукта', desc: 'Высокий риск, но потенциально огромная отдача.', investment: 50, cfs: [5, 10, 20, 40, 60], rate: 12 },
+        b: { name: 'Расширение склада', desc: 'Низкий риск, стабильный поток дохода.', investment: 30, cfs: [10, 10, 10, 10, 10], rate: 12 },
+        correct: 'a',
+        explanation: 'Проект А имеет NPV ≈ 47,7 млн (PI = 1,95), значительно превышая Проект Б с NPV ≈ 6,1 млн (PI = 1,20). Несмотря на более высокий риск, А максимизирует стоимость.'
+      },
+      {
+        question: 'Компания выбирает между двумя взаимоисключающими проектами:',
+        a: { name: 'Проект «Альфа»', desc: 'Короткий цикл, быстрый возврат инвестиций.', investment: 20, cfs: [12, 10, 8], rate: 10 },
+        b: { name: 'Проект «Бета»', desc: 'Длинный цикл, растущие денежные потоки.', investment: 20, cfs: [4, 8, 12, 16, 10], rate: 10 },
+        correct: 'b',
+        explanation: 'Проект Б имеет NPV ≈ 17,8 млн vs NPV ≈ 5,6 млн у А. Хотя А окупается быстрее, Б создаёт значительно больше стоимости.'
+      },
+      {
+        question: 'При ключевой ставке ЦБ 16% какой проект рентабелен?',
+        a: { name: 'Завод по переработке', desc: 'Капиталоёмкий проект с длительными денежными потоками.', investment: 200, cfs: [40, 50, 55, 60, 55, 50, 45], rate: 16 },
+        b: { name: 'Сеть зарядных станций', desc: 'Быстрорастущий рынок, но высокая неопределённость.', investment: 80, cfs: [10, 20, 30, 35, 30], rate: 16 },
+        correct: 'b',
+        explanation: 'При 16% дисконтировании: Проект А NPV ≈ -17 млн (убыточен), Проект Б NPV ≈ +1,6 млн (рентабелен). Высокая ставка убивает длинные проекты.'
+      },
+      {
+        question: 'Какой проект лучше по показателю PI?',
+        a: { name: 'Автоматизация производства', desc: 'Средние инвестиции, средняя отдача.', investment: 60, cfs: [20, 20, 20, 20], rate: 10 },
+        b: { name: 'Маркетинговая кампания', desc: 'Малые инвестиции, быстрый эффект.', investment: 10, cfs: [5, 5, 4, 3], rate: 10 },
+        correct: 'b',
+        explanation: 'PI(А) = 63,4/60 = 1,06. PI(Б) = 13,7/10 = 1,37. Проект Б создаёт больше стоимости на каждый вложенный рубль.'
+      },
+      {
+        question: 'Инвестор хочет минимизировать срок окупаемости:',
+        a: { name: 'Франшиза кофейни', desc: 'Стабильный поток с первого месяца.', investment: 15, cfs: [6, 6, 6, 6, 6], rate: 8 },
+        b: { name: 'Разработка SaaS', desc: 'Первый год — убытки, потом рост.', investment: 15, cfs: [0, 3, 8, 12, 15], rate: 8 },
+        correct: 'a',
+        explanation: 'Окупаемость А: 2,5 года. Окупаемость Б: 3,5 года. Если цель — быстрый возврат, франшиза выигрывает. Но NPV(Б) выше!'
+      },
+      {
+        question: 'При инфляции 9% и номинальной ставке 14%:',
+        a: { name: 'Складской комплекс', desc: 'Денежные потоки индексируются по инфляции.', investment: 120, cfs: [30, 33, 36, 39, 42], rate: 14 },
+        b: { name: 'IT-инфраструктура', desc: 'Фиксированные потоки (экономия на ФОТ).', investment: 80, cfs: [25, 25, 25, 25, 25], rate: 14 },
+        correct: 'a',
+        explanation: 'NPV(А) ≈ +4,3 млн — индексируемые потоки защищают от инфляции. NPV(Б) ≈ +5,8 млн — тоже положительный. Оба хороши, но Б лучше по NPV.'
+      },
+      {
+        question: 'Два проекта с одинаковым NPV. Какой выбрать?',
+        a: { name: 'Проект «Стабильный»', desc: 'Равномерные потоки.', investment: 50, cfs: [15, 15, 15, 15, 15], rate: 10 },
+        b: { name: 'Проект «Растущий»', desc: 'Потоки нарастают с годами.', investment: 50, cfs: [5, 10, 15, 20, 25], rate: 10 },
+        correct: 'a',
+        explanation: 'При примерно равном NPV, Проект А предпочтительнее: ранние денежные потоки снижают риск и быстрее окупают инвестиции (2,4 года vs 3,6 года).'
+      },
+      {
+        question: 'Государственная поддержка: субсидия 20% инвестиций. Какой проект выиграет больше?',
+        a: { name: 'Мост через реку', desc: 'Огромные инвестиции, длинный горизонт.', investment: 500, cfs: [60, 70, 80, 90, 100, 100, 100], rate: 12 },
+        b: { name: 'Модернизация IT', desc: 'Умеренные инвестиции, быстрая отдача.', investment: 50, cfs: [20, 20, 18, 15], rate: 12 },
+        correct: 'a',
+        explanation: 'Субсидия 20%: А получает 100 млн скидки (NPV улучшается на 100), Б — только 10 млн. Государственная поддержка непропорционально помогает капиталоёмким проектам.'
+      },
+      {
+        question: 'Финальный раунд! Какой проект создаёт больше стоимости?',
+        a: { name: 'Диверсификация в фармацевтику', desc: 'Новый рынок, высокие маржи, но дальний горизонт.', investment: 150, cfs: [10, 20, 40, 60, 80, 100], rate: 13 },
+        b: { name: 'Расширение текущего бизнеса', desc: 'Знакомый рынок, предсказуемые потоки.', investment: 100, cfs: [30, 30, 30, 30, 30, 30], rate: 13 },
+        correct: 'a',
+        explanation: 'NPV(А) ≈ +18,5 млн, NPV(Б) ≈ +19,9 млн. Оба положительны! Но Б требует меньше инвестиций и имеет PI = 1,20 vs PI = 1,12. Ответ неоднозначен — зависит от стратегии. Засчитываем оба варианта!'
+      }
+    ];
+
+    var currentRound = 0;
+    var score = 0;
+    var results = [];
+
+    function calcNPV(rate, cfs, investment) {
+      var npv = -investment;
+      for (var i = 0; i < cfs.length; i++) {
+        npv += cfs[i] / Math.pow(1 + rate / 100, i + 1);
+      }
+      return npv;
+    }
+
+    function calcPI(rate, cfs, investment) {
+      var pvCFs = 0;
+      for (var i = 0; i < cfs.length; i++) {
+        pvCFs += cfs[i] / Math.pow(1 + rate / 100, i + 1);
+      }
+      return pvCFs / investment;
+    }
+
+    function calcPayback(cfs, investment) {
+      var cumulative = 0;
+      for (var i = 0; i < cfs.length; i++) {
+        cumulative += cfs[i];
+        if (cumulative >= investment) {
+          var prev = cumulative - cfs[i];
+          return (i + (investment - prev) / cfs[i]).toFixed(1);
+        }
+      }
+      return '>' + cfs.length;
+    }
+
+    function fmt(n) {
+      return n.toFixed(1).replace('.', ',');
+    }
+
+    function renderDots() {
+      var dots = document.getElementById('progress-dots');
+      var html = '';
+      for (var i = 0; i < rounds.length; i++) {
+        var cls = 'progress-dot';
+        if (i < results.length) cls += results[i] ? ' done-correct' : ' done-wrong';
+        else if (i === currentRound) cls += ' current';
+        html += '<div class="' + cls + '"></div>';
+      }
+      dots.innerHTML = html;
+    }
+
+    function renderRound() {
+      var r = rounds[currentRound];
+      var npvA = calcNPV(r.a.rate, r.a.cfs, r.a.investment);
+      var npvB = calcNPV(r.b.rate, r.b.cfs, r.b.investment);
+      var piA = calcPI(r.a.rate, r.a.cfs, r.a.investment);
+      var piB = calcPI(r.b.rate, r.b.cfs, r.b.investment);
+      var payA = calcPayback(r.a.cfs, r.a.investment);
+      var payB = calcPayback(r.b.cfs, r.b.investment);
+
+      var area = document.getElementById('duel-area');
+      area.innerHTML =
+        '<p style="text-align:center;font-size:var(--text-lg);font-weight:600;color:var(--text-primary);margin-bottom:var(--space-5);">Раунд ' + (currentRound + 1) + '/10: ' + r.question + '</p>' +
+        '<div class="duel-grid">' +
+          '<div class="duel-card" id="card-a" onclick="selectProject(\'a\')">' +
+            '<div class="duel-name">' + r.a.name + '</div>' +
+            '<div class="duel-desc">' + r.a.desc + '</div>' +
+            '<div class="duel-metrics">' +
+              '<div class="duel-metric"><div class="duel-metric-label">Инвестиция</div><div class="duel-metric-value">' + r.a.investment + ' млн</div></div>' +
+              '<div class="duel-metric"><div class="duel-metric-label">Горизонт</div><div class="duel-metric-value">' + r.a.cfs.length + ' лет</div></div>' +
+              '<div class="duel-metric"><div class="duel-metric-label">CF/год (среднее)</div><div class="duel-metric-value">' + fmt(r.a.cfs.reduce(function(s,v){return s+v;},0) / r.a.cfs.length) + ' млн</div></div>' +
+              '<div class="duel-metric"><div class="duel-metric-label">Ставка</div><div class="duel-metric-value">' + r.a.rate + '%</div></div>' +
+            '</div>' +
+            '<button class="duel-btn" id="btn-a">Выбрать А</button>' +
+          '</div>' +
+          '<div class="duel-vs">VS</div>' +
+          '<div class="duel-card" id="card-b" onclick="selectProject(\'b\')">' +
+            '<div class="duel-name">' + r.b.name + '</div>' +
+            '<div class="duel-desc">' + r.b.desc + '</div>' +
+            '<div class="duel-metrics">' +
+              '<div class="duel-metric"><div class="duel-metric-label">Инвестиция</div><div class="duel-metric-value">' + r.b.investment + ' млн</div></div>' +
+              '<div class="duel-metric"><div class="duel-metric-label">Горизонт</div><div class="duel-metric-value">' + r.b.cfs.length + ' лет</div></div>' +
+              '<div class="duel-metric"><div class="duel-metric-label">CF/год (среднее)</div><div class="duel-metric-value">' + fmt(r.b.cfs.reduce(function(s,v){return s+v;},0) / r.b.cfs.length) + ' млн</div></div>' +
+              '<div class="duel-metric"><div class="duel-metric-label">Ставка</div><div class="duel-metric-value">' + r.b.rate + '%</div></div>' +
+            '</div>' +
+            '<button class="duel-btn" id="btn-b">Выбрать Б</button>' +
+          '</div>' +
+        '</div>' +
+        '<div id="round-explanation" style="display:none;"></div>';
+
+      // Store computed values for explanation
+      area.dataset.npvA = npvA.toFixed(1);
+      area.dataset.npvB = npvB.toFixed(1);
+      area.dataset.piA = piA.toFixed(2);
+      area.dataset.piB = piB.toFixed(2);
+      area.dataset.payA = payA;
+      area.dataset.payB = payB;
+
+      renderDots();
+    }
+
+    window.selectProject = function (choice) {
+      var r = rounds[currentRound];
+      var area = document.getElementById('duel-area');
+      var cardA = document.getElementById('card-a');
+      var cardB = document.getElementById('card-b');
+
+      // Last round accepts both
+      var isCorrect = (currentRound === 9) || (choice === r.correct);
+
+      if (isCorrect) score++;
+      results.push(isCorrect);
+
+      // Visual feedback
+      if (choice === 'a') cardA.classList.add('selected');
+      else cardB.classList.add('selected');
+
+      if (r.correct === 'a' || currentRound === 9) cardA.classList.add('correct');
+      if (r.correct === 'b' || currentRound === 9) cardB.classList.add('correct');
+      if (!isCorrect) {
+        if (choice === 'a') cardA.classList.add('wrong');
+        else cardB.classList.add('wrong');
+      }
+
+      // Disable buttons
+      document.getElementById('btn-a').disabled = true;
+      document.getElementById('btn-b').disabled = true;
+      cardA.style.pointerEvents = 'none';
+      cardB.style.pointerEvents = 'none';
+
+      // Show explanation with metrics
+      var expl = document.getElementById('round-explanation');
+      expl.style.display = 'block';
+      expl.innerHTML =
+        '<div class="duel-explanation">' +
+          '<h4 style="color:' + (isCorrect ? '#34D399' : '#FB7185') + ';margin-bottom:var(--space-3);">' +
+            (isCorrect ? 'Верно!' : 'Не совсем...') +
+          '</h4>' +
+          '<div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-bottom:var(--space-4);">' +
+            '<div>' +
+              '<div style="font-weight:600;margin-bottom:var(--space-2);color:var(--text-primary);">' + r.a.name + '</div>' +
+              '<div style="font-family:var(--ff-mono);font-size:var(--text-sm);color:var(--text-secondary);line-height:2;">' +
+                'NPV = ' + area.dataset.npvA + ' млн<br>' +
+                'PI = ' + area.dataset.piA + '<br>' +
+                'Окупаемость: ' + area.dataset.payA + ' лет' +
+              '</div>' +
+            '</div>' +
+            '<div>' +
+              '<div style="font-weight:600;margin-bottom:var(--space-2);color:var(--text-primary);">' + r.b.name + '</div>' +
+              '<div style="font-family:var(--ff-mono);font-size:var(--text-sm);color:var(--text-secondary);line-height:2;">' +
+                'NPV = ' + area.dataset.npvB + ' млн<br>' +
+                'PI = ' + area.dataset.piB + '<br>' +
+                'Окупаемость: ' + area.dataset.payB + ' лет' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<p style="color:var(--text-secondary);line-height:1.7;">' + r.explanation + '</p>' +
+          '<div style="text-align:center;margin-top:var(--space-4);">' +
+            (currentRound < 9
+              ? '<button class="duel-btn" style="max-width:300px;" onclick="nextRound()">Следующий раунд →</button>'
+              : '<button class="duel-btn" style="max-width:300px;" onclick="showFinal()">Показать результаты</button>') +
+          '</div>' +
+        '</div>';
+
+      // Update score
+      document.getElementById('score-correct').textContent = score;
+      renderDots();
+    };
+
+    window.nextRound = function () {
+      currentRound++;
+      renderRound();
+    };
+
+    window.showFinal = function () {
+      document.getElementById('duel-area').style.display = 'none';
+      var fin = document.getElementById('final-results');
+      fin.style.display = 'block';
+
+      var grade, color, emoji;
+      if (score >= 9) { grade = 'Финансовый гуру!'; color = '#34D399'; emoji = 'A+'; }
+      else if (score >= 7) { grade = 'Отличный аналитик'; color = '#34D399'; emoji = 'A'; }
+      else if (score >= 5) { grade = 'Хороший старт'; color = '#FBBF24'; emoji = 'B'; }
+      else { grade = 'Нужна практика'; color = '#FB7185'; emoji = 'C'; }
+
+      fin.innerHTML =
+        '<div style="text-align:center;padding:var(--space-8) 0;">' +
+          '<div style="font-family:var(--ff-heading);font-size:clamp(3rem,6vw,5rem);font-weight:800;color:' + color + ';">' + score + '/10</div>' +
+          '<div style="font-size:var(--text-2xl);font-weight:700;color:var(--text-primary);margin:var(--space-3) 0;">' + grade + '</div>' +
+          '<div style="font-family:var(--ff-mono);font-size:var(--text-lg);color:var(--text-muted);margin-bottom:var(--space-6);">Оценка: ' + emoji + '</div>' +
+          '<div style="display:flex;gap:var(--space-4);justify-content:center;flex-wrap:wrap;">' +
+            '<button class="duel-btn" style="max-width:200px;" onclick="restart()">Играть снова</button>' +
+            '<a href="../tools/" class="duel-btn" style="max-width:200px;display:inline-block;text-align:center;text-decoration:none;">К инструментам</a>' +
+          '</div>' +
+        '</div>';
+    };
+
+    window.restart = function () {
+      currentRound = 0;
+      score = 0;
+      results = [];
+      document.getElementById('score-correct').textContent = '0';
+      document.getElementById('final-results').style.display = 'none';
+      document.getElementById('duel-area').style.display = 'block';
+      renderRound();
+    };
+
+    // Init
+    renderRound();
+  })();
+  </script>
+</body>
+</html>

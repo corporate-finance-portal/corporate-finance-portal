@@ -381,6 +381,35 @@
             </p>
           </div>
 
+          <!-- ============================================================
+               INTERACTIVE SENSITIVITY TOOL
+               ============================================================ -->
+          <div class="box-example reveal" id="sensitivity-tool" style="margin-top: var(--space-6);">
+            <h4>Интерактивный анализ чувствительности</h4>
+            <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
+              Измените параметры и наблюдайте, как они влияют на WACC и NPV проекта:
+            </p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-5); margin-bottom: var(--space-5);">
+              <!-- Sliders -->
+              <div>
+                <div id="slider-rf" style="margin-bottom: var(--space-4);"></div>
+                <div id="slider-beta" style="margin-bottom: var(--space-4);"></div>
+                <div id="slider-erp" style="margin-bottom: var(--space-4);"></div>
+                <div id="slider-wd" style="margin-bottom: var(--space-4);"></div>
+                <div id="slider-kd" style="margin-bottom: var(--space-4);"></div>
+              </div>
+              <!-- Results -->
+              <div id="sensitivity-results"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: var(--space-3);">
+              <button onclick="resetSliders()" style="background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-sm);">
+                Сбросить к базовым значениям
+              </button>
+            </div>
+          </div>
+
 
           <!-- ============================================================
                CONCLUSIONS
@@ -501,6 +530,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 
@@ -594,6 +624,145 @@
         });
       }
     });
+
+    /* ================================================================
+       Interactive Sensitivity Analysis — Lukoil WACC / NPV
+       Waits for CFTools (interactive-tools.js) then builds sliders.
+       ================================================================ */
+    (function () {
+      var INVESTMENT = 45000;
+      var CASHFLOWS  = [5000, 8000, 10000, 12000, 11000, 9000, 8000];
+      var TAX_RATE   = 0;  // kd slider is already after-tax
+
+      var DEFAULTS = {
+        rf:   14.6,
+        beta: 0.95,
+        erp:  6.0,
+        wd:   10,
+        kd:   10.5
+      };
+
+      var sliders = {};
+
+      function init() {
+        sliders.rf = CFTools.createSlider('slider-rf', {
+          label: 'Безрисковая ставка (rf)',
+          min: 5, max: 20, step: 0.5,
+          value: DEFAULTS.rf, unit: '%',
+          onChange: recalculate
+        });
+
+        sliders.beta = CFTools.createSlider('slider-beta', {
+          label: 'Бета-коэффициент',
+          min: 0.5, max: 2.0, step: 0.05,
+          value: DEFAULTS.beta, unit: '',
+          onChange: recalculate
+        });
+
+        sliders.erp = CFTools.createSlider('slider-erp', {
+          label: 'Премия за риск (ERP)',
+          min: 3, max: 12, step: 0.5,
+          value: DEFAULTS.erp, unit: '%',
+          onChange: recalculate
+        });
+
+        sliders.wd = CFTools.createSlider('slider-wd', {
+          label: 'Доля долга (wd)',
+          min: 0, max: 60, step: 5,
+          value: DEFAULTS.wd, unit: '%',
+          onChange: recalculate
+        });
+
+        sliders.kd = CFTools.createSlider('slider-kd', {
+          label: 'Стоимость долга (kd, после налогов)',
+          min: 5, max: 20, step: 0.5,
+          value: DEFAULTS.kd, unit: '%',
+          onChange: recalculate
+        });
+
+        recalculate();
+      }
+
+      function recalculate() {
+        var rf   = sliders.rf.getValue()   / 100;
+        var beta = sliders.beta.getValue();
+        var erp  = sliders.erp.getValue()  / 100;
+        var wd   = sliders.wd.getValue()   / 100;
+        var we   = 1 - wd;
+        var kd   = sliders.kd.getValue()   / 100;
+
+        var ke       = CFTools.capm(rf, beta, erp);
+        var waccVal  = CFTools.wacc(we, ke, wd, kd, TAX_RATE);
+        var npvVal   = CFTools.npv(waccVal, CASHFLOWS, INVESTMENT);
+        var piVal    = (npvVal + INVESTMENT) / INVESTMENT;
+        var accepted = npvVal >= 0;
+
+        var results = [
+          {
+            label: 'ke (CAPM)',
+            value: CFTools.formatNumber(ke * 100, 2) + '%',
+            highlight: false
+          },
+          {
+            label: 'WACC',
+            value: CFTools.formatNumber(waccVal * 100, 2) + '%',
+            highlight: true
+          },
+          {
+            label: 'NPV (млн руб.)',
+            value: (npvVal >= 0 ? '+' : '') + CFTools.formatNumber(npvVal, 0),
+            highlight: false
+          },
+          {
+            label: 'PI (индекс прибыльности)',
+            value: CFTools.formatNumber(piVal, 3),
+            highlight: false
+          },
+          {
+            label: 'Решение',
+            value: accepted ? 'Принять' : 'Отклонить',
+            highlight: false
+          }
+        ];
+
+        CFTools.createResultCard('sensitivity-results', results);
+
+        // Color-code NPV and PI
+        var items = document.querySelectorAll('#sensitivity-results .cft-result-item__value');
+        if (items.length >= 5) {
+          // NPV color (index 2)
+          items[2].style.color = npvVal >= 0 ? 'var(--success)' : 'var(--error)';
+          // PI color (index 3)
+          items[3].style.color = piVal >= 1 ? 'var(--success)' : 'var(--error)';
+          // Verdict color (index 4)
+          items[4].style.color = accepted ? 'var(--success)' : 'var(--error)';
+          items[4].style.fontWeight = '700';
+          items[4].style.fontSize = '1.2rem';
+        }
+      }
+
+      window.resetSliders = function () {
+        if (!sliders.rf) return;
+        sliders.rf.setValue(DEFAULTS.rf);
+        sliders.beta.setValue(DEFAULTS.beta);
+        sliders.erp.setValue(DEFAULTS.erp);
+        sliders.wd.setValue(DEFAULTS.wd);
+        sliders.kd.setValue(DEFAULTS.kd);
+        recalculate();
+      };
+
+      // Wait for CFTools to be available
+      if (window.CFTools) {
+        init();
+      } else {
+        var poll = setInterval(function () {
+          if (window.CFTools) {
+            clearInterval(poll);
+            init();
+          }
+        }, 50);
+      }
+    })();
   </script>
 
 </body>

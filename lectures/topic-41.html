@@ -342,6 +342,380 @@
           </details>
 
           <!-- ============================================================
+               КАЛЬКУЛЯТОР ФИНАНСОВОГО РЫЧАГА
+               ============================================================ -->
+          <h2 id="leverage-calc" class="reveal">Калькулятор финансового рычага</h2>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
+            Введите параметры компании и наблюдайте, как изменение структуры капитала влияет на стоимость, бету и DFL:
+          </p>
+
+          <div class="box-example reveal" id="leverage-tool">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6);">
+              <!-- Inputs -->
+              <div>
+                <h4 style="margin-bottom: var(--space-4);">Параметры</h4>
+                <div id="lev-inputs"></div>
+              </div>
+              <!-- Results -->
+              <div>
+                <h4 style="margin-bottom: var(--space-4);">Результаты</h4>
+                <div id="lev-results"></div>
+              </div>
+            </div>
+            <!-- D/E bar -->
+            <div id="lev-bar-section" style="margin-top: var(--space-6);"></div>
+          </div>
+
+          <style>
+            /* Leverage Calculator — scoped styles */
+            #leverage-tool .lev-field {
+              margin-bottom: var(--space-3);
+            }
+            #leverage-tool .lev-field label {
+              display: block;
+              font-size: var(--text-sm);
+              color: var(--text-secondary);
+              margin-bottom: var(--space-1);
+              font-weight: var(--fw-medium);
+            }
+            #leverage-tool .lev-field input[type="number"],
+            #leverage-tool .lev-field input[type="range"] {
+              width: 100%;
+            }
+            #leverage-tool .lev-field input[type="number"] {
+              background: var(--surface-2);
+              border: 1px solid var(--border);
+              color: var(--text-primary);
+              padding: var(--space-2) var(--space-3);
+              border-radius: var(--radius-sm);
+              font-family: var(--ff-mono);
+              font-size: var(--text-sm);
+              transition: border-color var(--transition), box-shadow var(--transition);
+            }
+            #leverage-tool .lev-field input[type="number"]:focus {
+              outline: none;
+              border-color: var(--acc);
+              box-shadow: 0 0 0 3px var(--acc-glow);
+            }
+            #leverage-tool .lev-field .lev-range-row {
+              display: flex;
+              align-items: center;
+              gap: var(--space-3);
+            }
+            #leverage-tool .lev-field .lev-range-row input[type="range"] {
+              flex: 1;
+              accent-color: var(--acc);
+              height: 6px;
+              cursor: pointer;
+            }
+            #leverage-tool .lev-field .lev-range-val {
+              font-family: var(--ff-mono);
+              font-size: var(--text-sm);
+              color: var(--acc);
+              min-width: 60px;
+              text-align: right;
+              font-weight: var(--fw-semibold);
+            }
+            /* Results table */
+            #lev-results table {
+              width: 100%;
+              font-size: var(--text-sm);
+              border-collapse: collapse;
+            }
+            #lev-results table td {
+              padding: var(--space-2) var(--space-3);
+              border-bottom: 1px solid var(--border);
+              vertical-align: middle;
+            }
+            #lev-results table td:first-child {
+              color: var(--text-secondary);
+              white-space: nowrap;
+              width: 55%;
+            }
+            #lev-results table td:last-child {
+              font-family: var(--ff-mono);
+              font-weight: var(--fw-semibold);
+              text-align: right;
+            }
+            #lev-results table tr:last-child td {
+              border-bottom: none;
+            }
+            /* Alerts */
+            #lev-results .lev-alert {
+              margin-top: var(--space-3);
+              padding: var(--space-2) var(--space-3);
+              border-radius: var(--radius-sm);
+              font-size: var(--text-xs);
+              font-weight: var(--fw-medium);
+              display: flex;
+              align-items: center;
+              gap: var(--space-2);
+            }
+            #lev-results .lev-alert--warning {
+              background: var(--warning-subtle);
+              color: var(--warning);
+              border: 1px solid rgba(251, 191, 36, 0.2);
+            }
+            #lev-results .lev-alert--danger {
+              background: var(--error-subtle);
+              color: var(--error);
+              border: 1px solid rgba(248, 113, 113, 0.2);
+            }
+            #lev-results .lev-alert--caution {
+              background: var(--amber-subtle);
+              color: var(--amber);
+              border: 1px solid rgba(251, 191, 36, 0.2);
+            }
+            /* Stacked bar */
+            .lev-bar-wrap {
+              display: flex;
+              flex-direction: column;
+              gap: var(--space-2);
+            }
+            .lev-bar-label {
+              font-size: var(--text-sm);
+              font-weight: var(--fw-medium);
+              color: var(--text-secondary);
+            }
+            .lev-bar-track {
+              display: flex;
+              height: 32px;
+              border-radius: var(--radius-sm);
+              overflow: hidden;
+              border: 1px solid var(--border);
+            }
+            .lev-bar-debt {
+              background: var(--coral);
+              transition: width 300ms ease;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: var(--text-xs);
+              font-weight: var(--fw-semibold);
+              color: var(--text-inverse);
+              white-space: nowrap;
+              overflow: hidden;
+            }
+            .lev-bar-equity {
+              background: var(--acc);
+              transition: width 300ms ease;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: var(--text-xs);
+              font-weight: var(--fw-semibold);
+              color: var(--text-inverse);
+              white-space: nowrap;
+              overflow: hidden;
+            }
+            .lev-bar-legend {
+              display: flex;
+              gap: var(--space-6);
+              font-size: var(--text-xs);
+              color: var(--text-muted);
+              margin-top: var(--space-1);
+            }
+            .lev-bar-legend span::before {
+              content: '';
+              display: inline-block;
+              width: 10px;
+              height: 10px;
+              border-radius: 2px;
+              margin-right: var(--space-1);
+              vertical-align: middle;
+            }
+            .lev-bar-legend .lbl-debt::before {
+              background: var(--coral);
+            }
+            .lev-bar-legend .lbl-equity::before {
+              background: var(--acc);
+            }
+            /* Responsive */
+            @media (max-width: 700px) {
+              #leverage-tool > div:first-child {
+                grid-template-columns: 1fr !important;
+              }
+            }
+          </style>
+
+          <script>
+          (function() {
+            'use strict';
+
+            /* ---- Input definitions ---- */
+            var fields = [
+              { id: 'vu',  label: 'V_U (стоимость без долга), млрд',   val: 200,   min: 10,  max: 1000, step: 10, type: 'number' },
+              { id: 'bu',  label: '\u03B2_U (безлевериджированная бета)', val: 0.70,  min: 0.1, max: 3,    step: 0.05, type: 'number' },
+              { id: 'd',   label: 'Долг D, млрд',                        val: 80,    min: 0,   max: 200,  step: 5,  type: 'range' },
+              { id: 't',   label: 'Ставка налога T, %',                  val: 25,    min: 0,   max: 50,   step: 1,  type: 'number' },
+              { id: 'rd',  label: 'r_d (ставка по долгу), %',            val: 10,    min: 1,   max: 30,   step: 0.5, type: 'number' },
+              { id: 'ebit',label: 'EBIT, млрд',                          val: 20,    min: 1,   max: 200,  step: 1,  type: 'number' },
+              { id: 'rf',  label: 'r_f (безрисковая ставка), %',         val: 14.6,  min: 0,   max: 30,   step: 0.1, type: 'number' },
+              { id: 'erp', label: 'ERP (премия за риск), %',             val: 6,     min: 0,   max: 15,   step: 0.5, type: 'number' }
+            ];
+
+            /* ---- Build inputs ---- */
+            var inputsDiv = document.getElementById('lev-inputs');
+            if (!inputsDiv) return;
+
+            var inputs = {};
+
+            fields.forEach(function(f) {
+              var wrap = document.createElement('div');
+              wrap.className = 'lev-field';
+
+              var lbl = document.createElement('label');
+              lbl.setAttribute('for', 'lev-' + f.id);
+              lbl.textContent = f.label;
+              wrap.appendChild(lbl);
+
+              if (f.type === 'range') {
+                var row = document.createElement('div');
+                row.className = 'lev-range-row';
+
+                var slider = document.createElement('input');
+                slider.type = 'range';
+                slider.id = 'lev-' + f.id;
+                slider.min = f.min;
+                slider.max = f.max;
+                slider.step = f.step;
+                slider.value = f.val;
+                row.appendChild(slider);
+
+                var valSpan = document.createElement('span');
+                valSpan.className = 'lev-range-val';
+                valSpan.textContent = f.val;
+                row.appendChild(valSpan);
+
+                wrap.appendChild(row);
+                inputs[f.id] = slider;
+
+                slider.addEventListener('input', function() {
+                  valSpan.textContent = slider.value;
+                  recalc();
+                });
+              } else {
+                var inp = document.createElement('input');
+                inp.type = 'number';
+                inp.id = 'lev-' + f.id;
+                inp.min = f.min;
+                inp.max = f.max;
+                inp.step = f.step;
+                inp.value = f.val;
+                wrap.appendChild(inp);
+                inputs[f.id] = inp;
+
+                inp.addEventListener('input', function() { recalc(); });
+              }
+
+              inputsDiv.appendChild(wrap);
+            });
+
+            /* ---- Results container ---- */
+            var resultsDiv = document.getElementById('lev-results');
+            var barSection = document.getElementById('lev-bar-section');
+
+            /* ---- Formatting helpers ---- */
+            function fmt(n, digits) {
+              if (!isFinite(n)) return '\u2014';
+              return n.toLocaleString('ru-RU', { minimumFractionDigits: digits, maximumFractionDigits: digits });
+            }
+
+            function pct(n) {
+              if (!isFinite(n)) return '\u2014';
+              return fmt(n * 100, 2) + '%';
+            }
+
+            /* ---- Recalculate ---- */
+            function recalc() {
+              var VU   = parseFloat(inputs.vu.value) || 0;
+              var bU   = parseFloat(inputs.bu.value) || 0;
+              var D    = parseFloat(inputs.d.value)  || 0;
+              var T    = (parseFloat(inputs.t.value)  || 0) / 100;
+              var rd   = (parseFloat(inputs.rd.value) || 0) / 100;
+              var EBIT = parseFloat(inputs.ebit.value) || 0;
+              var rf   = (parseFloat(inputs.rf.value)  || 0) / 100;
+              var ERP  = (parseFloat(inputs.erp.value) || 0) / 100;
+
+              /* Update slider max to match VU */
+              inputs.d.max = VU;
+              if (D > VU) {
+                D = VU;
+                inputs.d.value = D;
+                var rangeVal = inputs.d.parentElement.querySelector('.lev-range-val');
+                if (rangeVal) rangeVal.textContent = D;
+              }
+
+              /* Calculations */
+              var VL = VU + T * D;
+              var E  = VL - D;
+              var DE = E > 0 ? D / E : Infinity;
+              var bL = E > 0 ? bU * (1 + (1 - T) * DE) : Infinity;
+              var ke = rf + bL * ERP;
+              var interest = D * rd;
+              var taxShield = interest * T;
+              var DFL = (EBIT - interest) !== 0 ? EBIT / (EBIT - interest) : Infinity;
+              var ICR = interest > 0 ? EBIT / interest : Infinity;
+
+              /* Build results table */
+              var rows = [
+                ['V<sub>L</sub> (стоимость с долгом)',       fmt(VL, 2) + ' млрд'],
+                ['E (собственный капитал)',                   fmt(E, 2) + ' млрд'],
+                ['D/E',                                       fmt(DE, 2)],
+                ['\u03B2<sub>L</sub> (лев. бета)',            fmt(bL, 2)],
+                ['k<sub>e</sub> (CAPM)',                      pct(ke)],
+                ['Налоговый щит (год)',                       fmt(taxShield, 2) + ' млрд'],
+                ['DFL',                                       fmt(DFL, 2)],
+                ['Покрытие процентов (ICR)',                  isFinite(ICR) ? fmt(ICR, 2) + 'x' : '\u221E']
+              ];
+
+              var html = '<table>';
+              rows.forEach(function(r) {
+                html += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+              });
+              html += '</table>';
+
+              /* Alerts */
+              if (DFL > 2 && isFinite(DFL)) {
+                html += '<div class="lev-alert lev-alert--warning">' +
+                  '<strong>DFL &gt; 2</strong> &mdash; высокий рычаг: при падении EBIT на 10% EPS упадёт на ' + fmt(DFL * 10, 1) + '%</div>';
+              }
+              if (ICR < 2 && isFinite(ICR)) {
+                html += '<div class="lev-alert lev-alert--danger">' +
+                  '<strong>ICR &lt; 2</strong> &mdash; критически низкое покрытие процентов, высокий риск дефолта</div>';
+              }
+              if (DE > 1 && isFinite(DE)) {
+                html += '<div class="lev-alert lev-alert--caution">' +
+                  '<strong>D/E &gt; 1</strong> &mdash; долг превышает собственный капитал, агрессивная структура</div>';
+              }
+
+              resultsDiv.innerHTML = html;
+
+              /* Stacked bar */
+              var total = D + Math.max(E, 0);
+              var dPct = total > 0 ? (D / total * 100) : 0;
+              var ePct = total > 0 ? (Math.max(E, 0) / total * 100) : 100;
+
+              barSection.innerHTML =
+                '<div class="lev-bar-wrap">' +
+                  '<div class="lev-bar-label">Структура капитала (D / E)</div>' +
+                  '<div class="lev-bar-track">' +
+                    '<div class="lev-bar-debt" style="width:' + dPct + '%">' + (dPct >= 12 ? 'D: ' + fmt(D, 0) : '') + '</div>' +
+                    '<div class="lev-bar-equity" style="width:' + ePct + '%">' + (ePct >= 12 ? 'E: ' + fmt(Math.max(E, 0), 0) : '') + '</div>' +
+                  '</div>' +
+                  '<div class="lev-bar-legend">' +
+                    '<span class="lbl-debt">Долг (D): ' + fmt(dPct, 1) + '%</span>' +
+                    '<span class="lbl-equity">Собственный (E): ' + fmt(ePct, 1) + '%</span>' +
+                  '</div>' +
+                '</div>';
+            }
+
+            /* Initial calculation */
+            recalc();
+          })();
+          </script>
+
+          <!-- ============================================================
                КЛЮЧЕВЫЕ ПОНЯТИЯ
                ============================================================ -->
           <h2 id="glossary" class="reveal">Ключевые понятия</h2>

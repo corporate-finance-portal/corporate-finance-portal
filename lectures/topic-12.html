@@ -316,6 +316,36 @@
     </section>
 
     <!-- ============================================================
+         TVM CALCULATOR
+         ============================================================ -->
+    <section class="section" id="tvm-calculator">
+      <div class="container">
+        <div class="lecture-content">
+          <h2 class="reveal">Калькулятор TVM</h2>
+          <p style="color: var(--text-secondary); margin-bottom: var(--space-4);">
+            Введите параметры и получите результат с формулой расчёта:
+          </p>
+
+          <!-- Tab buttons -->
+          <div id="tvm-tabs" style="display: flex; gap: var(--space-2); margin-bottom: var(--space-5); flex-wrap: wrap;"></div>
+
+          <!-- Input area -->
+          <div class="box-example" style="margin-bottom: var(--space-4);">
+            <div id="tvm-inputs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);"></div>
+            <div style="margin-top: var(--space-4); text-align: center;">
+              <button id="tvm-calc-btn" style="background: var(--acc); color: white; border: none; padding: var(--space-2) var(--space-6); border-radius: var(--radius-sm); cursor: pointer; font-size: var(--text-base); font-weight: 600; transition: background-color 200ms ease, box-shadow 200ms ease;">
+                Рассчитать
+              </button>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div id="tvm-result" class="box-key" style="display: none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
          MINI-QUIZ
          ============================================================ -->
     <section class="section" id="mini-quiz">
@@ -415,5 +445,367 @@
   <script src="../js/app.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
+
+  <!-- TVM Calculator -->
+  <script>
+  (function () {
+    'use strict';
+
+    /* ----------------------------------------------------------------
+       Mode definitions
+       ---------------------------------------------------------------- */
+    var MODES = [
+      {
+        id: 'pv-fv',
+        label: 'PV \u2192 FV',
+        fields: [
+          { key: 'pv',   label: 'PV (текущая стоимость)', placeholder: '1000000' },
+          { key: 'rate', label: 'Ставка (% годовых)',     placeholder: '10' },
+          { key: 'n',    label: 'Число периодов (лет)',    placeholder: '5' }
+        ],
+        calc: function (v) {
+          var pv = v.pv, r = v.rate / 100, n = v.n;
+          var factor = Math.pow(1 + r, n);
+          var fv = pv * factor;
+          return {
+            answer: fv,
+            answerLabel: 'FV',
+            formula: '$$FV = PV \\times (1 + r)^n$$',
+            steps: [
+              '$FV = ' + fmtNum(pv) + ' \\times (1 + ' + fmtDec(r) + ')^{' + n + '}$',
+              '$FV = ' + fmtNum(pv) + ' \\times ' + fmtDec4(factor) + '$',
+              '$\\boxed{FV = ' + fmtNum(Math.round(fv * 100) / 100) + ' \\text{ руб.}}$'
+            ]
+          };
+        }
+      },
+      {
+        id: 'fv-pv',
+        label: 'FV \u2192 PV',
+        fields: [
+          { key: 'fv',   label: 'FV (будущая стоимость)', placeholder: '5000000' },
+          { key: 'rate', label: 'Ставка (% годовых)',     placeholder: '12' },
+          { key: 'n',    label: 'Число периодов (лет)',    placeholder: '3' }
+        ],
+        calc: function (v) {
+          var fv = v.fv, r = v.rate / 100, n = v.n;
+          var factor = Math.pow(1 + r, n);
+          var pv = fv / factor;
+          return {
+            answer: pv,
+            answerLabel: 'PV',
+            formula: '$$PV = \\frac{FV}{(1 + r)^n}$$',
+            steps: [
+              '$PV = \\dfrac{' + fmtNum(fv) + '}{(1 + ' + fmtDec(r) + ')^{' + n + '}}$',
+              '$PV = \\dfrac{' + fmtNum(fv) + '}{' + fmtDec4(factor) + '}$',
+              '$\\boxed{PV = ' + fmtNum(Math.round(pv * 100) / 100) + ' \\text{ руб.}}$'
+            ]
+          };
+        }
+      },
+      {
+        id: 'annuity',
+        label: 'Аннуитет PV',
+        fields: [
+          { key: 'pmt',  label: 'PMT (платёж за период)',  placeholder: '500000' },
+          { key: 'rate', label: 'Ставка (% за период)',    placeholder: '10' },
+          { key: 'n',    label: 'Число периодов',          placeholder: '8' }
+        ],
+        calc: function (v) {
+          var pmt = v.pmt, r = v.rate / 100, n = v.n;
+          if (r === 0) {
+            return {
+              answer: pmt * n,
+              answerLabel: 'PV',
+              formula: '$$PV_{\\text{ann}} = PMT \\times n \\quad (\\text{при } r = 0)$$',
+              steps: [
+                '$PV = ' + fmtNum(pmt) + ' \\times ' + n + '$',
+                '$\\boxed{PV = ' + fmtNum(pmt * n) + ' \\text{ руб.}}$'
+              ]
+            };
+          }
+          var discountFactor = (1 - Math.pow(1 + r, -n)) / r;
+          var pvAnn = pmt * discountFactor;
+          return {
+            answer: pvAnn,
+            answerLabel: 'PV',
+            formula: '$$PV_{\\text{ann}} = PMT \\times \\frac{1 - (1 + r)^{-n}}{r}$$',
+            steps: [
+              '$PV = ' + fmtNum(pmt) + ' \\times \\dfrac{1 - (1 + ' + fmtDec(r) + ')^{-' + n + '}}{' + fmtDec(r) + '}$',
+              '$PV = ' + fmtNum(pmt) + ' \\times ' + fmtDec4(discountFactor) + '$',
+              '$\\boxed{PV = ' + fmtNum(Math.round(pvAnn * 100) / 100) + ' \\text{ руб.}}$'
+            ]
+          };
+        }
+      },
+      {
+        id: 'ear',
+        label: 'EAR',
+        fields: [
+          { key: 'rnom', label: 'Номинальная ставка (%)',  placeholder: '12' },
+          { key: 'm',    label: 'Начислений в год (m)',    placeholder: '4' }
+        ],
+        calc: function (v) {
+          var rnom = v.rnom / 100, m = v.m;
+          if (m <= 0) {
+            return { answer: 0, answerLabel: 'EAR', formula: '', steps: ['$m$ должно быть > 0'] };
+          }
+          var periodRate = rnom / m;
+          var ear = Math.pow(1 + periodRate, m) - 1;
+          var earPct = ear * 100;
+          return {
+            answer: earPct,
+            answerLabel: 'EAR',
+            formula: '$$EAR = \\left(1 + \\frac{r_{\\text{ном}}}{m}\\right)^m - 1$$',
+            steps: [
+              '$EAR = \\left(1 + \\dfrac{' + fmtDec(rnom) + '}{' + m + '}\\right)^{' + m + '} - 1$',
+              '$EAR = (1 + ' + fmtDec4(periodRate) + ')^{' + m + '} - 1$',
+              '$EAR = ' + fmtDec4(1 + ear) + ' - 1$',
+              '$\\boxed{EAR = ' + fmtPct(earPct) + '\\%}$'
+            ]
+          };
+        }
+      }
+    ];
+
+    /* ----------------------------------------------------------------
+       Formatting helpers
+       ---------------------------------------------------------------- */
+    function fmtNum(x) {
+      // Format number with thin-space thousands separator and comma decimal
+      var parts = Number(x).toFixed(2).split('.');
+      var intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '\\,');
+      var decPart = parts[1];
+      if (decPart === '00') return intPart;
+      return intPart + '{,}' + decPart;
+    }
+
+    function fmtDec(x) {
+      // Format decimal like 0,12
+      var s = Number(x).toFixed(4).replace(/0+$/, '').replace(/\.$/, '');
+      return s.replace('.', '{,}');
+    }
+
+    function fmtDec4(x) {
+      // Format to 4 decimal places
+      return Number(x).toFixed(4).replace('.', '{,}');
+    }
+
+    function fmtPct(x) {
+      // Format percentage
+      return Number(x).toFixed(2).replace('.', '{,}');
+    }
+
+    /* ----------------------------------------------------------------
+       Input field style (inline, matching dark theme)
+       ---------------------------------------------------------------- */
+    var INPUT_STYLE = [
+      'background: var(--surface)',
+      'border: 1px solid var(--border-strong)',
+      'color: var(--text-primary)',
+      'padding: var(--space-2) var(--space-3)',
+      'border-radius: var(--radius-sm)',
+      'font-size: var(--text-base)',
+      'width: 100%',
+      'outline: none',
+      'transition: border-color 200ms ease, box-shadow 200ms ease'
+    ].join(';');
+
+    /* ----------------------------------------------------------------
+       State
+       ---------------------------------------------------------------- */
+    var currentMode = 0;
+
+    /* ----------------------------------------------------------------
+       DOM references (deferred to DOMContentLoaded)
+       ---------------------------------------------------------------- */
+    var tabsEl, inputsEl, resultEl, calcBtn;
+
+    /* ----------------------------------------------------------------
+       Render tabs
+       ---------------------------------------------------------------- */
+    function renderTabs() {
+      tabsEl.innerHTML = '';
+      MODES.forEach(function (mode, idx) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.textContent = mode.label;
+        btn.setAttribute('data-tvm-tab', idx);
+        btn.style.cssText = tabStyle(idx === currentMode);
+        btn.style.cursor = 'pointer';
+        btn.style.fontWeight = '600';
+        btn.style.fontSize = 'var(--text-sm)';
+        btn.style.transition = 'background-color 200ms ease, color 200ms ease, border-color 200ms ease';
+        btn.addEventListener('click', function () {
+          currentMode = idx;
+          renderTabs();
+          renderInputs();
+          resultEl.style.display = 'none';
+        });
+        tabsEl.appendChild(btn);
+      });
+    }
+
+    function tabStyle(active) {
+      if (active) {
+        return 'background: var(--acc); color: white; border: 1px solid var(--acc); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm);';
+      }
+      return 'background: var(--surface); color: var(--text-secondary); border: 1px solid var(--border-strong); padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm);';
+    }
+
+    /* ----------------------------------------------------------------
+       Render input fields
+       ---------------------------------------------------------------- */
+    function renderInputs() {
+      inputsEl.innerHTML = '';
+      var mode = MODES[currentMode];
+      mode.fields.forEach(function (field) {
+        var wrapper = document.createElement('div');
+
+        var lbl = document.createElement('label');
+        lbl.textContent = field.label;
+        lbl.style.cssText = 'display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-1); font-weight: 500;';
+        lbl.setAttribute('for', 'tvm-' + field.key);
+
+        var inp = document.createElement('input');
+        inp.type = 'number';
+        inp.id = 'tvm-' + field.key;
+        inp.name = field.key;
+        inp.placeholder = field.placeholder;
+        inp.step = 'any';
+        inp.style.cssText = INPUT_STYLE;
+        inp.addEventListener('focus', function () {
+          this.style.borderColor = 'var(--acc)';
+          this.style.boxShadow = '0 0 0 2px var(--acc-glow)';
+        });
+        inp.addEventListener('blur', function () {
+          this.style.borderColor = 'var(--border-strong)';
+          this.style.boxShadow = 'none';
+        });
+        inp.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            calculate();
+          }
+        });
+
+        wrapper.appendChild(lbl);
+        wrapper.appendChild(inp);
+        inputsEl.appendChild(wrapper);
+      });
+    }
+
+    /* ----------------------------------------------------------------
+       Read values from inputs
+       ---------------------------------------------------------------- */
+    function readValues() {
+      var mode = MODES[currentMode];
+      var vals = {};
+      var valid = true;
+      mode.fields.forEach(function (field) {
+        var inp = document.getElementById('tvm-' + field.key);
+        var v = parseFloat(inp.value);
+        if (isNaN(v)) {
+          valid = false;
+          inp.style.borderColor = 'var(--error)';
+          inp.style.boxShadow = '0 0 0 2px var(--error-glow)';
+        } else {
+          inp.style.borderColor = 'var(--border-strong)';
+          inp.style.boxShadow = 'none';
+        }
+        vals[field.key] = v;
+      });
+      return valid ? vals : null;
+    }
+
+    /* ----------------------------------------------------------------
+       Calculate and display result
+       ---------------------------------------------------------------- */
+    function calculate() {
+      var vals = readValues();
+      if (!vals) {
+        resultEl.style.display = 'block';
+        resultEl.innerHTML = '<p style="color: var(--error); margin: 0;">Пожалуйста, заполните все поля корректными числами.</p>';
+        return;
+      }
+
+      var mode = MODES[currentMode];
+      var result = mode.calc(vals);
+
+      var html = '';
+
+      // Formula
+      html += '<div style="margin-bottom: var(--space-4);">';
+      html += '<p style="font-weight: 600; color: var(--text-secondary); margin-bottom: var(--space-2); font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.05em;">Формула</p>';
+      html += '<div class="math-block">' + result.formula + '</div>';
+      html += '</div>';
+
+      // Steps
+      html += '<div style="margin-bottom: var(--space-4);">';
+      html += '<p style="font-weight: 600; color: var(--text-secondary); margin-bottom: var(--space-2); font-size: var(--text-sm); text-transform: uppercase; letter-spacing: 0.05em;">Пошаговый расч&#x00EB;т</p>';
+      result.steps.forEach(function (step) {
+        html += '<div class="math-block" style="margin: var(--space-2) 0;">' + step + '</div>';
+      });
+      html += '</div>';
+
+      // Final answer summary
+      var answerText;
+      if (mode.id === 'ear') {
+        answerText = result.answerLabel + ' = ' + Number(result.answer).toFixed(2).replace('.', ',') + '%';
+      } else {
+        answerText = result.answerLabel + ' = ' + Number(result.answer).toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' руб.';
+      }
+      html += '<div style="background: var(--acc-subtle); border: 1px solid var(--acc); border-radius: var(--radius-sm); padding: var(--space-3) var(--space-4); text-align: center;">';
+      html += '<span style="font-size: var(--text-xl); font-weight: 700; color: var(--acc); font-family: var(--ff-heading);">' + answerText + '</span>';
+      html += '</div>';
+
+      resultEl.innerHTML = html;
+      resultEl.style.display = 'block';
+
+      // Re-render KaTeX if available
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(resultEl, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+          ],
+          throwOnError: false
+        });
+      }
+
+      // Smooth scroll to result
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    /* ----------------------------------------------------------------
+       Init on DOMContentLoaded
+       ---------------------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', function () {
+      tabsEl   = document.getElementById('tvm-tabs');
+      inputsEl = document.getElementById('tvm-inputs');
+      resultEl = document.getElementById('tvm-result');
+      calcBtn  = document.getElementById('tvm-calc-btn');
+
+      if (!tabsEl || !inputsEl || !resultEl || !calcBtn) return;
+
+      calcBtn.addEventListener('click', calculate);
+
+      // Hover effect for calculate button
+      calcBtn.addEventListener('mouseenter', function () {
+        this.style.background = 'var(--acc-hover)';
+        this.style.boxShadow = '0 0 20px var(--acc-glow)';
+      });
+      calcBtn.addEventListener('mouseleave', function () {
+        this.style.background = 'var(--acc)';
+        this.style.boxShadow = 'none';
+      });
+
+      renderTabs();
+      renderInputs();
+    });
+  })();
+  </script>
 </body>
 </html>
