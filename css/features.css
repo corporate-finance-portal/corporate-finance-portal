@@ -1055,3 +1055,22 @@
     font-size: 22px;
   }
 }
+
+/* ============================================
+   Chart.js — Canvas Container Fix
+   ============================================ */
+canvas.chart {
+  display: block;
+  max-height: 280px;
+  width: 100%;
+}
+
+.card-static:has(canvas.chart) {
+  position: relative;
+  min-height: 0;
+}
+
+/* Fallback for browsers without :has() */
+canvas.chart {
+  height: 280px !important;
+}
