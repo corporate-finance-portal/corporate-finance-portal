@@ -195,7 +195,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---- 8. Lazy-load Chart.js ----
-  if (document.querySelector('canvas.chart')) {
+  var chartCanvases = document.querySelectorAll('canvas.chart');
+  if (chartCanvases.length > 0) {
+    // Wrap each canvas in a fixed-height container so Chart.js doesn't grow infinitely
+    chartCanvases.forEach(function (canvas) {
+      var h = parseInt(canvas.getAttribute('height'), 10) || 280;
+      var wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.height = h + 'px';
+      wrapper.style.width = '100%';
+      canvas.parentNode.insertBefore(wrapper, canvas);
+      wrapper.appendChild(canvas);
+    });
+
     var chartJS = document.createElement('script');
     chartJS.src = 'https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js';
     chartJS.onload = function () {
