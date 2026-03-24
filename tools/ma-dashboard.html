@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M&amp;A Dashboard — Corporate Finance</title>
+  <meta name="description" content="Сравнительный анализ трёх крупнейших сделок M&amp;A: Disney-Fox, Роснефть-ТНК-BP, Магнит-Дикси">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Site Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* =============================================
+       M&A Dashboard — Page Inline Styles
+       ============================================= */
+
+    /* Breadcrumb */
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    /* Page Header */
+    .dash-header {
+      padding-top: var(--space-6);
+      padding-bottom: var(--space-8);
+    }
+    .dash-header h1 {
+      font-family: var(--ff-heading);
+      font-size: var(--text-4xl);
+      font-weight: var(--fw-extrabold);
+      letter-spacing: -1px;
+      margin-bottom: var(--space-3);
+    }
+    .dash-header .subtitle {
+      font-size: var(--text-lg);
+      color: var(--text-secondary);
+      max-width: 640px;
+      line-height: 1.6;
+    }
+
+    /* Stats Strip */
+    .stats-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--space-4);
+      margin-bottom: var(--space-10);
+    }
+    .stats-strip .stat-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+      text-align: center;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .stats-strip .stat-item:hover {
+      border-color: var(--acc);
+      box-shadow: 0 0 16px var(--acc-glow);
+    }
+    .stats-strip .stat-number {
+      font-family: var(--ff-heading);
+      font-size: var(--text-3xl);
+      font-weight: var(--fw-extrabold);
+      color: var(--text-primary);
+      line-height: 1.1;
+      margin-bottom: var(--space-1);
+    }
+    .stats-strip .stat-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: var(--fw-medium);
+    }
+
+    /* Deal Cards Grid */
+    .deals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: var(--space-5);
+      margin-bottom: var(--space-12);
+    }
+
+    /* Individual Deal Card */
+    .deal-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+      transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+    .deal-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+    .deal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+    }
+
+    /* Color variants */
+    .deal-card[data-sector="media"] { border-color: rgba(129, 140, 248, 0.2); }
+    .deal-card[data-sector="media"]:hover { border-color: #818CF8; box-shadow: 0 8px 24px rgba(129, 140, 248, 0.15); }
+    .deal-card[data-sector="media"]::before { background: #818CF8; }
+
+    .deal-card[data-sector="oil"] { border-color: rgba(245, 158, 11, 0.2); }
+    .deal-card[data-sector="oil"]:hover { border-color: #F59E0B; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.15); }
+    .deal-card[data-sector="oil"]::before { background: #F59E0B; }
+
+    .deal-card[data-sector="retail"] { border-color: rgba(52, 211, 153, 0.2); }
+    .deal-card[data-sector="retail"]:hover { border-color: #34D399; box-shadow: 0 8px 24px rgba(52, 211, 153, 0.15); }
+    .deal-card[data-sector="retail"]::before { background: #34D399; }
+
+    /* Card Top Row: logo + badges */
+    .deal-card-top {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+    }
+    .deal-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--ff-heading);
+      font-weight: var(--fw-extrabold);
+      font-size: var(--text-lg);
+      color: #fff;
+      flex-shrink: 0;
+      letter-spacing: -0.5px;
+    }
+    .deal-logo.logo-media { background: linear-gradient(135deg, #818CF8, #6366F1); }
+    .deal-logo.logo-oil { background: linear-gradient(135deg, #F59E0B, #D97706); }
+    .deal-logo.logo-retail { background: linear-gradient(135deg, #34D399, #059669); }
+
+    .deal-card-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .deal-card-name {
+      font-family: var(--ff-heading);
+      font-size: var(--text-lg);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+    .deal-card-badges {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-top: var(--space-1);
+      flex-wrap: wrap;
+    }
+
+    /* Sector badge */
+    .sector-badge {
+      display: inline-block;
+      padding: var(--space-1) var(--space-3);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-xs);
+      font-weight: var(--fw-semibold);
+      letter-spacing: 0.02em;
+    }
+    .sector-badge.media { background: rgba(129, 140, 248, 0.15); color: #818CF8; }
+    .sector-badge.oil { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+    .sector-badge.retail { background: rgba(52, 211, 153, 0.15); color: #34D399; }
+
+    .year-badge {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: var(--fw-medium);
+    }
+
+    /* Deal Value */
+    .deal-value-block {
+      padding: var(--space-4) 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .deal-value-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-family: var(--ff-mono);
+      font-weight: var(--fw-medium);
+      margin-bottom: var(--space-1);
+    }
+    .deal-value-amount {
+      font-family: var(--ff-heading);
+      font-weight: var(--fw-extrabold);
+      font-size: var(--text-2xl);
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    /* Deal Metrics Row */
+    .deal-metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+    .deal-metric {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .deal-metric-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: var(--fw-medium);
+    }
+    .deal-metric-value {
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-primary);
+    }
+
+    /* Financing Mini Bar */
+    .financing-bar-container {
+      margin-top: var(--space-1);
+    }
+    .financing-bar-label {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      font-weight: var(--fw-medium);
+      margin-bottom: var(--space-2);
+    }
+    .financing-bar {
+      display: flex;
+      height: 8px;
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      background: var(--surface-2);
+    }
+    .financing-bar .bar-cash {
+      background: var(--acc);
+      transition: width var(--transition-slow);
+    }
+    .financing-bar .bar-stock {
+      background: var(--coral);
+      transition: width var(--transition-slow);
+    }
+    .financing-bar .bar-other {
+      background: var(--amber);
+      transition: width var(--transition-slow);
+    }
+    .financing-legend {
+      display: flex;
+      gap: var(--space-4);
+      margin-top: var(--space-2);
+      flex-wrap: wrap;
+    }
+    .financing-legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-1);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+    .financing-legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+    }
+    .financing-legend-dot.cash { background: var(--acc); }
+    .financing-legend-dot.stock { background: var(--coral); }
+    .financing-legend-dot.other { background: var(--amber); }
+
+    /* Card Link */
+    .deal-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--acc);
+      text-decoration: none;
+      margin-top: auto;
+      padding-top: var(--space-3);
+      transition: color var(--transition), gap var(--transition);
+    }
+    .deal-card-link:hover {
+      color: var(--acc-hover);
+      gap: var(--space-3);
+    }
+    .deal-card-link svg {
+      width: 16px;
+      height: 16px;
+      transition: transform var(--transition);
+    }
+    .deal-card-link:hover svg {
+      transform: translateX(2px);
+    }
+
+    /* Charts Section */
+    .charts-section {
+      margin-bottom: var(--space-12);
+    }
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-5);
+    }
+    .charts-grid .chart-full {
+      grid-column: 1 / -1;
+    }
+    .chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+    }
+    .chart-box h3 {
+      font-family: var(--ff-heading);
+      font-size: var(--text-base);
+      font-weight: var(--fw-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-4);
+    }
+    .chart-box .chart-subtitle {
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-top: calc(-1 * var(--space-3));
+      margin-bottom: var(--space-4);
+    }
+
+    /* Comparison Table Section */
+    .table-section {
+      margin-bottom: var(--space-12);
+    }
+
+    .data-table td.deal-name {
+      font-family: var(--ff-heading);
+      font-weight: var(--fw-semibold);
+      white-space: nowrap;
+    }
+
+    /* Insights Section */
+    .insights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-5);
+      margin-bottom: var(--space-12);
+    }
+    .insight-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      border-left: 4px solid;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .insight-card:hover {
+      box-shadow: var(--shadow-md);
+    }
+    .insight-card.insight-indigo { border-left-color: #818CF8; }
+    .insight-card.insight-amber { border-left-color: #F59E0B; }
+    .insight-card.insight-green { border-left-color: #34D399; }
+    .insight-card.insight-coral { border-left-color: var(--coral); }
+
+    .insight-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: var(--space-4);
+      font-size: 20px;
+    }
+    .insight-indigo .insight-icon { background: rgba(129, 140, 248, 0.12); color: #818CF8; }
+    .insight-amber .insight-icon { background: rgba(245, 158, 11, 0.12); color: #F59E0B; }
+    .insight-green .insight-icon { background: rgba(52, 211, 153, 0.12); color: #34D399; }
+    .insight-coral .insight-icon { background: rgba(251, 113, 133, 0.12); color: var(--coral); }
+
+    .insight-card h3 {
+      font-family: var(--ff-heading);
+      font-size: var(--text-base);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+      line-height: 1.3;
+    }
+    .insight-card p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* Section Titles */
+    .section-title {
+      font-family: var(--ff-heading);
+      font-size: var(--text-2xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-6);
+    }
+    .section-title .section-tag {
+      display: block;
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      font-weight: var(--fw-semibold);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--acc);
+      margin-bottom: var(--space-2);
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .stats-strip {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .deals-grid {
+        grid-template-columns: 1fr;
+      }
+      .dash-header h1 {
+        font-size: var(--text-3xl);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-strip {
+        grid-template-columns: 1fr;
+      }
+      .deal-metrics {
+        grid-template-columns: 1fr;
+      }
+      .financing-legend {
+        flex-direction: column;
+        gap: var(--space-1);
+      }
+    }
+
+    /* Print */
+    @media print {
+      .deal-card { break-inside: avoid; }
+      .chart-box { break-inside: avoid; }
+      .insight-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="tool-ma-dashboard">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+    <div class="page-content">
+      <div class="container">
+
+        <!-- ============================================================
+             HEADER
+             ============================================================ -->
+        <div class="dash-header">
+          <nav class="breadcrumb" aria-label="Навигация">
+            <a href="../tools/">Инструменты</a>
+            <span class="sep" aria-hidden="true">/</span>
+            <span>M&amp;A Dashboard</span>
+          </nav>
+          <h1>M&amp;A Dashboard</h1>
+          <p class="subtitle">Сравнительный анализ трёх крупнейших сделок слияний и поглощений: международная медийная, крупнейшая российская нефтяная и консолидация российского ритейла.</p>
+        </div>
+
+        <!-- ============================================================
+             STATS STRIP
+             ============================================================ -->
+        <div class="stats-strip reveal">
+          <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Сделки M&amp;A</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">&#36;127B</div>
+            <div class="stat-label">Суммарная стоимость</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">3</div>
+            <div class="stat-label">Отрасли</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">8.3 мес</div>
+            <div class="stat-label">Среднее закрытие</div>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             DEAL CARDS
+             ============================================================ -->
+        <div class="section-title reveal">
+          <span class="section-tag">Обзор сделок</span>
+          Карточки сделок
+        </div>
+
+        <div class="deals-grid">
+
+          <!-- Card 1: Disney / 21st Century Fox -->
+          <article class="deal-card reveal" data-sector="media">
+            <div class="deal-card-top">
+              <div class="deal-logo logo-media" aria-hidden="true">D|F</div>
+              <div class="deal-card-meta">
+                <div class="deal-card-name">Disney / 21st Century Fox</div>
+                <div class="deal-card-badges">
+                  <span class="sector-badge media">Media &amp; Entertainment</span>
+                  <span class="year-badge">2019</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="deal-value-block">
+              <div class="deal-value-label">Стоимость сделки</div>
+              <div class="deal-value-amount">&#36;71,3 млрд</div>
+            </div>
+
+            <div class="deal-metrics">
+              <div class="deal-metric">
+                <span class="deal-metric-label">EV/EBITDA</span>
+                <span class="deal-metric-value">~15x</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Премия</span>
+                <span class="deal-metric-value">~30%</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Синергии</span>
+                <span class="deal-metric-value">&#36;2 млрд/год</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Срок закрытия</span>
+                <span class="deal-metric-value">15 мес</span>
+              </div>
+            </div>
+
+            <div class="financing-bar-container">
+              <div class="financing-bar-label">Структура финансирования</div>
+              <div class="financing-bar">
+                <div class="bar-cash" style="width: 50%;" title="Денежные средства: 50%"></div>
+                <div class="bar-stock" style="width: 50%;" title="Акции: 50%"></div>
+              </div>
+              <div class="financing-legend">
+                <span class="financing-legend-item">
+                  <span class="financing-legend-dot cash" aria-hidden="true"></span> 50% кэш
+                </span>
+                <span class="financing-legend-item">
+                  <span class="financing-legend-dot stock" aria-hidden="true"></span> 50% акции
+                </span>
+              </div>
+            </div>
+
+            <a href="../cases/disney-fox.html" class="deal-card-link">
+              Читать кейс
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </article>
+
+          <!-- Card 2: Роснефть / ТНК-BP -->
+          <article class="deal-card reveal reveal-delay-1" data-sector="oil">
+            <div class="deal-card-top">
+              <div class="deal-logo logo-oil" aria-hidden="true">R|T</div>
+              <div class="deal-card-meta">
+                <div class="deal-card-name">Роснефть / ТНК-BP</div>
+                <div class="deal-card-badges">
+                  <span class="sector-badge oil">Oil &amp; Gas</span>
+                  <span class="year-badge">2013</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="deal-value-block">
+              <div class="deal-value-label">Стоимость сделки</div>
+              <div class="deal-value-amount">&#36;54,5 млрд</div>
+            </div>
+
+            <div class="deal-metrics">
+              <div class="deal-metric">
+                <span class="deal-metric-label">EV/EBITDA</span>
+                <span class="deal-metric-value">~4,5x</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Премия</span>
+                <span class="deal-metric-value">~20%</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Синергии</span>
+                <span class="deal-metric-value">&#36;3-5 млрд</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Срок закрытия</span>
+                <span class="deal-metric-value">5 мес</span>
+              </div>
+            </div>
+
+            <div class="financing-bar-container">
+              <div class="financing-bar-label">Структура финансирования</div>
+              <div class="financing-bar">
+                <div class="bar-cash" style="width: 69%;" title="Денежные средства: 69%"></div>
+                <div class="bar-stock" style="width: 31%;" title="Акции: 31%"></div>
+              </div>
+              <div class="financing-legend">
+                <span class="financing-legend-item">
+                  <span class="financing-legend-dot cash" aria-hidden="true"></span> 69% кэш (&#36;37,8 млрд)
+                </span>
+                <span class="financing-legend-item">
+                  <span class="financing-legend-dot stock" aria-hidden="true"></span> 31% акции (&#36;16,7 млрд)
+                </span>
+              </div>
+            </div>
+
+            <a href="../cases/rosneft-tnkbp.html" class="deal-card-link">
+              Читать кейс
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </article>
+
+          <!-- Card 3: Магнит / Дикси -->
+          <article class="deal-card reveal reveal-delay-2" data-sector="retail">
+            <div class="deal-card-top">
+              <div class="deal-logo logo-retail" aria-hidden="true">M|D</div>
+              <div class="deal-card-meta">
+                <div class="deal-card-name">Магнит / Дикси</div>
+                <div class="deal-card-badges">
+                  <span class="sector-badge retail">Retail (Food)</span>
+                  <span class="year-badge">2021</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="deal-value-block">
+              <div class="deal-value-label">Стоимость сделки</div>
+              <div class="deal-value-amount">87,6 млрд &#8381;</div>
+            </div>
+
+            <div class="deal-metrics">
+              <div class="deal-metric">
+                <span class="deal-metric-label">EV/EBITDA</span>
+                <span class="deal-metric-value">~7x</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Премия</span>
+                <span class="deal-metric-value">~18%</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Синергии</span>
+                <span class="deal-metric-value">Конверсия + логистика</span>
+              </div>
+              <div class="deal-metric">
+                <span class="deal-metric-label">Срок закрытия</span>
+                <span class="deal-metric-value">5 мес</span>
+              </div>
+            </div>
+
+            <div class="financing-bar-container">
+              <div class="financing-bar-label">Структура финансирования</div>
+              <div class="financing-bar">
+                <div class="bar-cash" style="width: 100%;" title="Денежные средства: 100%"></div>
+              </div>
+              <div class="financing-legend">
+                <span class="financing-legend-item">
+                  <span class="financing-legend-dot cash" aria-hidden="true"></span> 100% кэш (долговое финансирование)
+                </span>
+              </div>
+            </div>
+
+            <a href="../cases/magnit-dixy.html" class="deal-card-link">
+              Читать кейс
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+          </article>
+
+        </div><!-- /deals-grid -->
+
+        <!-- ============================================================
+             COMPARISON CHARTS
+             ============================================================ -->
+        <section class="charts-section" aria-label="Сравнительные графики">
+          <div class="section-title reveal">
+            <span class="section-tag">Визуализация</span>
+            Сравнительные графики
+          </div>
+
+          <div class="charts-grid">
+
+            <!-- Chart 1: Deal Value Comparison -->
+            <div class="chart-box chart-full reveal">
+              <h3>Стоимость сделки (&#36; млрд)</h3>
+              <p class="chart-subtitle">Все значения приведены к доллару США для сопоставимости</p>
+              <div>
+                <canvas class="chart" id="chartDealValue" height="260" aria-label="Горизонтальная столбчатая диаграмма: стоимость сделок в миллиардах долларов" role="img"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 2: EV/EBITDA Multiples -->
+            <div class="chart-box reveal">
+              <h3>Мультипликатор EV/EBITDA</h3>
+              <p class="chart-subtitle">Отраслевые различия в оценке</p>
+              <div>
+                <canvas class="chart" id="chartEVEBITDA" height="280" aria-label="Столбчатая диаграмма: мультипликаторы EV/EBITDA" role="img"></canvas>
+              </div>
+            </div>
+
+            <!-- Chart 3: Financing Structure -->
+            <div class="chart-box reveal">
+              <h3>Структура финансирования (%)</h3>
+              <p class="chart-subtitle">Кэш, акции и другие инструменты</p>
+              <div>
+                <canvas class="chart" id="chartFinancing" height="280" aria-label="Столбчатая диаграмма: структура финансирования сделок" role="img"></canvas>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- ============================================================
+             SUMMARY TABLE
+             ============================================================ -->
+        <section class="table-section" aria-label="Сводная таблица">
+          <div class="section-title reveal">
+            <span class="section-tag">Данные</span>
+            Сводная таблица сравнения
+          </div>
+
+          <div class="data-table-wrapper reveal">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th scope="col">Метрика</th>
+                  <th scope="col">Disney / Fox</th>
+                  <th scope="col">Роснефть / ТНК-BP</th>
+                  <th scope="col">Магнит / Дикси</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="deal-name">Стоимость сделки</td>
+                  <td class="mono">&#36;71,3 млрд</td>
+                  <td class="mono">&#36;54,5 млрд</td>
+                  <td class="mono">87,6 млрд &#8381; (~&#36;1,2 млрд)</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Тип сделки</td>
+                  <td>Стратегическая (горизонтальная интеграция)</td>
+                  <td>Консолидация (вертикальная + горизонтальная)</td>
+                  <td>Стратегическая (горизонтальная, ритейл)</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Отрасль</td>
+                  <td>Media &amp; Entertainment</td>
+                  <td>Oil &amp; Gas</td>
+                  <td>Retail (Food)</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">EV/EBITDA</td>
+                  <td class="mono">~15x</td>
+                  <td class="mono">~4,5x</td>
+                  <td class="mono">~7x</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Премия</td>
+                  <td class="mono">~30%</td>
+                  <td class="mono">~20%</td>
+                  <td class="mono">~18%</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Финансирование</td>
+                  <td>50% кэш + 50% акции</td>
+                  <td>69% кэш + 31% акции Роснефти</td>
+                  <td>100% кэш (долговое)</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Синергии</td>
+                  <td class="mono">&#36;2 млрд/год</td>
+                  <td class="mono">&#36;3-5 млрд операционные</td>
+                  <td>Конверсия форматов + оптимизация логистики</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Срок закрытия</td>
+                  <td class="mono">15 месяцев</td>
+                  <td class="mono">5 месяцев</td>
+                  <td class="mono">5 месяцев</td>
+                </tr>
+                <tr>
+                  <td class="deal-name">Ключевое обоснование</td>
+                  <td>Контент (IP) + запуск Disney+</td>
+                  <td>Крупнейшая публичная нефтекомпания мира</td>
+                  <td>Масштаб в регионах, снижение удельных затрат</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ============================================================
+             KEY INSIGHTS
+             ============================================================ -->
+        <section aria-label="Ключевые выводы">
+          <div class="section-title reveal">
+            <span class="section-tag">Аналитика</span>
+            Ключевые выводы
+          </div>
+
+          <div class="insights-grid">
+
+            <div class="insight-card insight-indigo reveal">
+              <div class="insight-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <h3>Мультипликаторы и отрасль: 15x против 4,5x</h3>
+              <p>Медийные активы оцениваются в 3 раза дороже нефтяных по EV/EBITDA. Причина &mdash; более высокие ожидания роста, масштабируемость контента и переход к стриминговой модели. Нефтегазовый сектор торгуется с дисконтом из-за циклической природы сырьевых цен и ESG-рисков.</p>
+            </div>
+
+            <div class="insight-card insight-amber reveal reveal-delay-1">
+              <div class="insight-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <h3>Скорость закрытия: 5 vs 15 месяцев</h3>
+              <p>Российские сделки закрывались за 5 месяцев, тогда как Disney-Fox потребовала 15. Разница обусловлена антимонопольным регулированием: в США и ЕС проверка охватывает десятки юрисдикций, а Роснефть и Магнит проходили согласование ФАС в упрощённом режиме.</p>
+            </div>
+
+            <div class="insight-card insight-green reveal reveal-delay-2">
+              <div class="insight-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <h3>Синергии относительно стоимости</h3>
+              <p>Disney ожидала синергии &#36;2 млрд/год при стоимости &#36;71,3 млрд (yield ~2,8%). Роснефть-ТНК-BP &mdash; &#36;3-5 млрд при &#36;54,5 млрд (yield ~5,5-9,2%). Нефтяные синергии выше в процентном выражении за счёт операционной интеграции добычи, логистики и устранения дублирующих функций.</p>
+            </div>
+
+            <div class="insight-card insight-coral reveal reveal-delay-3">
+              <div class="insight-icon" aria-hidden="true">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </div>
+              <h3>Финансирование: кэш доминирует</h3>
+              <p>Во всех трёх сделках доля кэша составила 50% и выше. Полностью денежная оплата Магнит-Дикси (через долговое финансирование) типична для российского рынка, где акционерный обмен менее распространён. Использование акций Disney позволило снизить единовременную долговую нагрузку.</p>
+            </div>
+
+          </div>
+        </section>
+
+      </div><!-- /container -->
+    </div><!-- /page-content -->
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Site Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <!-- Chart.js Dashboard Logic -->
+  <script>
+  document.addEventListener('chartjs:ready', function () {
+    'use strict';
+
+    /* --- Shared helpers --- */
+    var rootStyle = getComputedStyle(document.documentElement);
+
+    function cssVar(name) {
+      return rootStyle.getPropertyValue(name).trim();
+    }
+
+    var fontHeading = "'Space Grotesk', system-ui, sans-serif";
+    var fontMono = "'JetBrains Mono', monospace";
+    var textSecondary = cssVar('--text-secondary') || '#94A3B8';
+    var textMuted = cssVar('--text-muted') || '#64748B';
+    var borderColor = cssVar('--border') || 'rgba(255,255,255,0.08)';
+
+    var colorMedia = '#818CF8';
+    var colorOil = '#F59E0B';
+    var colorRetail = '#34D399';
+    var colorCash = cssVar('--acc') || '#818CF8';
+    var colorStock = cssVar('--coral') || '#FB7185';
+    var colorOther = cssVar('--amber') || '#FBBF24';
+
+    /* Common Chart.js defaults for dark theme */
+    Chart.defaults.color = textSecondary;
+    Chart.defaults.borderColor = borderColor;
+    Chart.defaults.font.family = fontMono;
+    Chart.defaults.font.size = 12;
+    Chart.defaults.plugins.legend.labels.usePointStyle = true;
+    Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+    Chart.defaults.plugins.legend.labels.padding = 16;
+    Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15,23,42,0.95)';
+    Chart.defaults.plugins.tooltip.titleFont = { family: fontHeading, weight: '600', size: 13 };
+    Chart.defaults.plugins.tooltip.bodyFont = { family: fontMono, size: 12 };
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    Chart.defaults.plugins.tooltip.padding = 12;
+    Chart.defaults.plugins.tooltip.borderColor = 'rgba(255,255,255,0.1)';
+    Chart.defaults.plugins.tooltip.borderWidth = 1;
+
+    var labels = ['Disney / Fox', '\u0420\u043E\u0441\u043D\u0435\u0444\u0442\u044C / \u0422\u041D\u041A-BP', '\u041C\u0430\u0433\u043D\u0438\u0442 / \u0414\u0438\u043A\u0441\u0438'];
+
+    /* ================================================
+       Chart 1: Deal Value — Horizontal Bar
+       ================================================ */
+    (function () {
+      var ctx = document.getElementById('chartDealValue');
+      if (!ctx) return;
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C \u0441\u0434\u0435\u043B\u043A\u0438 ($B)',
+            data: [71.3, 54.5, 1.2],
+            backgroundColor: [colorMedia, colorOil, colorRetail],
+            borderColor: [colorMedia, colorOil, colorRetail],
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.55
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  return '\u0421\u0442\u043E\u0438\u043C\u043E\u0441\u0442\u044C: $' + ctx.parsed.x.toFixed(1) + ' \u043C\u043B\u0440\u0434';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: borderColor },
+              ticks: {
+                callback: function (val) { return '$' + val + 'B'; },
+                font: { family: fontMono, size: 11 }
+              },
+              title: {
+                display: true,
+                text: '\u041C\u043B\u0440\u0434 $',
+                font: { family: fontMono, size: 11 },
+                color: textMuted
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: {
+                font: { family: fontHeading, weight: '600', size: 13 }
+              }
+            }
+          }
+        }
+      });
+    })();
+
+    /* ================================================
+       Chart 2: EV/EBITDA Multiples — Vertical Bar
+       ================================================ */
+    (function () {
+      var ctx = document.getElementById('chartEVEBITDA');
+      if (!ctx) return;
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'EV/EBITDA',
+            data: [15, 4.5, 7],
+            backgroundColor: [
+              colorMedia + 'CC',
+              colorOil + 'CC',
+              colorRetail + 'CC'
+            ],
+            borderColor: [colorMedia, colorOil, colorRetail],
+            borderWidth: 2,
+            borderRadius: 8,
+            barPercentage: 0.5
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  return 'EV/EBITDA: ' + ctx.parsed.y.toFixed(1) + 'x';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                font: { family: fontHeading, weight: '500', size: 12 }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: borderColor },
+              ticks: {
+                callback: function (val) { return val + 'x'; },
+                font: { family: fontMono, size: 11 }
+              },
+              title: {
+                display: true,
+                text: '\u041C\u0443\u043B\u044C\u0442\u0438\u043F\u043B\u0438\u043A\u0430\u0442\u043E\u0440',
+                font: { family: fontMono, size: 11 },
+                color: textMuted
+              }
+            }
+          }
+        }
+      });
+    })();
+
+    /* ================================================
+       Chart 3: Financing Structure — Stacked Bar
+       ================================================ */
+    (function () {
+      var ctx = document.getElementById('chartFinancing');
+      if (!ctx) return;
+
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: '\u041A\u044D\u0448',
+              data: [50, 69, 100],
+              backgroundColor: colorCash + 'CC',
+              borderColor: colorCash,
+              borderWidth: 1,
+              borderRadius: { topLeft: 0, topRight: 0, bottomLeft: 6, bottomRight: 6 }
+            },
+            {
+              label: '\u0410\u043A\u0446\u0438\u0438',
+              data: [50, 31, 0],
+              backgroundColor: colorStock + 'CC',
+              borderColor: colorStock,
+              borderWidth: 1,
+              borderRadius: { topLeft: 6, topRight: 6, bottomLeft: 0, bottomRight: 0 }
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            },
+            tooltip: {
+              callbacks: {
+                label: function (ctx) {
+                  return ctx.dataset.label + ': ' + ctx.parsed.y + '%';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { display: false },
+              ticks: {
+                font: { family: fontHeading, weight: '500', size: 12 }
+              }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              max: 100,
+              grid: { color: borderColor },
+              ticks: {
+                callback: function (val) { return val + '%'; },
+                font: { family: fontMono, size: 11 }
+              },
+              title: {
+                display: true,
+                text: '\u0414\u043E\u043B\u044F, %',
+                font: { family: fontMono, size: 11 },
+                color: textMuted
+              }
+            }
+          }
+        }
+      });
+    })();
+
+  });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Визуализатор ММ — Корпоративные финансы</title>
+  <meta name="description" content="Интерактивный визуализатор теорем Модильяни–Миллера: структура капитала, стоимость компании и WACC с налогами, без налогов и trade-off">
+  <meta name="author" content="Шохин А.А., ДАФ-206">
+  <meta name="theme-color" content="#0F172A">
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/pages.css">
+  <link rel="stylesheet" href="../css/features.css">
+
+  <style>
+    /* --- MM Visualizer Page Inline Styles --- */
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      margin-bottom: var(--space-4);
+    }
+    .breadcrumb a {
+      color: var(--acc);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .breadcrumb a:hover { color: var(--acc-hover); }
+    .breadcrumb .sep { opacity: 0.4; }
+
+    .hero-code {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-6);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      line-height: 1.8;
+      color: var(--text-secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-code::before {
+      content: 'MM.theorems';
+      position: absolute;
+      top: var(--space-3);
+      right: var(--space-4);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+    .hero-code .kw { color: var(--acc); }
+    .hero-code .fn { color: #FB7185; }
+    .hero-code .num { color: #FBBF24; }
+    .hero-code .cmt { color: var(--text-muted); font-style: italic; }
+
+    /* --- Theory Tabs --- */
+    .mm-tabs {
+      display: flex;
+      gap: var(--space-1);
+      border-bottom: 2px solid var(--border);
+      margin-bottom: var(--space-6);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .mm-tab {
+      position: relative;
+      padding: var(--space-3) var(--space-5);
+      font-family: var(--ff-body);
+      font-size: var(--text-sm);
+      font-weight: var(--fw-semibold);
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: color var(--transition), border-color var(--transition);
+      white-space: nowrap;
+    }
+    .mm-tab:hover {
+      color: var(--text-secondary);
+    }
+    .mm-tab.active {
+      color: var(--acc);
+      border-bottom-color: var(--acc);
+    }
+    .mm-tab:focus-visible {
+      outline: 2px solid var(--acc);
+      outline-offset: -2px;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    }
+
+    /* --- Layout --- */
+    .mm-layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: var(--space-8);
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .mm-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .mm-controls {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-6);
+      position: sticky;
+      top: calc(var(--nav-height) + var(--topbar-height) + var(--space-4));
+    }
+    .mm-controls-title {
+      font-family: var(--ff-heading);
+      font-size: var(--text-lg);
+      font-weight: var(--fw-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-5);
+    }
+
+    /* --- Chart Area --- */
+    .mm-chart-area {
+      min-width: 0;
+    }
+    .mm-chart-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-5);
+    }
+    .mm-chart-box h3 {
+      font-family: var(--ff-heading);
+      font-size: var(--text-base);
+      font-weight: var(--fw-semibold);
+      color: var(--text-secondary);
+      margin-bottom: var(--space-4);
+    }
+    .chart-container {
+      position: relative;
+      width: 100%;
+    }
+
+    /* --- Formula Box --- */
+    .mm-formula-box {
+      background: var(--acc-subtle);
+      border: 1px solid var(--acc-glow);
+      border-left: 3px solid var(--acc);
+      border-radius: var(--radius-sm);
+      padding: var(--space-5) var(--space-6);
+      margin-top: var(--space-6);
+    }
+    .mm-formula-box-title {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--acc);
+      margin-bottom: var(--space-3);
+    }
+    .mm-formula-box .formula-line {
+      font-size: var(--text-base);
+      line-height: 2;
+      color: var(--text-primary);
+    }
+
+    /* --- Results Grid --- */
+    .mm-results {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: var(--space-4);
+      margin-top: var(--space-6);
+    }
+    .mm-result-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      text-align: center;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .mm-result-card:hover {
+      border-color: var(--border-strong);
+    }
+    .mm-result-card .r-label {
+      font-family: var(--ff-mono);
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--space-2);
+    }
+    .mm-result-card .r-value {
+      font-family: var(--ff-heading);
+      font-size: var(--text-xl);
+      font-weight: var(--fw-bold);
+      color: var(--text-primary);
+    }
+    .mm-result-card.primary {
+      border-color: var(--acc);
+      background: var(--acc-subtle);
+    }
+    .mm-result-card.primary .r-value {
+      color: var(--acc);
+    }
+
+    /* --- Theory Description --- */
+    .mm-theory-desc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: var(--space-6);
+      margin-top: var(--space-6);
+    }
+    .mm-theory-desc h4 {
+      font-family: var(--ff-heading);
+      font-size: var(--text-lg);
+      font-weight: var(--fw-semibold);
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+    }
+    .mm-theory-desc p {
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .mm-theory-desc p + p {
+      margin-top: var(--space-3);
+    }
+
+    /* --- Current D/E indicator --- */
+    .mm-de-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-4);
+      font-family: var(--ff-mono);
+      font-size: var(--text-sm);
+      color: var(--acc);
+      background: var(--acc-subtle);
+      border: 1px solid var(--acc-glow);
+      border-radius: var(--radius-pill);
+      margin-top: var(--space-4);
+    }
+
+    /* --- Related grid --- */
+    .related-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-4);
+    }
+
+    @media (max-width: 768px) {
+      .mm-results {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 480px) {
+      .mm-results {
+        grid-template-columns: 1fr;
+      }
+      .mm-tabs {
+        gap: 0;
+      }
+      .mm-tab {
+        padding: var(--space-2) var(--space-3);
+        font-size: var(--text-xs);
+      }
+    }
+  </style>
+</head>
+<body data-depth="1" data-page="mm-visualizer">
+
+  <!-- Navigation -->
+  <div id="site-nav"></div>
+
+  <main id="main-content">
+
+    <!-- ============================================================
+         HERO SPLIT
+         ============================================================ -->
+    <section class="hero hero-split" aria-label="Визуализатор Модильяни-Миллера">
+      <div class="container">
+        <div class="hero-grid">
+
+          <!-- Left: text -->
+          <div>
+            <nav class="breadcrumb" aria-label="Хлебные крошки">
+              <a href="../tools/">Инструменты</a>
+              <span class="sep">/</span>
+              <span>Визуализатор ММ</span>
+            </nav>
+
+            <h1 class="hero-title">
+              Визуализатор <span class="text-gradient">Модильяни&ndash;Миллера</span>
+            </h1>
+
+            <p class="subtitle">
+              Как структура капитала влияет на&nbsp;стоимость компании и&nbsp;WACC.
+              Три теории&nbsp;&mdash; от&nbsp;идеального мира до&nbsp;реальных компромиссов.
+            </p>
+          </div>
+
+          <!-- Right: terminal code block -->
+          <div class="hero-code" aria-hidden="true">
+            <span class="cmt">// Теоремы Модильяни–Миллера</span><br><br>
+            <span class="kw">MM I</span>: V<sub>L</sub> = V<sub>U</sub> <span class="cmt">// без налогов</span><br>
+            <span class="kw">MM II</span>: V<sub>L</sub> = V<sub>U</sub> + t<sub>c</sub> &times; D <span class="cmt">// с налогами</span><br><br>
+            <span class="cmt">// Стоимость собственного капитала</span><br>
+            <span class="fn">k<sub>e</sub></span> = r<sub>0</sub> + (r<sub>0</sub> - r<sub>d</sub>) &times; <span class="num">D/E</span><br><br>
+            <span class="cmt">// Trade-off: баланс налогового щита</span><br>
+            <span class="cmt">//           и издержек банкротства</span><br>
+            <span class="fn">V<sub>L</sub></span> = V<sub>U</sub> + <span class="kw">PV</span>(Shield) - <span class="kw">PV</span>(Costs)
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         VISUALIZER
+         ============================================================ -->
+    <section class="section" id="visualizer">
+      <div class="container">
+
+        <!-- Theory Tabs -->
+        <div class="mm-tabs" role="tablist" aria-label="Теории Модильяни-Миллера">
+          <button class="mm-tab active" role="tab" aria-selected="true" aria-controls="tab-panel" data-theory="mm1" type="button">
+            ММ I (без налогов)
+          </button>
+          <button class="mm-tab" role="tab" aria-selected="false" aria-controls="tab-panel" data-theory="mm2" type="button">
+            ММ II (с налогами)
+          </button>
+          <button class="mm-tab" role="tab" aria-selected="false" aria-controls="tab-panel" data-theory="tradeoff" type="button">
+            Trade-off
+          </button>
+        </div>
+
+        <div class="mm-layout" id="tab-panel" role="tabpanel">
+
+          <!-- LEFT: Controls -->
+          <div class="mm-controls">
+            <div class="mm-controls-title">Параметры</div>
+            <div id="slider-vu"></div>
+            <div id="slider-r0"></div>
+            <div id="slider-rd"></div>
+            <div id="slider-tax"></div>
+
+            <!-- Current D/E readout -->
+            <div style="text-align:center;margin-top:var(--space-5);">
+              <div class="mm-de-indicator">
+                D/E = <strong id="de-readout">1,00</strong>
+              </div>
+              <div style="margin-top:var(--space-2);">
+                <label for="de-select" class="sr-only">Выбор D/E</label>
+                <input type="range" id="de-select" min="0" max="3" step="0.1" value="1"
+                       style="width:100%;accent-color:var(--acc);"
+                       aria-label="Коэффициент D/E">
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-muted);">
+                <span>0</span><span>1</span><span>2</span><span>3</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Chart + Formulas + Results -->
+          <div class="mm-chart-area">
+
+            <!-- Chart -->
+            <div class="mm-chart-box">
+              <h3 id="chart-title">ММ I: Стоимость компании и ставки (без налогов)</h3>
+              <div class="chart-container">
+                <canvas id="mm-chart" class="chart" width="700" height="360"></canvas>
+              </div>
+            </div>
+
+            <!-- Active formulas -->
+            <div class="mm-formula-box" id="formula-box">
+              <div class="mm-formula-box-title">Формулы модели</div>
+              <div id="formula-content">
+                <div class="formula-line">$V_L = V_U$</div>
+                <div class="formula-line">$k_e = r_0 + (r_0 - r_d) \cdot \frac{D}{E}$</div>
+                <div class="formula-line">$WACC = r_0 = const$</div>
+              </div>
+            </div>
+
+            <!-- Results -->
+            <div class="mm-results" id="results-grid">
+              <div class="mm-result-card primary">
+                <div class="r-label">V<sub>L</sub></div>
+                <div class="r-value" id="res-vl">&mdash;</div>
+              </div>
+              <div class="mm-result-card">
+                <div class="r-label">WACC</div>
+                <div class="r-value" id="res-wacc">&mdash;</div>
+              </div>
+              <div class="mm-result-card">
+                <div class="r-label">k<sub>e</sub></div>
+                <div class="r-value" id="res-ke">&mdash;</div>
+              </div>
+              <div class="mm-result-card">
+                <div class="r-label">k<sub>d</sub></div>
+                <div class="r-value" id="res-kd">&mdash;</div>
+              </div>
+              <div class="mm-result-card" id="res-shield-card" style="display:none">
+                <div class="r-label">Налоговый щит</div>
+                <div class="r-value" id="res-shield">&mdash;</div>
+              </div>
+            </div>
+
+            <!-- Theory description -->
+            <div class="mm-theory-desc" id="theory-desc">
+              <h4>Теорема ММ I (без налогов)</h4>
+              <p>
+                В идеальном мире без налогов, издержек банкротства и асимметрии информации
+                стоимость компании не зависит от структуры капитала. Левередж лишь
+                перераспределяет денежные потоки между акционерами и кредиторами,
+                но не создает и не уничтожает стоимость.
+              </p>
+              <p>
+                Стоимость собственного капитала k<sub>e</sub> линейно растет с ростом D/E,
+                компенсируя более дешевый долг. В результате WACC остается постоянным
+                и равным r<sub>0</sub> при любом уровне левереджа.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         DATA DISCLAIMER
+         ============================================================ -->
+    <section class="section-dark">
+      <div class="container" style="max-width:800px">
+        <div class="box-warning">
+          <p>
+            <strong>Модели Модильяни&ndash;Миллера являются теоретическими.</strong>
+            В реальности структура капитала влияет на стоимость из-за налогов,
+            издержек банкротства, агентских проблем и асимметрии информации.
+            Параметры на этой странице носят иллюстративный характер.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RELATED TOOLS
+         ============================================================ -->
+    <section class="section" id="related">
+      <div class="container">
+        <div class="section-header">
+          <h2>Другие инструменты</h2>
+        </div>
+        <div class="related-grid">
+          <a href="wacc-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Калькулятор WACC</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Средневзвешенная стоимость капитала с пресетами российских компаний</p>
+            </div>
+          </a>
+          <a href="capm-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Калькулятор CAPM</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Модель оценки капитальных активов</p>
+            </div>
+          </a>
+          <a href="dcf-calculator.html" class="card">
+            <div class="card-body">
+              <div class="card-title">Калькулятор DCF</div>
+              <p style="font-size:var(--text-sm);color:var(--text-secondary);">Дисконтированные денежные потоки</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <div id="site-footer"></div>
+
+  <!-- Scripts -->
+  <script src="../js/components.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
+  <script src="../js/progress.js"></script>
+  <script src="../js/search.js"></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+
+    /* ====================================================
+       STATE
+       ==================================================== */
+    var activeTheory = 'mm1'; // 'mm1' | 'mm2' | 'tradeoff'
+    var mmChart = null;
+    var chartReady = typeof Chart !== 'undefined';
+
+    /* ====================================================
+       SLIDERS (via CFTools)
+       ==================================================== */
+    var sliderVU = CFTools.createSlider('slider-vu', {
+      label: 'V\u1d64 (стоимость без долга)',
+      min: 500, max: 5000, step: 100, value: 1000,
+      unit: 'млн \u20BD',
+      onChange: onParamChange
+    });
+
+    var sliderR0 = CFTools.createSlider('slider-r0', {
+      label: 'r\u2080 (стоимость капитала)',
+      min: 5, max: 25, step: 0.5, value: 12,
+      unit: '%',
+      onChange: onParamChange
+    });
+
+    var sliderRd = CFTools.createSlider('slider-rd', {
+      label: 'r\u1d48 (стоимость долга)',
+      min: 3, max: 15, step: 0.5, value: 6,
+      unit: '%',
+      onChange: onParamChange
+    });
+
+    var sliderTax = CFTools.createSlider('slider-tax', {
+      label: 'Ставка налога (t\u1d9c)',
+      min: 0, max: 50, step: 1, value: 20,
+      unit: '%',
+      onChange: onParamChange
+    });
+
+    var deSlider = document.getElementById('de-select');
+    var deReadout = document.getElementById('de-readout');
+
+    deSlider.addEventListener('input', function () {
+      deReadout.textContent = CFTools.formatNumber(parseFloat(deSlider.value), 2);
+      onParamChange();
+    });
+
+    /* ====================================================
+       TABS
+       ==================================================== */
+    var tabs = document.querySelectorAll('.mm-tab');
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        activeTheory = tab.dataset.theory;
+        updateUI();
+      });
+    });
+
+    /* ====================================================
+       CALCULATIONS
+       ==================================================== */
+
+    /**
+     * Get current slider values as numbers.
+     */
+    function getParams() {
+      return {
+        VU:  sliderVU.getValue(),
+        r0:  sliderR0.getValue() / 100,
+        rd:  sliderRd.getValue() / 100,
+        tax: sliderTax.getValue() / 100,
+        de:  parseFloat(deSlider.value)
+      };
+    }
+
+    /**
+     * MM I (no taxes): V_L = V_U, ke = r0 + (r0-rd)*D/E, WACC = r0
+     */
+    function calcMM1(de, p) {
+      var ke = p.r0 + (p.r0 - p.rd) * de;
+      var we = 1 / (1 + de);
+      var wd = de / (1 + de);
+      var wacc = we * ke + wd * p.rd;
+      return { VL: p.VU, ke: ke, kd: p.rd, wacc: wacc };
+    }
+
+    /**
+     * MM II (with taxes): V_L = V_U + t*D, ke = r0 + (r0-rd)*(1-t)*D/E
+     */
+    function calcMM2(de, p) {
+      var D = de > 0 ? p.VU * de / (1 + de - p.tax * de) : 0;
+      // V_L = V_U + t*D
+      var VL = p.VU + p.tax * D;
+      var E = VL - D;
+      var ke = p.r0 + (p.r0 - p.rd) * (1 - p.tax) * (D / Math.max(E, 0.001));
+      var we = E / Math.max(VL, 0.001);
+      var wd = D / Math.max(VL, 0.001);
+      var wacc = we * ke + wd * p.rd * (1 - p.tax);
+      var shield = p.tax * D;
+      return { VL: VL, ke: ke, kd: p.rd, wacc: wacc, D: D, E: E, shield: shield };
+    }
+
+    /**
+     * Trade-off: V_L = V_U + t*D - PV(bankruptcy costs)
+     * Bankruptcy costs modeled as a*D^2/(V_U) (convex, rising with leverage).
+     */
+    function calcTradeoff(de, p) {
+      var D = de > 0 ? p.VU * de / (1 + de - p.tax * de) : 0;
+      var shield = p.tax * D;
+      // Bankruptcy cost parameter: quadratic in D/V_U
+      var bcFactor = 0.08;
+      var bc = bcFactor * (D * D) / Math.max(p.VU, 1);
+      var VL = p.VU + shield - bc;
+      if (VL < 0) VL = 0;
+      var E = Math.max(VL - D, 0.001);
+      var ke = p.r0 + (p.r0 - p.rd) * (1 - p.tax) * (D / Math.max(E, 0.001));
+      // Adjust ke upward for bankruptcy risk
+      var bcPremium = bcFactor * 2 * D / Math.max(p.VU, 1);
+      ke = ke + bcPremium;
+      var we = E / Math.max(VL, 0.001);
+      var wd = D / Math.max(VL, 0.001);
+      var wacc = (VL > 0) ? we * ke + wd * p.rd * (1 - p.tax) + bcPremium * wd : p.r0;
+      return { VL: VL, ke: ke, kd: p.rd, wacc: wacc, D: D, E: E, shield: shield, bc: bc };
+    }
+
+    /**
+     * Dispatch to the right calc based on active theory.
+     */
+    function calcForTheory(de, p) {
+      if (activeTheory === 'mm1') return calcMM1(de, p);
+      if (activeTheory === 'mm2') return calcMM2(de, p);
+      return calcTradeoff(de, p);
+    }
+
+    /* ====================================================
+       GENERATE CHART DATA
+       ==================================================== */
+
+    function generateSeriesData(p) {
+      var deSeries = [];
+      var vlSeries = [];
+      var keSeries = [];
+      var waccSeries = [];
+      var kdSeries = [];
+
+      for (var d = 0; d <= 30; d++) {
+        var de = d / 10;
+        deSeries.push(de);
+
+        var r = calcForTheory(de, p);
+        vlSeries.push(r.VL);
+        keSeries.push(r.ke * 100);
+        waccSeries.push(r.wacc * 100);
+        kdSeries.push(r.kd * 100);
+      }
+
+      return {
+        labels: deSeries,
+        vl: vlSeries,
+        ke: keSeries,
+        wacc: waccSeries,
+        kd: kdSeries
+      };
+    }
+
+    /* ====================================================
+       CHART RENDERING
+       ==================================================== */
+
+    function renderChart() {
+      if (!chartReady) return;
+
+      var p = getParams();
+      var data = generateSeriesData(p);
+
+      var chartColors = {
+        vl:   '#A78BFA',  // Purple for V_L
+        ke:   '#F87171',  // Red for ke
+        wacc: '#34D399',  // Green for WACC
+        kd:   '#38BDF8'   // Blue for kd
+      };
+
+      var gridColor = 'rgba(148, 163, 184, 0.1)';
+      var tickColor = '#94A3B8';
+
+      if (mmChart) {
+        // Update existing chart data
+        mmChart.data.labels = data.labels;
+        mmChart.data.datasets[0].data = data.vl;
+        mmChart.data.datasets[1].data = data.ke;
+        mmChart.data.datasets[2].data = data.wacc;
+        mmChart.data.datasets[3].data = data.kd;
+        mmChart.update('none');
+        return;
+      }
+
+      var ctx = document.getElementById('mm-chart').getContext('2d');
+
+      mmChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: 'V\u2097 (млн \u20BD)',
+              data: data.vl,
+              borderColor: chartColors.vl,
+              backgroundColor: 'rgba(167, 139, 250, 0.08)',
+              borderWidth: 2.5,
+              pointRadius: 0,
+              pointHoverRadius: 5,
+              tension: 0.3,
+              fill: true,
+              yAxisID: 'y'
+            },
+            {
+              label: 'k\u2091 (%)',
+              data: data.ke,
+              borderColor: chartColors.ke,
+              borderWidth: 2,
+              pointRadius: 0,
+              pointHoverRadius: 5,
+              tension: 0.3,
+              fill: false,
+              yAxisID: 'y1'
+            },
+            {
+              label: 'WACC (%)',
+              data: data.wacc,
+              borderColor: chartColors.wacc,
+              borderWidth: 2,
+              borderDash: [6, 3],
+              pointRadius: 0,
+              pointHoverRadius: 5,
+              tension: 0.3,
+              fill: false,
+              yAxisID: 'y1'
+            },
+            {
+              label: 'k\u1d48 (%)',
+              data: data.kd,
+              borderColor: chartColors.kd,
+              borderWidth: 1.5,
+              borderDash: [3, 3],
+              pointRadius: 0,
+              pointHoverRadius: 4,
+              tension: 0,
+              fill: false,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            mode: 'index',
+            intersect: false
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                color: tickColor,
+                font: { size: 11, family: "'Inter', sans-serif" },
+                padding: 16,
+                usePointStyle: true,
+                pointStyleWidth: 10
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.95)',
+              titleColor: '#F1F5F9',
+              bodyColor: '#94A3B8',
+              borderColor: 'rgba(255,255,255,0.08)',
+              borderWidth: 1,
+              padding: 12,
+              bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+              callbacks: {
+                title: function (items) {
+                  return 'D/E = ' + items[0].label;
+                },
+                label: function (ctx) {
+                  var label = ctx.dataset.label || '';
+                  var val = ctx.parsed.y;
+                  if (ctx.datasetIndex === 0) {
+                    return label + ': ' + val.toFixed(0) + ' млн \u20BD';
+                  }
+                  return label + ': ' + val.toFixed(2) + '%';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: 'D/E (коэффициент долговой нагрузки)',
+                color: tickColor,
+                font: { size: 12 }
+              },
+              ticks: {
+                color: tickColor,
+                callback: function (value, index) {
+                  var v = data.labels[index];
+                  if (v === undefined) return '';
+                  return (v % 0.5 === 0) ? v.toFixed(1) : '';
+                },
+                maxRotation: 0
+              },
+              grid: { color: gridColor }
+            },
+            y: {
+              type: 'linear',
+              position: 'left',
+              title: {
+                display: true,
+                text: 'V\u2097 (млн \u20BD)',
+                color: '#A78BFA',
+                font: { size: 12 }
+              },
+              ticks: {
+                color: '#A78BFA',
+                callback: function (v) { return v.toFixed(0); }
+              },
+              grid: { color: gridColor }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Ставки (%)',
+                color: tickColor,
+                font: { size: 12 }
+              },
+              ticks: {
+                color: tickColor,
+                callback: function (v) { return v.toFixed(1) + '%'; }
+              },
+              grid: { drawOnChartArea: false }
+            }
+          }
+        }
+      });
+    }
+
+    /* ====================================================
+       UI UPDATES
+       ==================================================== */
+
+    function onParamChange() {
+      updateUI();
+    }
+
+    function updateUI() {
+      var p = getParams();
+      var current = calcForTheory(p.de, p);
+
+      // Update D/E readout
+      deReadout.textContent = CFTools.formatNumber(p.de, 2);
+
+      // Update chart title
+      var titles = {
+        mm1: 'ММ I: Стоимость компании и ставки (без налогов)',
+        mm2: 'ММ II: Стоимость компании и ставки (с налогами)',
+        tradeoff: 'Trade-off: Стоимость компании и ставки'
+      };
+      document.getElementById('chart-title').textContent = titles[activeTheory] || '';
+
+      // Update formulas
+      updateFormulas();
+
+      // Update results
+      document.getElementById('res-vl').textContent = CFTools.formatNumber(current.VL, 0) + ' млн \u20BD';
+      document.getElementById('res-wacc').textContent = CFTools.formatNumber(current.wacc * 100, 2) + '%';
+      document.getElementById('res-ke').textContent = CFTools.formatNumber(current.ke * 100, 2) + '%';
+      document.getElementById('res-kd').textContent = CFTools.formatNumber(current.kd * 100, 2) + '%';
+
+      // Tax shield card
+      var shieldCard = document.getElementById('res-shield-card');
+      if (activeTheory === 'mm1') {
+        shieldCard.style.display = 'none';
+      } else {
+        shieldCard.style.display = '';
+        var shieldVal = current.shield !== undefined ? current.shield : 0;
+        document.getElementById('res-shield').textContent = CFTools.formatNumber(shieldVal, 0) + ' млн \u20BD';
+      }
+
+      // Update theory description
+      updateTheoryDesc();
+
+      // Toggle tax slider visibility (dim for MM1)
+      var taxSliderWrap = document.getElementById('slider-tax');
+      if (taxSliderWrap) {
+        taxSliderWrap.style.opacity = activeTheory === 'mm1' ? '0.35' : '1';
+        taxSliderWrap.style.pointerEvents = activeTheory === 'mm1' ? 'none' : '';
+      }
+
+      // Update chart
+      renderChart();
+
+      // Re-render KaTeX if available
+      if (typeof renderMathInElement === 'function') {
+        var formulaBox = document.getElementById('formula-content');
+        renderMathInElement(formulaBox, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false }
+          ],
+          throwOnError: false
+        });
+      }
+    }
+
+    function updateFormulas() {
+      var html = '';
+      if (activeTheory === 'mm1') {
+        html =
+          '<div class="formula-line">$V_L = V_U$</div>' +
+          '<div class="formula-line">$k_e = r_0 + (r_0 - r_d) \\cdot \\dfrac{D}{E}$</div>' +
+          '<div class="formula-line">$WACC = r_0 = const$</div>';
+      } else if (activeTheory === 'mm2') {
+        html =
+          '<div class="formula-line">$V_L = V_U + t_c \\cdot D$</div>' +
+          '<div class="formula-line">$k_e = r_0 + (r_0 - r_d)(1 - t_c) \\cdot \\dfrac{D}{E}$</div>' +
+          '<div class="formula-line">$WACC = \\dfrac{E}{V} \\cdot k_e + \\dfrac{D}{V} \\cdot r_d \\cdot (1 - t_c)$</div>';
+      } else {
+        html =
+          '<div class="formula-line">$V_L = V_U + PV(\\text{Tax Shield}) - PV(\\text{Bankruptcy Costs})$</div>' +
+          '<div class="formula-line">$k_e = r_0 + (r_0 - r_d)(1 - t_c) \\cdot \\dfrac{D}{E} + \\text{BC Premium}$</div>' +
+          '<div class="formula-line">$\\text{Оптимум: } \\dfrac{\\partial V_L}{\\partial D} = 0 \\text{ (max стоимость)}$</div>';
+      }
+      document.getElementById('formula-content').innerHTML = html;
+    }
+
+    function updateTheoryDesc() {
+      var el = document.getElementById('theory-desc');
+      if (activeTheory === 'mm1') {
+        el.innerHTML =
+          '<h4>Теорема ММ I (без налогов)</h4>' +
+          '<p>В идеальном мире без налогов, издержек банкротства и асимметрии информации ' +
+          'стоимость компании не зависит от структуры капитала. Левередж лишь ' +
+          'перераспределяет денежные потоки между акционерами и кредиторами, ' +
+          'но не создает и не уничтожает стоимость.</p>' +
+          '<p>Стоимость собственного капитала k<sub>e</sub> линейно растет с ростом D/E, ' +
+          'компенсируя более дешевый долг. В результате WACC остается постоянным ' +
+          'и равным r<sub>0</sub> при любом уровне левереджа.</p>';
+      } else if (activeTheory === 'mm2') {
+        el.innerHTML =
+          '<h4>Теорема ММ II (с налогами)</h4>' +
+          '<p>При наличии корпоративного налога на прибыль долговое финансирование ' +
+          'создает налоговый щит: проценты по долгу уменьшают налогооблагаемую базу. ' +
+          'Стоимость компании с долгом превышает V<sub>U</sub> на величину t<sub>c</sub> &times; D.</p>' +
+          '<p>WACC снижается по мере роста долга, так как налоговый щит уменьшает ' +
+          'эффективную стоимость заемного капитала. В предельном случае (100% долга) ' +
+          'стоимость компании была бы максимальной &mdash; но это нереалистично.</p>';
+      } else {
+        el.innerHTML =
+          '<h4>Trade-off теория</h4>' +
+          '<p>Компромиссная (trade-off) теория учитывает, что с ростом долга растут ' +
+          'издержки финансовых затруднений (банкротства). Оптимальная структура ' +
+          'капитала находится в точке, где предельная выгода от налогового щита ' +
+          'равна предельным издержкам банкротства.</p>' +
+          '<p>На графике V<sub>L</sub> сначала растет (налоговый щит), достигает максимума, ' +
+          'а затем снижается (издержки банкротства превышают выгоду). WACC имеет ' +
+          'U-образную форму с минимумом в точке оптимальной структуры капитала.</p>';
+      }
+    }
+
+    /* ====================================================
+       CHART.JS READY HANDLER
+       ==================================================== */
+
+    function whenChartReady(fn) {
+      if (typeof Chart !== 'undefined') {
+        chartReady = true;
+        return fn();
+      }
+      document.addEventListener('chartjs:ready', function handler() {
+        document.removeEventListener('chartjs:ready', handler);
+        chartReady = true;
+        fn();
+      });
+    }
+
+    /* ====================================================
+       INIT
+       ==================================================== */
+
+    // Initial calculation (without chart)
+    updateUI();
+
+    // Chart — wait for Chart.js
+    whenChartReady(function () {
+      renderChart();
+    });
+
+  });
+  </script>
+
+</body>
+</html>

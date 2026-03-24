@@ -223,6 +223,75 @@
   }
 
   /* --------------------------------------------------
+     Additional financial calculations (Phase 2)
+     -------------------------------------------------- */
+
+  /**
+   * Bond price (present value of coupon + face).
+   * @param {number} face      Face / par value
+   * @param {number} coupon    Annual coupon rate (decimal, e.g. 0.08)
+   * @param {number} ytm       Yield to maturity (decimal)
+   * @param {number} periods   Number of periods (years × freq)
+   * @param {number} [freq=1]  Coupons per year
+   * @returns {number}
+   */
+  function bondPrice(face, coupon, ytm, periods, freq) {
+    freq = freq || 1;
+    var c = face * coupon / freq;
+    var r = ytm / freq;
+    var pv = 0;
+    for (var t = 1; t <= periods; t++) {
+      pv += c / Math.pow(1 + r, t);
+    }
+    pv += face / Math.pow(1 + r, periods);
+    return pv;
+  }
+
+  /**
+   * Macaulay Duration.
+   * @param {number} face
+   * @param {number} coupon  Annual coupon rate (decimal)
+   * @param {number} ytm     Yield to maturity (decimal)
+   * @param {number} periods
+   * @param {number} [freq=1]
+   * @returns {number}
+   */
+  function duration(face, coupon, ytm, periods, freq) {
+    freq = freq || 1;
+    var c = face * coupon / freq;
+    var r = ytm / freq;
+    var price = bondPrice(face, coupon, ytm, periods, freq);
+    var wsum = 0;
+    for (var t = 1; t <= periods; t++) {
+      wsum += t * c / Math.pow(1 + r, t);
+    }
+    wsum += periods * face / Math.pow(1 + r, periods);
+    return (wsum / price) / freq;
+  }
+
+  /**
+   * Economic Order Quantity (Wilson formula).
+   * @param {number} demand    Annual demand (units)
+   * @param {number} orderCost Cost per order
+   * @param {number} holdCost  Holding cost per unit per year
+   * @returns {number}
+   */
+  function eoq(demand, orderCost, holdCost) {
+    return Math.sqrt(2 * demand * orderCost / holdCost);
+  }
+
+  /**
+   * Cash Conversion Cycle.
+   * @param {number} dio Days Inventory Outstanding
+   * @param {number} dso Days Sales Outstanding
+   * @param {number} dpo Days Payable Outstanding
+   * @returns {number}
+   */
+  function ccc(dio, dso, dpo) {
+    return dio + dso - dpo;
+  }
+
+  /* --------------------------------------------------
      Public API
      -------------------------------------------------- */
   window.CFTools = {
@@ -233,6 +302,10 @@
     npv:              npv,
     wacc:             wacc,
     capm:             capm,
+    bondPrice:        bondPrice,
+    duration:         duration,
+    eoq:              eoq,
+    ccc:              ccc,
     createResultCard: createResultCard
   };
 })();

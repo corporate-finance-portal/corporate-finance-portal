@@ -302,6 +302,348 @@
           </details>
 
           <!-- ============================================================
+               КАЛЬКУЛЯТОР EOQ и CCC
+               ============================================================ -->
+          <h2 id="eoq-ccc-calc" class="reveal">Калькулятор EOQ и CCC</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Введите параметры — увидите оптимальный заказ и финансовый цикл.</p>
+
+          <div class="reveal" id="eoq-ccc-calculator">
+            <!-- Tab buttons -->
+            <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-5); border-bottom: 1px solid var(--border);">
+              <button type="button" class="calc-tab active" data-tab="eoq"
+                style="background: none; border: none; border-bottom: 2px solid var(--acc); padding: var(--space-3) var(--space-4); color: var(--acc); font-size: var(--text-base); font-weight: 600; cursor: pointer; transition: color 0.2s, border-color 0.2s;">
+                EOQ — Оптимальный заказ
+              </button>
+              <button type="button" class="calc-tab" data-tab="ccc"
+                style="background: none; border: none; border-bottom: 2px solid transparent; padding: var(--space-3) var(--space-4); color: var(--text-muted); font-size: var(--text-base); font-weight: 600; cursor: pointer; transition: color 0.2s, border-color 0.2s;">
+                CCC — Финансовый цикл
+              </button>
+            </div>
+
+            <!-- ===== EOQ Tab ===== -->
+            <div class="calc-panel" id="panel-eoq" style="display: block;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+                <div>
+                  <label for="eoq-d" style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">D — Годовой спрос (ед.)</label>
+                  <input type="number" id="eoq-d" value="10000" min="1" step="100"
+                    style="width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); color: var(--text-primary); font-family: var(--ff-mono); font-size: var(--text-base); outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+                <div>
+                  <label for="eoq-s" style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">S — Стоимость заказа (&#8381;)</label>
+                  <input type="number" id="eoq-s" value="500" min="1" step="50"
+                    style="width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); color: var(--text-primary); font-family: var(--ff-mono); font-size: var(--text-base); outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+                <div>
+                  <label for="eoq-h" style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">H — Стоимость хранения (&#8381;/ед./год)</label>
+                  <input type="number" id="eoq-h" value="20" min="0.01" step="1"
+                    style="width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); color: var(--text-primary); font-family: var(--ff-mono); font-size: var(--text-base); outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+              </div>
+
+              <!-- EOQ Results -->
+              <div id="eoq-results" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5); margin-bottom: var(--space-5);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+                  <div>
+                    <span style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 4px;">Q* (оптимальный заказ)</span>
+                    <span id="eoq-q" style="font-size: var(--text-xl); font-weight: 700; color: var(--acc); font-family: var(--ff-mono);">—</span>
+                    <span style="font-size: var(--text-sm); color: var(--text-muted);"> ед.</span>
+                  </div>
+                  <div>
+                    <span style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 4px;">N* (заказов в год)</span>
+                    <span id="eoq-n" style="font-size: var(--text-xl); font-weight: 700; color: var(--text-primary); font-family: var(--ff-mono);">—</span>
+                  </div>
+                  <div>
+                    <span style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 4px;">TC (общие затраты)</span>
+                    <span id="eoq-tc" style="font-size: var(--text-xl); font-weight: 700; color: var(--text-primary); font-family: var(--ff-mono);">—</span>
+                    <span style="font-size: var(--text-sm); color: var(--text-muted);"> &#8381;</span>
+                  </div>
+                  <div>
+                    <span style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 4px;">Средний запас</span>
+                    <span id="eoq-avg" style="font-size: var(--text-xl); font-weight: 700; color: var(--text-primary); font-family: var(--ff-mono);">—</span>
+                    <span style="font-size: var(--text-sm); color: var(--text-muted);"> ед.</span>
+                  </div>
+                </div>
+
+                <!-- Cost breakdown -->
+                <div style="border-top: 1px solid var(--border); padding-top: var(--space-4);">
+                  <p style="font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-3); font-weight: 600;">Разбивка затрат:</p>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-3);">
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                      <span style="font-size: var(--text-sm); color: var(--text-secondary);">Затраты на заказы (D/Q &times; S)</span>
+                      <span id="eoq-cost-order" style="font-family: var(--ff-mono); font-weight: 600; color: var(--text-primary);">—</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                      <span style="font-size: var(--text-sm); color: var(--text-secondary);">Затраты на хранение (Q/2 &times; H)</span>
+                      <span id="eoq-cost-hold" style="font-family: var(--ff-mono); font-weight: 600; color: var(--text-primary);">—</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                      <span style="font-size: var(--text-sm); color: var(--text-secondary); font-weight: 700;">Итого</span>
+                      <span id="eoq-cost-total" style="font-family: var(--ff-mono); font-weight: 700; color: var(--acc);">—</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="box-formula" style="margin-bottom: 0;">
+                <div class="math-block">$$Q^* = \sqrt{\frac{2DS}{H}}$$</div>
+              </div>
+            </div>
+
+            <!-- ===== CCC Tab ===== -->
+            <div class="calc-panel" id="panel-ccc" style="display: none;">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+                <div>
+                  <label for="ccc-inv" style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">T<sub>зап</sub> — Оборачиваемость запасов (дни)</label>
+                  <input type="number" id="ccc-inv" value="45" min="0" step="1"
+                    style="width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); color: var(--text-primary); font-family: var(--ff-mono); font-size: var(--text-base); outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+                <div>
+                  <label for="ccc-ar" style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">T<sub>ДЗ</sub> — Оборачиваемость дебиторки (дни)</label>
+                  <input type="number" id="ccc-ar" value="30" min="0" step="1"
+                    style="width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); color: var(--text-primary); font-family: var(--ff-mono); font-size: var(--text-base); outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+                <div>
+                  <label for="ccc-ap" style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: var(--space-2);">T<sub>КЗ</sub> — Оборачиваемость кредиторки (дни)</label>
+                  <input type="number" id="ccc-ap" value="20" min="0" step="1"
+                    style="width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-3); color: var(--text-primary); font-family: var(--ff-mono); font-size: var(--text-base); outline: none; transition: border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--acc)'" onblur="this.style.borderColor='var(--border)'">
+                </div>
+              </div>
+
+              <!-- CCC Results -->
+              <div style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: var(--space-5); margin-bottom: var(--space-5);">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-5);">
+                  <div>
+                    <span style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 4px;">Операционный цикл (OC)</span>
+                    <span id="ccc-oc" style="font-size: var(--text-xl); font-weight: 700; color: var(--text-primary); font-family: var(--ff-mono);">—</span>
+                    <span style="font-size: var(--text-sm); color: var(--text-muted);"> дней</span>
+                  </div>
+                  <div>
+                    <span style="display: block; font-size: var(--text-sm); color: var(--text-secondary); margin-bottom: 4px;">Финансовый цикл (CCC)</span>
+                    <span id="ccc-val" style="font-size: var(--text-xl); font-weight: 700; color: var(--acc); font-family: var(--ff-mono);">—</span>
+                    <span style="font-size: var(--text-sm); color: var(--text-muted);"> дней</span>
+                  </div>
+                </div>
+
+                <!-- Timeline bar -->
+                <div id="ccc-timeline" style="margin-bottom: var(--space-4);">
+                  <!-- OC bracket -->
+                  <div id="ccc-oc-bracket" style="position: relative; height: 24px; margin-bottom: 4px;">
+                    <div style="position: absolute; top: 0; left: 0; height: 100%; border: 1px solid var(--text-secondary); border-bottom: none; border-radius: 4px 4px 0 0; display: flex; align-items: flex-start; justify-content: center; box-sizing: border-box;"
+                      id="ccc-oc-bracket-bar">
+                      <span style="font-size: 11px; color: var(--text-secondary); font-weight: 600; margin-top: 2px;">OC</span>
+                    </div>
+                  </div>
+
+                  <!-- Stacked bar -->
+                  <div style="position: relative; display: flex; height: 40px; border-radius: var(--radius-sm); overflow: hidden; background: var(--surface-2);">
+                    <div id="ccc-bar-inv" style="height: 100%; background: rgba(74, 222, 128, 0.5); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; transition: width 0.3s;"
+                      title="Запасы">
+                      <span class="ccc-bar-label">Запасы</span>
+                    </div>
+                    <div id="ccc-bar-ar" style="height: 100%; background: rgba(96, 165, 250, 0.5); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; transition: width 0.3s;"
+                      title="Дебиторка">
+                      <span class="ccc-bar-label">Дебиторка</span>
+                    </div>
+                  </div>
+
+                  <!-- AP overlay bar (red, positioned below) -->
+                  <div style="position: relative; height: 28px; margin-top: 4px;">
+                    <div id="ccc-bar-ap" style="position: absolute; top: 0; left: 0; height: 20px; background: rgba(248, 113, 113, 0.45); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; transition: width 0.3s;"
+                      title="Кредиторка">
+                      <span class="ccc-bar-label">КЗ</span>
+                    </div>
+                  </div>
+
+                  <!-- CCC bracket -->
+                  <div id="ccc-ccc-bracket" style="position: relative; height: 24px; margin-top: 2px;">
+                    <div style="position: absolute; bottom: 0; height: 100%; border: 1px solid var(--acc); border-top: none; border-radius: 0 0 4px 4px; display: flex; align-items: flex-end; justify-content: center; box-sizing: border-box;"
+                      id="ccc-ccc-bracket-bar">
+                      <span style="font-size: 11px; color: var(--acc); font-weight: 600; margin-bottom: 2px;">CCC</span>
+                    </div>
+                  </div>
+
+                  <!-- Legend -->
+                  <div style="display: flex; gap: var(--space-4); margin-top: var(--space-3); flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="width: 12px; height: 12px; border-radius: 2px; background: rgba(74, 222, 128, 0.5); display: inline-block;"></span>
+                      <span style="font-size: var(--text-sm); color: var(--text-secondary);">T<sub>зап</sub> — Запасы</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="width: 12px; height: 12px; border-radius: 2px; background: rgba(96, 165, 250, 0.5); display: inline-block;"></span>
+                      <span style="font-size: var(--text-sm); color: var(--text-secondary);">T<sub>ДЗ</sub> — Дебиторка</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                      <span style="width: 12px; height: 12px; border-radius: 2px; background: rgba(248, 113, 113, 0.45); display: inline-block;"></span>
+                      <span style="font-size: var(--text-sm); color: var(--text-secondary);">T<sub>КЗ</sub> — Кредиторка</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Interpretation -->
+                <div id="ccc-interp" style="padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm); font-size: var(--text-sm); margin-bottom: var(--space-4);"></div>
+              </div>
+
+              <div class="box-formula" style="margin-bottom: 0;">
+                <div class="math-block">$$OC = T_{\text{зап}} + T_{\text{ДЗ}}$$</div>
+                <div class="math-block">$$CCC = OC - T_{\text{КЗ}} = T_{\text{зап}} + T_{\text{ДЗ}} - T_{\text{КЗ}}$$</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculator inline script -->
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            'use strict';
+
+            /* ---- Helpers ---- */
+            var fmt = (typeof CFTools !== 'undefined' && CFTools.formatNumber)
+              ? CFTools.formatNumber
+              : function (n, d) { return Number(n).toLocaleString('ru-RU', { minimumFractionDigits: d || 0, maximumFractionDigits: d || 0 }); };
+
+            function fmtInt(n) { return fmt(n, 0); }
+            function fmtDec(n) { return fmt(n, 2); }
+
+            /* ---- Tab switching ---- */
+            var tabs = document.querySelectorAll('#eoq-ccc-calculator .calc-tab');
+            var panels = document.querySelectorAll('#eoq-ccc-calculator .calc-panel');
+
+            tabs.forEach(function (tab) {
+              tab.addEventListener('click', function () {
+                var target = tab.getAttribute('data-tab');
+                tabs.forEach(function (t) {
+                  var isActive = t.getAttribute('data-tab') === target;
+                  t.style.borderBottomColor = isActive ? 'var(--acc)' : 'transparent';
+                  t.style.color = isActive ? 'var(--acc)' : 'var(--text-muted)';
+                  t.classList.toggle('active', isActive);
+                });
+                panels.forEach(function (p) {
+                  p.style.display = p.id === 'panel-' + target ? 'block' : 'none';
+                });
+              });
+            });
+
+            /* ---- EOQ Calculator ---- */
+            var eoqD = document.getElementById('eoq-d');
+            var eoqS = document.getElementById('eoq-s');
+            var eoqH = document.getElementById('eoq-h');
+
+            function calcEOQ() {
+              var D = parseFloat(eoqD.value) || 0;
+              var S = parseFloat(eoqS.value) || 0;
+              var H = parseFloat(eoqH.value) || 0;
+
+              if (D <= 0 || S <= 0 || H <= 0) {
+                ['eoq-q','eoq-n','eoq-tc','eoq-avg','eoq-cost-order','eoq-cost-hold','eoq-cost-total'].forEach(function (id) {
+                  document.getElementById(id).textContent = '\u2014';
+                });
+                return;
+              }
+
+              var Q = Math.sqrt(2 * D * S / H);
+              var N = D / Q;
+              var TC = Math.sqrt(2 * D * S * H);
+              var avg = Q / 2;
+              var costOrder = (D / Q) * S;
+              var costHold = (Q / 2) * H;
+
+              document.getElementById('eoq-q').textContent = fmtDec(Q);
+              document.getElementById('eoq-n').textContent = fmtDec(N);
+              document.getElementById('eoq-tc').textContent = fmtDec(TC);
+              document.getElementById('eoq-avg').textContent = fmtDec(avg);
+              document.getElementById('eoq-cost-order').textContent = fmtDec(costOrder) + ' \u20BD';
+              document.getElementById('eoq-cost-hold').textContent = fmtDec(costHold) + ' \u20BD';
+              document.getElementById('eoq-cost-total').textContent = fmtDec(costOrder + costHold) + ' \u20BD';
+            }
+
+            [eoqD, eoqS, eoqH].forEach(function (el) {
+              el.addEventListener('input', calcEOQ);
+            });
+            calcEOQ();
+
+            /* ---- CCC Calculator ---- */
+            var cccInv = document.getElementById('ccc-inv');
+            var cccAR  = document.getElementById('ccc-ar');
+            var cccAP  = document.getElementById('ccc-ap');
+
+            function calcCCC() {
+              var tInv = parseFloat(cccInv.value) || 0;
+              var tAR  = parseFloat(cccAR.value)  || 0;
+              var tAP  = parseFloat(cccAP.value)  || 0;
+
+              var oc  = tInv + tAR;
+              var ccc = oc - tAP;
+
+              document.getElementById('ccc-oc').textContent  = fmtInt(oc);
+              document.getElementById('ccc-val').textContent = fmtInt(ccc);
+
+              /* Timeline bar proportions */
+              var total = Math.max(oc, tAP, 1);
+              var pctInv = (tInv / total) * 100;
+              var pctAR  = (tAR / total)  * 100;
+              var pctAP  = (tAP / total)  * 100;
+              var pctOC  = ((tInv + tAR) / total) * 100;
+
+              document.getElementById('ccc-bar-inv').style.width = pctInv + '%';
+              document.getElementById('ccc-bar-ar').style.width  = pctAR  + '%';
+              document.getElementById('ccc-bar-ap').style.width  = pctAP  + '%';
+
+              /* OC bracket spans the full green+blue bar */
+              var ocBracket = document.getElementById('ccc-oc-bracket-bar');
+              ocBracket.style.left  = '0';
+              ocBracket.style.width = pctOC + '%';
+
+              /* CCC bracket: from end of AP to end of OC */
+              var cccBracket = document.getElementById('ccc-ccc-bracket-bar');
+              if (ccc > 0) {
+                cccBracket.style.left  = pctAP + '%';
+                cccBracket.style.width = ((ccc / total) * 100) + '%';
+                cccBracket.style.display = 'flex';
+              } else if (ccc < 0) {
+                /* Negative CCC: AP extends beyond OC */
+                cccBracket.style.left  = pctOC + '%';
+                cccBracket.style.width = ((Math.abs(ccc) / total) * 100) + '%';
+                cccBracket.style.display = 'flex';
+                cccBracket.querySelector('span').textContent = 'CCC < 0';
+              } else {
+                cccBracket.style.width = '0';
+                cccBracket.style.display = 'none';
+              }
+
+              /* Interpretation */
+              var interp = document.getElementById('ccc-interp');
+              if (ccc > 0) {
+                interp.style.background = 'var(--acc-subtle)';
+                interp.style.color = 'var(--text-primary)';
+                interp.innerHTML = 'CCC = <strong>' + fmtInt(ccc) + ' дн.</strong> — компания финансирует ' + fmtInt(ccc) + ' дней из собственных/заёмных средств.';
+              } else if (ccc < 0) {
+                interp.style.background = 'rgba(74, 222, 128, 0.1)';
+                interp.style.color = 'var(--text-primary)';
+                interp.innerHTML = 'CCC = <strong>' + fmtInt(ccc) + ' дн.</strong> — компания работает на деньги кредиторов — отрицательный финансовый цикл.';
+              } else {
+                interp.style.background = 'var(--surface-2)';
+                interp.style.color = 'var(--text-secondary)';
+                interp.innerHTML = 'CCC = <strong>0 дн.</strong> — операционный цикл полностью покрывается кредиторской задолженностью.';
+              }
+
+              /* Color the CCC value */
+              var cccValEl = document.getElementById('ccc-val');
+              cccValEl.style.color = ccc <= 0 ? 'rgb(74, 222, 128)' : 'var(--acc)';
+            }
+
+            [cccInv, cccAR, cccAP].forEach(function (el) {
+              el.addEventListener('input', calcCCC);
+            });
+            calcCCC();
+          });
+          </script>
+
+          <!-- ============================================================
                КЛЮЧЕВЫЕ ПОНЯТИЯ
                ============================================================ -->
           <h2 id="glossary" class="reveal">Ключевые понятия</h2>
@@ -425,6 +767,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 </body>

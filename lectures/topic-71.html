@@ -416,6 +416,341 @@
           </details>
 
           <!-- ============================================================
+               ПАУК ФИНАНСОВЫХ КОЭФФИЦИЕНТОВ (RADAR CHART)
+               ============================================================ -->
+          <h2 id="ratio-spider" class="reveal">Паук финансовых коэффициентов</h2>
+          <p class="reveal" style="color: var(--text-secondary);">Введите показатели компании и сравните с отраслевым бенчмарком на радарной диаграмме.</p>
+
+          <!-- Preset buttons -->
+          <div class="reveal" style="display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-5);">
+            <button type="button" class="btn btn-sm" id="preset-retail" style="font-size: var(--text-sm); padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: border-color 0.2s, color 0.2s;">Крупный ритейлер</button>
+            <button type="button" class="btn btn-sm" id="preset-it" style="font-size: var(--text-sm); padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: border-color 0.2s, color 0.2s;">IT-компания</button>
+            <button type="button" class="btn btn-sm" id="preset-industry" style="font-size: var(--text-sm); padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text-secondary); cursor: pointer; transition: border-color 0.2s, color 0.2s;">Промышленность</button>
+          </div>
+
+          <!-- Input grid -->
+          <div class="reveal" style="overflow-x: auto; margin-bottom: var(--space-6);">
+            <table class="data-table" id="ratio-inputs-table" style="font-size: var(--text-sm);">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Показатель</th>
+                  <th style="text-align: center; min-width: 100px;">Компания</th>
+                  <th style="text-align: center; min-width: 100px;">Бенчмарк</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Текущая ликвидность (Current Ratio)</td>
+                  <td style="text-align: center;"><input type="number" id="cr-company" value="1.5" min="0.5" max="5" step="0.1" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                  <td style="text-align: center;"><input type="number" id="cr-bench" value="2.0" min="0.5" max="5" step="0.1" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                </tr>
+                <tr>
+                  <td>ROE (%)</td>
+                  <td style="text-align: center;"><input type="number" id="roe-company" value="15" min="0" max="50" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                  <td style="text-align: center;"><input type="number" id="roe-bench" value="12" min="0" max="50" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                </tr>
+                <tr>
+                  <td>ROA (%)</td>
+                  <td style="text-align: center;"><input type="number" id="roa-company" value="8" min="0" max="30" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                  <td style="text-align: center;"><input type="number" id="roa-bench" value="6" min="0" max="30" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                </tr>
+                <tr>
+                  <td>ROS / Маржа (%)</td>
+                  <td style="text-align: center;"><input type="number" id="ros-company" value="10" min="0" max="40" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                  <td style="text-align: center;"><input type="number" id="ros-bench" value="8" min="0" max="40" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                </tr>
+                <tr>
+                  <td>D/E (Долг/СК)</td>
+                  <td style="text-align: center;"><input type="number" id="de-company" value="0.8" min="0" max="5" step="0.1" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                  <td style="text-align: center;"><input type="number" id="de-bench" value="1.0" min="0" max="5" step="0.1" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                </tr>
+                <tr>
+                  <td>ICR (Покрытие процентов)</td>
+                  <td style="text-align: center;"><input type="number" id="icr-company" value="4.0" min="0" max="20" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                  <td style="text-align: center;"><input type="number" id="icr-bench" value="3.0" min="0" max="20" step="0.5" style="font-family: var(--ff-mono); width: 80px; text-align: center; background: var(--surface-2); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); padding: 4px 6px;"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Radar Chart -->
+          <div class="reveal" style="max-width: 500px; margin: 0 auto var(--space-6) auto;">
+            <div style="position: relative; width: 100%; aspect-ratio: 1 / 1;">
+              <canvas id="ratio-radar" class="chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Verdict / Analysis Box -->
+          <div class="reveal" id="ratio-verdict" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: var(--space-4); margin-bottom: var(--space-8);">
+            <p style="margin: 0; color: var(--text-secondary);">Измените значения показателей, чтобы увидеть анализ.</p>
+          </div>
+
+          <!-- Inline JS: Radar chart logic -->
+          <script>
+          (function() {
+            'use strict';
+
+            /* ---- Input IDs mapping ---- */
+            var fields = [
+              { id: 'cr',  label: 'Текущая ликвидность' },
+              { id: 'roe', label: 'ROE' },
+              { id: 'roa', label: 'ROA' },
+              { id: 'ros', label: 'ROS / Маржа' },
+              { id: 'de',  label: 'D/E' },
+              { id: 'icr', label: 'ICR' }
+            ];
+
+            /* ---- Normalization functions (all produce 0-5 scale) ---- */
+            function normCR(v)  { return Math.min(parseFloat(v) || 0, 5); }
+            function normROE(v) { return Math.min((parseFloat(v) || 0) / 10, 5); }
+            function normROA(v) { return Math.min((parseFloat(v) || 0) / 6, 5); }
+            function normROS(v) { return Math.min((parseFloat(v) || 0) / 8, 5); }
+            function normDE(v)  { return Math.max(0, 5 - (parseFloat(v) || 0)); }
+            function normICR(v) { return Math.min(parseFloat(v) || 0, 5); }
+
+            var normalizers = [normCR, normROE, normROA, normROS, normDE, normICR];
+
+            /* ---- Read raw values from inputs ---- */
+            function getRaw(suffix) {
+              return fields.map(function(f) {
+                var el = document.getElementById(f.id + '-' + suffix);
+                return el ? parseFloat(el.value) || 0 : 0;
+              });
+            }
+
+            /* ---- Normalize an array of raw values ---- */
+            function normalize(raw) {
+              return raw.map(function(v, i) { return normalizers[i](v); });
+            }
+
+            /* ---- Build verdict HTML ---- */
+            function buildVerdict(companyRaw, benchRaw) {
+              var strengths = [];
+              var weaknesses = [];
+              var labels = fields.map(function(f) { return f.label; });
+
+              for (var i = 0; i < fields.length; i++) {
+                var cVal = companyRaw[i];
+                var bVal = benchRaw[i];
+                /* D/E is inverted: lower is better */
+                var companyBetter;
+                if (fields[i].id === 'de') {
+                  companyBetter = cVal <= bVal;
+                } else {
+                  companyBetter = cVal >= bVal;
+                }
+
+                var item = '<strong>' + labels[i] + '</strong> (' + cVal + ' vs ' + bVal + ')';
+                if (companyBetter) {
+                  strengths.push(item);
+                } else {
+                  weaknesses.push(item);
+                }
+              }
+
+              var html = '';
+
+              if (strengths.length > 0) {
+                html += '<p style="margin: 0 0 8px 0; color: var(--success);">';
+                html += strengths.map(function(s) { return '<span style="margin-right: 4px;">&#10003;</span>' + s; }).join('<br>');
+                html += '</p>';
+              }
+
+              if (weaknesses.length > 0) {
+                html += '<p style="margin: 0 0 8px 0; color: var(--amber);">';
+                html += weaknesses.map(function(w) { return '<span style="margin-right: 4px;">&#10007;</span>' + w; }).join('<br>');
+                html += '</p>';
+              }
+
+              /* Summary line */
+              var summaryParts = [];
+              if (strengths.length > 0) {
+                var sNames = [];
+                for (var j = 0; j < fields.length; j++) {
+                  var sBetter = fields[j].id === 'de' ? companyRaw[j] <= benchRaw[j] : companyRaw[j] >= benchRaw[j];
+                  if (sBetter) sNames.push(fields[j].label);
+                }
+                summaryParts.push('<span style="color: var(--success);">Сильные стороны:</span> ' + sNames.join(', '));
+              }
+              if (weaknesses.length > 0) {
+                var wNames = [];
+                for (var k = 0; k < fields.length; k++) {
+                  var wBetter = fields[k].id === 'de' ? companyRaw[k] <= benchRaw[k] : companyRaw[k] >= benchRaw[k];
+                  if (!wBetter) wNames.push(fields[k].label);
+                }
+                summaryParts.push('<span style="color: var(--amber);">Области для улучшения:</span> ' + wNames.join(', '));
+              }
+
+              if (summaryParts.length > 0) {
+                html += '<p style="margin: 0; padding-top: 8px; border-top: 1px solid var(--border); color: var(--text-secondary); font-size: var(--text-sm);">' + summaryParts.join('. ') + '.</p>';
+              }
+
+              return html;
+            }
+
+            /* ---- Update chart + verdict ---- */
+            var radarChart = null;
+
+            function updateAll() {
+              var companyRaw = getRaw('company');
+              var benchRaw   = getRaw('bench');
+              var companyNorm = normalize(companyRaw);
+              var benchNorm   = normalize(benchRaw);
+
+              /* Update chart data if available */
+              if (radarChart) {
+                radarChart.data.datasets[0].data = companyNorm;
+                radarChart.data.datasets[1].data = benchNorm;
+                radarChart.update();
+              }
+
+              /* Update verdict */
+              var verdictEl = document.getElementById('ratio-verdict');
+              if (verdictEl) {
+                verdictEl.innerHTML = buildVerdict(companyRaw, benchRaw);
+              }
+            }
+
+            /* ---- Set input values programmatically ---- */
+            function setValues(companyVals, benchVals) {
+              fields.forEach(function(f, i) {
+                var ce = document.getElementById(f.id + '-company');
+                var be = document.getElementById(f.id + '-bench');
+                if (ce) ce.value = companyVals[i];
+                if (be) be.value = benchVals[i];
+              });
+              updateAll();
+            }
+
+            /* ---- Presets ---- */
+            var presets = {
+              retail:   { company: [1.2, 18, 5, 4, 1.5, 3.5],  bench: [2.0, 12, 6, 8, 1.0, 3.0] },
+              it:       { company: [2.5, 28, 15, 22, 0.3, 12],  bench: [2.0, 12, 6, 8, 1.0, 3.0] },
+              industry: { company: [1.3, 10, 5, 7, 2.2, 2.5],   bench: [2.0, 12, 6, 8, 1.0, 3.0] }
+            };
+
+            /* ---- DOM ready: bind inputs + presets ---- */
+            document.addEventListener('DOMContentLoaded', function() {
+              /* Bind input events */
+              fields.forEach(function(f) {
+                var ce = document.getElementById(f.id + '-company');
+                var be = document.getElementById(f.id + '-bench');
+                if (ce) ce.addEventListener('input', updateAll);
+                if (be) be.addEventListener('input', updateAll);
+              });
+
+              /* Bind presets */
+              var btnRetail = document.getElementById('preset-retail');
+              var btnIT     = document.getElementById('preset-it');
+              var btnInd    = document.getElementById('preset-industry');
+
+              if (btnRetail) btnRetail.addEventListener('click', function() { setValues(presets.retail.company, presets.retail.bench); });
+              if (btnIT)     btnIT.addEventListener('click', function()     { setValues(presets.it.company, presets.it.bench); });
+              if (btnInd)    btnInd.addEventListener('click', function()    { setValues(presets.industry.company, presets.industry.bench); });
+
+              /* Initial verdict (chart may not be ready yet) */
+              updateAll();
+            });
+
+            /* ---- Chart.js ready: create radar chart ---- */
+            document.addEventListener('chartjs:ready', function() {
+              var canvas = document.getElementById('ratio-radar');
+              if (!canvas) return;
+              var ctx = canvas.getContext('2d');
+
+              var companyNorm = normalize(getRaw('company'));
+              var benchNorm   = normalize(getRaw('bench'));
+
+              radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                  labels: [
+                    'Тек. ликвидность',
+                    'ROE',
+                    'ROA',
+                    'ROS / Маржа',
+                    'D/E (инверс.)',
+                    'ICR'
+                  ],
+                  datasets: [
+                    {
+                      label: 'Компания',
+                      data: companyNorm,
+                      borderColor: 'rgba(129, 140, 248, 1)',
+                      backgroundColor: 'rgba(129, 140, 248, 0.2)',
+                      borderWidth: 2,
+                      pointBackgroundColor: 'rgba(129, 140, 248, 1)',
+                      pointRadius: 4,
+                      pointHoverRadius: 6
+                    },
+                    {
+                      label: 'Бенчмарк',
+                      data: benchNorm,
+                      borderColor: 'rgba(148, 163, 184, 0.8)',
+                      backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                      borderWidth: 2,
+                      borderDash: [6, 3],
+                      pointBackgroundColor: 'rgba(148, 163, 184, 0.8)',
+                      pointRadius: 3,
+                      pointHoverRadius: 5
+                    }
+                  ]
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: true,
+                  scales: {
+                    r: {
+                      beginAtZero: true,
+                      min: 0,
+                      max: 5,
+                      ticks: {
+                        stepSize: 1,
+                        color: '#94A3B8',
+                        backdropColor: 'transparent',
+                        font: { size: 10 }
+                      },
+                      grid: {
+                        color: 'rgba(255, 255, 255, 0.08)'
+                      },
+                      angleLines: {
+                        color: 'rgba(255, 255, 255, 0.08)'
+                      },
+                      pointLabels: {
+                        color: '#CBD5E1',
+                        font: {
+                          family: "'Inter', system-ui, sans-serif",
+                          size: 11
+                        }
+                      }
+                    }
+                  },
+                  plugins: {
+                    legend: {
+                      position: 'bottom',
+                      labels: {
+                        color: '#94A3B8',
+                        padding: 16,
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        font: { size: 12 }
+                      }
+                    },
+                    tooltip: {
+                      callbacks: {
+                        label: function(context) {
+                          return context.dataset.label + ': ' + context.parsed.r.toFixed(2) + ' / 5';
+                        }
+                      }
+                    }
+                  }
+                }
+              });
+            });
+          })();
+          </script>
+
+          <!-- ============================================================
                КЛЮЧЕВЫЕ ПОНЯТИЯ
                ============================================================ -->
           <h2 id="glossary" class="reveal">Ключевые понятия</h2>
@@ -542,6 +877,7 @@
   <script src="../js/components.js"></script>
   <script src="../js/utils.js"></script>
   <script src="../js/app.js"></script>
+  <script src="../js/interactive-tools.js"></script>
   <script src="../js/progress.js"></script>
   <script src="../js/search.js"></script>
 </body>
